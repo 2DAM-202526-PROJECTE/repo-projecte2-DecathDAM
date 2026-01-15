@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1024270967652",
+    "project_id": "decathdam",
+    "storage_bucket": "decathdam.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1024270967652:android:6011bb5130e2829674d071",
+        "android_client_info": {
+          "package_name": "com.decathdam.decathdam"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWUFYBofArqsQ4FSjYpa_qHOjQqUPyT1Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
