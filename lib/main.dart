@@ -1,8 +1,15 @@
 import 'package:decathdam/viewmodels/craft.dart';
 import 'package:flutter/material.dart';
-import 'viewmodels/inici_vm.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:decathdam/firebase_options.dart';
 
-void main() {
+void main() async {
+  // Imprescindible: assegura que Flutter estigui llest abans d'iniciar Firebase
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Connecta l'app amb Firebase usant la configuració del teu fitxer
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(const MyApp());
 }
 
