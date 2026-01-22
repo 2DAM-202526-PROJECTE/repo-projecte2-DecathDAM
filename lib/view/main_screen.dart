@@ -56,9 +56,9 @@ class _MainScreenState extends State<MainScreen> {
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(15),
                         ),
-                        child: product.imatge.isNotEmpty
+                        child: product.url.isNotEmpty
                             ? Image.network(
-                                product.imatge,
+                                product.url,
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                                 errorBuilder: (context, error, stackTrace) =>
