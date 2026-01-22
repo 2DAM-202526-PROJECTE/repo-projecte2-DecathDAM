@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:decathdam/models/products.dart';
+import 'package:decathdam/models/product_model.dart';
 import 'package:flutter/material.dart';
 
-class ProductesViewModel extends ChangeNotifier {
+class ProductsViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<Product> _products = [];
 
@@ -24,7 +24,7 @@ class ProductesViewModel extends ChangeNotifier {
       }).toList();
       notifyListeners();
     } catch (e) {
-      print("Error fetching products: $e");
+      debugPrint("Error fetching products: $e");
     }
   }
 }

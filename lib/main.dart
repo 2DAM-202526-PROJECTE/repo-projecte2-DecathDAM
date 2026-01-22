@@ -1,7 +1,7 @@
-import 'package:decathdam/viewmodels/inici_vm.dart';
+import 'package:decathdam/view/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:decathdam/firebase_options.dart';
+import 'package:decathdam/config/firebase_options.dart';
 
 void main() async {
   // Imprescindible: assegura que Flutter estigui llest abans d'iniciar Firebase

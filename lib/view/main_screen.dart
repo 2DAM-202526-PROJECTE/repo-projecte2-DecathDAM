@@ -1,5 +1,5 @@
-import 'package:decathdam/models/products.dart';
-import 'package:decathdam/viewmodels/productes.dart';
+import 'package:decathdam/models/product_model.dart';
+import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
@@ -11,7 +11,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
-  final ProductesViewModel _productesViewModel = ProductesViewModel();
+  final ProductsViewModel _productsViewModel = ProductsViewModel();
 
   late final List<Widget> _widgetOptions;
 
@@ -20,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     _widgetOptions = <Widget>[
       StreamBuilder<List<Product>>(
-        stream: _productesViewModel.getProductsStream(),
+        stream: _productsViewModel.getProductsStream(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

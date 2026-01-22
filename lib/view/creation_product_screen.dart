@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CraftScreen extends StatefulWidget {
-  const CraftScreen({super.key});
+class CreationProductScreen extends StatefulWidget {
+  const CreationProductScreen({super.key});
 
   @override
-  State<CraftScreen> createState() => _CraftScreenState();
+  State<CreationProductScreen> createState() => _CreationProductScreenState();
 }
 
-class _CraftScreenState extends State<CraftScreen> {
+class _CreationProductScreenState extends State<CreationProductScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
@@ -160,7 +160,9 @@ class _CraftScreenState extends State<CraftScreen> {
                       onDeleted: () => _removeTag(tag),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
-                        side: BorderSide(color: Colors.blue.withOpacity(0.2)),
+                        side: BorderSide(
+                          color: Colors.blue.withValues(alpha: 0.2),
+                        ),
                       ),
                     );
                   }).toList(),
