@@ -1,4 +1,4 @@
-import 'package:decathdam/viewmodels/craft.dart';
+import 'package:decathdam/viewmodels/inici_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:decathdam/firebase_options.dart';
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const CraftScreen(),
+      home: const MainScreen(),
     );
   }
 }

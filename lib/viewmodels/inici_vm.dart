@@ -1,3 +1,5 @@
+import 'package:decathdam/models/products.dart';
+import 'package:decathdam/viewmodels/productes.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
@@ -9,39 +11,123 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
+  final ProductesViewModel _productesViewModel = ProductesViewModel();
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    Center(
-      child: Text(
-        'Inici',
-        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+  late final List<Widget> _widgetOptions;
+
+  @override
+  void initState() {
+    super.initState();
+    _widgetOptions = <Widget>[
+      StreamBuilder<List<Product>>(
+        stream: _productesViewModel.getProductsStream(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          final products = snapshot.data ?? [];
+          if (products.isEmpty) {
+            return const Center(child: Text('No hi ha productes'));
+          }
+          return GridView.builder(
+            padding: const EdgeInsets.all(10),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.75,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: products.length,
+            itemBuilder: (context, index) {
+              final product = products[index];
+              return Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(15),
+                        ),
+                        child: product.imatge.isNotEmpty
+                            ? Image.network(
+                                product.imatge,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const Icon(Icons.broken_image, size: 50),
+                              )
+                            : Container(
+                                color: Colors.grey[300],
+                                child: const Icon(Icons.image, size: 50),
+                              ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            product.nom,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${product.preu.toStringAsFixed(2)} €',
+                            style: TextStyle(
+                              color: Colors.blue[800],
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
       ),
-    ),
-    Center(
-      child: Text(
-        'Cerca',
-        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+      const Center(
+        child: Text(
+          'Cerca',
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
       ),
-    ),
-    Center(
-      child: Text(
-        'Afegir',
-        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+      const Center(
+        child: Text(
+          'Afegir',
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
       ),
-    ),
-    Center(
-      child: Text(
-        'Notificacions',
-        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+      const Center(
+        child: Text(
+          'Notificacions',
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
       ),
-    ),
-    Center(
-      child: Text(
-        'Perfil',
-        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+      const Center(
+        child: Text(
+          'Perfil',
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
       ),
-    ),
-  ];
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -54,7 +140,6 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('DecathDAM'),
-        // Using Theme.of(context) which will rely on main.dart theme, or we can hardcode if needed
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
