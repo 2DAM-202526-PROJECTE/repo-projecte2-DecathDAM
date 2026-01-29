@@ -27,4 +27,14 @@ class ProductsViewModel extends ChangeNotifier {
       debugPrint("Error fetching products: $e");
     }
   }
+
+  Future<void> addProduct(Map<String, dynamic> productData) async {
+    try {
+      await _firestore.collection('productes').add(productData);
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Error adding product: $e");
+      rethrow;
+    }
+  }
 }

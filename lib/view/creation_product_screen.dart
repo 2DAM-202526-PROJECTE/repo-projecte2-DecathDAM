@@ -1,5 +1,7 @@
+import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class CreationProductScreen extends StatefulWidget {
   const CreationProductScreen({super.key});
@@ -12,31 +14,61 @@ class _CreationProductScreenState extends State<CreationProductScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
-  final TextEditingController _tagController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _urlController = TextEditingController();
+  String? _selectedCategory;
 
-  final List<String> _tags = [];
-
-  void _addTag(String tag) {
-    if (tag.isNotEmpty && !_tags.contains(tag)) {
-      setState(() {
-        _tags.add(tag.trim());
-        _tagController.clear();
-      });
-    }
-  }
-
-  void _removeTag(String tag) {
-    setState(() {
-      _tags.remove(tag);
-    });
-  }
+  final List<String> _categories = [
+    'Ciclisme',
+    'Running',
+    'Natació',
+    'Fitness',
+    'Muntanya',
+    'Altres',
+  ];
 
   @override
   void dispose() {
     _nameController.dispose();
     _descController.dispose();
-    _tagController.dispose();
+    _priceController.dispose();
+    _urlController.dispose();
     super.dispose();
+  }
+
+  Future<void> _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      final productsViewModel = Provider.of<ProductsViewModel>(
+        context,
+        listen: false,
+      );
+
+      final productData = {
+        'nom': _nameController.text,
+        'descripcio': _descController.text,
+        'preu': double.tryParse(_priceController.text) ?? 0.0,
+        'url': _urlController.text,
+        'categoria': _selectedCategory ?? 'Altres',
+        'imatge':
+            '', // Assuming this might be for a local path or similar later
+      };
+
+      try {
+        await productsViewModel.addProduct(productData);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Producte creat correctament')),
+          );
+          Navigator.pop(context);
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error en crear el producte: $e')),
+          );
+        }
+      }
+    }
   }
 
   @override
@@ -103,7 +135,7 @@ class _CreationProductScreenState extends State<CreationProductScreen> {
               const SizedBox(height: 8),
               TextFormField(
                 controller: _descController,
-                maxLines: 4,
+                maxLines: 3,
                 decoration: _buildInputDecoration(
                   hint: 'Descriu les característiques tècniques...',
                   icon: Icons.description_outlined,
@@ -118,55 +150,90 @@ class _CreationProductScreenState extends State<CreationProductScreen> {
               ),
               const SizedBox(height: 24),
 
-              _buildLabel('Etiquetes'),
-              const SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(
-                    child: TextFormField(
-                      controller: _tagController,
-                      decoration: _buildInputDecoration(
-                        hint: 'Afegeix una etiqueta...',
-                        icon: Icons.label_outline,
-                      ),
-                      style: GoogleFonts.outfit(),
-                      onFieldSubmitted: (value) => _addTag(value),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildLabel('Preu (€)'),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: _priceController,
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                          decoration: _buildInputDecoration(
+                            hint: '0.00',
+                            icon: Icons.euro,
+                          ),
+                          style: GoogleFonts.outfit(),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Introdueix un preu';
+                            }
+                            if (double.tryParse(value) == null) {
+                              return 'Preu no vàlid';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  IconButton.filled(
-                    onPressed: () => _addTag(_tagController.text),
-                    icon: const Icon(Icons.add),
-                    style: IconButton.styleFrom(
-                      backgroundColor: Colors.black87,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildLabel('Categoria'),
+                        const SizedBox(height: 8),
+                        DropdownButtonFormField<String>(
+                          value: _selectedCategory,
+                          items: _categories.map((String category) {
+                            return DropdownMenuItem<String>(
+                              value: category,
+                              child: Text(
+                                category,
+                                style: GoogleFonts.outfit(),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _selectedCategory = newValue;
+                            });
+                          },
+                          decoration: _buildInputDecoration(
+                            hint: 'Tria una',
+                            icon: Icons.category_outlined,
+                          ),
+                          validator: (value) =>
+                              value == null ? 'Tria una categoria' : null,
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              if (_tags.isNotEmpty)
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: _tags.map((tag) {
-                    return Chip(
-                      label: Text(tag, style: GoogleFonts.outfit(fontSize: 12)),
-                      backgroundColor: Colors.blue[50],
-                      deleteIcon: const Icon(Icons.close, size: 16),
-                      onDeleted: () => _removeTag(tag),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: BorderSide(
-                          color: Colors.blue.withValues(alpha: 0.2),
-                        ),
-                      ),
-                    );
-                  }).toList(),
+              const SizedBox(height: 24),
+
+              _buildLabel('URL de la Imatge'),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _urlController,
+                decoration: _buildInputDecoration(
+                  hint: 'https://exemple.com/imatge.jpg',
+                  icon: Icons.link,
                 ),
+                style: GoogleFonts.outfit(),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Si us plau, introdueix una URL';
+                  }
+                  return null;
+                },
+              ),
 
               const SizedBox(height: 48),
 
@@ -174,18 +241,9 @@ class _CreationProductScreenState extends State<CreationProductScreen> {
               SizedBox(
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // TODO: Implement creation logic via ViewModel
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processant...')),
-                      );
-                    }
-                  },
+                  onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(
-                      0xFF0077C8,
-                    ), // Decathlon-like Blue or Brand Color
+                    backgroundColor: const Color(0xFF0077C8),
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(

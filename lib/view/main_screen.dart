@@ -2,6 +2,7 @@ import 'package:decathdam/models/product_model.dart';
 import 'package:decathdam/view/admin_screen.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -12,16 +13,20 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
-  final ProductsViewModel _productsViewModel = ProductsViewModel();
 
-  late final List<Widget> _widgetOptions;
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
-  void initState() {
-    super.initState();
-    _widgetOptions = <Widget>[
+  Widget build(BuildContext context) {
+    final productsViewModel = Provider.of<ProductsViewModel>(context);
+
+    final List<Widget> widgetOptions = <Widget>[
       StreamBuilder<List<Product>>(
-        stream: _productsViewModel.getProductsStream(),
+        stream: productsViewModel.getProductsStream(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -123,22 +128,13 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
     ];
-  }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('DecathDAM'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: _widgetOptions.elementAt(_selectedIndex),
+      body: widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
