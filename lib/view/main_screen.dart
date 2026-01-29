@@ -1,4 +1,5 @@
 import 'package:decathdam/models/product_model.dart';
+import 'package:decathdam/view/admin_screen.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
 
@@ -108,12 +109,7 @@ class _MainScreenState extends State<MainScreen> {
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ),
       ),
-      const Center(
-        child: Text(
-          'Afegir',
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-        ),
-      ),
+      const AdminScreen(),
       const Center(
         child: Text(
           'Notificacions',
@@ -147,16 +143,19 @@ class _MainScreenState extends State<MainScreen> {
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inici'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Cerca'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Explora'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline),
-            label: 'Afegir',
+            icon: Icon(Icons.admin_panel_settings),
+            label: 'Admin',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Avisos',
+            icon: Icon(Icons.favorite),
+            label: 'Favorits',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: 'Cistella',
+          ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blue[800],
