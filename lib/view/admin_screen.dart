@@ -1,5 +1,6 @@
 import 'package:decathdam/models/product_model.dart';
 import 'package:decathdam/view/creation_product_screen.dart';
+import 'package:decathdam/view/manage_products_screen.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -51,9 +52,7 @@ class AdminScreen extends StatelessWidget {
               context,
               icon: Icons.people,
               title: 'Administrar Usuaris',
-              onTap: () {
-                // TODO: Navegar a l'administració d'usuaris
-              },
+              onTap: () {},
             ),
             const SizedBox(height: 12),
             _buildAdminOption(
@@ -61,7 +60,12 @@ class AdminScreen extends StatelessWidget {
               icon: Icons.edit,
               title: 'Administrar Productes',
               onTap: () {
-                // TODO: Navegar a l'administració de productes (editar)
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ManageProductsScreen(),
+                  ),
+                );
               },
             ),
           ],
