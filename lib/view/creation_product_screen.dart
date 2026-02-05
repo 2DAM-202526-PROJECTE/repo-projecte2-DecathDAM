@@ -189,7 +189,7 @@ class _CreationProductScreenState extends State<CreationProductScreen> {
                         _buildLabel('Categoria'),
                         const SizedBox(height: 8),
                         DropdownButtonFormField<String>(
-                          value: _selectedCategory,
+                          initialValue: _selectedCategory,
                           items: _categories.map((String category) {
                             return DropdownMenuItem<String>(
                               value: category,
