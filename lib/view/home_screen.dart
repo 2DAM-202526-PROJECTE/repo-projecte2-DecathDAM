@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 40),
               const Center(
                 child: Text(
-                  'Tamo activo papi en DecathDAM',
+                  'DecathDAM',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
