@@ -1,5 +1,7 @@
 import 'package:decathdam/view/main_screen.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
+import 'package:decathdam/viewmodels/theme_provider.dart';
+import 'package:decathdam/viewmodels/users_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:decathdam/config/firebase_options.dart';
@@ -14,7 +16,11 @@ void main() async {
 
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => ProductsViewModel())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => ProductsViewModel()),
+        ChangeNotifierProvider(create: (_) => UsersViewModel()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+      ],
       child: const MyApp(),
     ),
   );
@@ -25,12 +31,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return MaterialApp(
       title: 'DecathDAM',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
+      theme: ThemeProvider.lightTheme,
+      darkTheme: ThemeProvider.darkTheme,
+      themeMode: themeProvider.themeMode,
       home: const MainScreen(),
     );
   }

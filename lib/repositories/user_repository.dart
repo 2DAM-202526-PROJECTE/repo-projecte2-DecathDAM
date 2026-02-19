@@ -1,0 +1,34 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:decathdam/models/user_model.dart';
+
+class UserRepository {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  static const String _collectionName = 'usuaris';
+
+  Stream<List<UserModel>> getUsersStream() {
+    return _firestore.collection(_collectionName).snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return UserModel.fromFirestore(doc.id, doc.data());
+      }).toList();
+    });
+  }
+
+  Future<List<UserModel>> fetchUsers() async {
+    final snapshot = await _firestore.collection(_collectionName).get();
+    return snapshot.docs.map((doc) {
+      return UserModel.fromFirestore(doc.id, doc.data());
+    }).toList();
+  }
+
+  Future<void> addUser(Map<String, dynamic> userData) async {
+    await _firestore.collection(_collectionName).add(userData);
+  }
+
+  Future<void> updateUser(String id, Map<String, dynamic> userData) async {
+    await _firestore.collection(_collectionName).doc(id).update(userData);
+  }
+
+  Future<void> deleteUser(String id) async {
+    await _firestore.collection(_collectionName).doc(id).delete();
+  }
+}
