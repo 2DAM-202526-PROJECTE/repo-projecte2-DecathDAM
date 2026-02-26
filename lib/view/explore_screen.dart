@@ -1,5 +1,6 @@
 import 'package:decathdam/config/app_theme.dart';
 import 'package:decathdam/models/product_model.dart';
+import 'package:decathdam/viewmodels/favorites_viewmodel.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +35,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   @override
   Widget build(BuildContext context) {
     final productsViewModel = Provider.of<ProductsViewModel>(context);
+    final favoritesViewModel = Provider.of<FavoritesViewModel>(context);
     final colors = AppColors.of(context);
 
     return Padding(
@@ -144,60 +146,83 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Stack(
                         children: [
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(15),
-                              ),
-                              child: product.url.isNotEmpty
-                                  ? Image.network(
-                                      product.url,
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                      errorBuilder:
-                                          (context, error, stackTrace) => Icon(
-                                            Icons.broken_image,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(15),
+                                  ),
+                                  child: product.url.isNotEmpty
+                                      ? Image.network(
+                                          product.url,
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  Icon(
+                                                    Icons.broken_image,
+                                                    size: 50,
+                                                    color: colors.textSecondary,
+                                                  ),
+                                        )
+                                      : Container(
+                                          color: colors.imagePlaceholder,
+                                          child: Icon(
+                                            Icons.image,
                                             size: 50,
                                             color: colors.textSecondary,
                                           ),
-                                    )
-                                  : Container(
-                                      color: colors.imagePlaceholder,
-                                      child: Icon(
-                                        Icons.image,
-                                        size: 50,
-                                        color: colors.textSecondary,
+                                        ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      product.nom,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: colors.textPrimary,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '${product.preu.toStringAsFixed(2)} €',
+                                      style: TextStyle(
+                                        color: colors.accentBlue,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                            ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  product.nom,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: colors.textPrimary,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  '${product.preu.toStringAsFixed(2)} €',
-                                  style: TextStyle(
-                                    color: colors.accentBlue,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+                          Positioned(
+                            bottom: 8,
+                            right: 8,
+                            child: GestureDetector(
+                              onTap: () {
+                                favoritesViewModel.toggleFavorite(product.id);
+                              },
+                              child: Icon(
+                                favoritesViewModel.isFavorite(product.id)
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: favoritesViewModel.isFavorite(product.id)
+                                    ? Colors.red
+                                    : colors.textSecondary,
+                                size: 24,
+                              ),
                             ),
                           ),
                         ],

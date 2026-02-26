@@ -16,15 +16,32 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
-    ExploreScreen(),
-    AdminScreen(),
-    FavoritesScreen(),
-    CartScreen(),
-  ];
+  // Index de la pestanya de Favorits
+  static const int _favoritesIndex = 3;
+
+  // GlobalKey per accedir a l'estat del FavoritesScreen
+  final GlobalKey<FavoritesScreenState> _favoritesKey =
+      GlobalKey<FavoritesScreenState>();
+
+  late final List<Widget> _widgetOptions;
+
+  @override
+  void initState() {
+    super.initState();
+    _widgetOptions = <Widget>[
+      const HomeScreen(),
+      const ExploreScreen(),
+      const AdminScreen(),
+      FavoritesScreen(key: _favoritesKey),
+      const CartScreen(),
+    ];
+  }
 
   void _onItemTapped(int index) {
+    // Si l'usuari surt de la pestanya de Favorits, aplica les eliminacions pendents
+    if (_selectedIndex == _favoritesIndex && index != _favoritesIndex) {
+      _favoritesKey.currentState?.applyPendingRemovals();
+    }
     setState(() {
       _selectedIndex = index;
     });
