@@ -15,6 +15,8 @@ class FavoritesScreen extends StatefulWidget {
 class FavoritesScreenState extends State<FavoritesScreen> {
   /// IDs marcats per eliminar (pendents fins que l'usuari canviï de pàgina)
   final Set<String> _pendingRemovals = {};
+  late final Stream<List<Product>> _productsStream;
+  bool _streamInitialized = false;
 
   /// Aplica les eliminacions pendents (cridat des de MainScreen quan es canvia de pestanya)
   void applyPendingRemovals() {
@@ -30,13 +32,24 @@ class FavoritesScreenState extends State<FavoritesScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_streamInitialized) {
+      _productsStream = Provider.of<ProductsViewModel>(
+        context,
+        listen: false,
+      ).getProductsStream();
+      _streamInitialized = true;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final favoritesViewModel = Provider.of<FavoritesViewModel>(context);
-    final productsViewModel = Provider.of<ProductsViewModel>(context);
     final colors = AppColors.of(context);
 
     return StreamBuilder<List<Product>>(
-      stream: productsViewModel.getProductsStream(),
+      stream: _productsStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());

@@ -15,6 +15,8 @@ class ExploreScreen extends StatefulWidget {
 class _ExploreScreenState extends State<ExploreScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  late final Stream<List<Product>> _productsStream;
+  bool _streamInitialized = false;
 
   @override
   void dispose() {
@@ -33,8 +35,19 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_streamInitialized) {
+      _productsStream = Provider.of<ProductsViewModel>(
+        context,
+        listen: false,
+      ).getProductsStream();
+      _streamInitialized = true;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final productsViewModel = Provider.of<ProductsViewModel>(context);
     final favoritesViewModel = Provider.of<FavoritesViewModel>(context);
     final colors = AppColors.of(context);
 
@@ -84,7 +97,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           const SizedBox(height: 10),
           Expanded(
             child: StreamBuilder<List<Product>>(
-              stream: productsViewModel.getProductsStream(),
+              stream: _productsStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
