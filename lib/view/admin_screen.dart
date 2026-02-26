@@ -2,12 +2,10 @@ import 'package:decathdam/config/app_theme.dart';
 import 'package:decathdam/view/creation_product_screen.dart';
 import 'package:decathdam/view/manage_products_screen.dart';
 import 'package:decathdam/view/manage_users_screen.dart';
+import 'package:decathdam/view/settings_screen.dart';
 import 'package:decathdam/view/widgets/animated_admin_option.dart';
 import 'package:decathdam/view/widgets/dashboard_card.dart';
-import 'package:decathdam/view/widgets/logout_button.dart';
-import 'package:decathdam/view/widgets/settings_theme_card.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
-import 'package:decathdam/viewmodels/theme_provider.dart';
 import 'package:decathdam/viewmodels/users_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -49,7 +47,6 @@ class _AdminScreenState extends State<AdminScreen>
   Widget build(BuildContext context) {
     final productsViewModel = Provider.of<ProductsViewModel>(context);
     final usersViewModel = Provider.of<UsersViewModel>(context);
-    final themeProvider = Provider.of<ThemeProvider>(context);
     final colors = AppColors.of(context);
 
     return Scaffold(
@@ -61,22 +58,63 @@ class _AdminScreenState extends State<AdminScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
-              Text(
-                'Panell d\'Administració',
-                style: GoogleFonts.outfit(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: colors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Gestiona productes i usuaris',
-                style: GoogleFonts.outfit(
-                  fontSize: 14,
-                  color: colors.textSecondary,
-                ),
+              // Header amb icona d'ajustes
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Panell d\'Administració',
+                          style: GoogleFonts.outfit(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: colors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Gestiona productes i usuaris',
+                          style: GoogleFonts.outfit(
+                            fontSize: 14,
+                            color: colors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Icona d'ajustes
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        _createRoute(const SettingsScreen()),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: colors.card,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: colors.border, width: 1),
+                        boxShadow: [
+                          BoxShadow(
+                            color: colors.cardShadow,
+                            blurRadius: 6,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        Icons.settings_rounded,
+                        color: colors.textSecondary,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 28),
 
@@ -86,7 +124,14 @@ class _AdminScreenState extends State<AdminScreen>
               const SizedBox(height: 32),
 
               // Section: Gestió ràpida
-              _buildSectionTitle('Gestió ràpida', colors),
+              Text(
+                'Gestió ràpida',
+                style: GoogleFonts.outfit(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: colors.textPrimary,
+                ),
+              ),
               const SizedBox(height: 16),
 
               AnimatedAdminOption(
@@ -136,74 +181,10 @@ class _AdminScreenState extends State<AdminScreen>
                 },
               ),
 
-              const SizedBox(height: 36),
-
-              // Section: Ajustes
-              _buildSectionTitle('Ajustes', colors),
-              const SizedBox(height: 16),
-
-              SettingsThemeCard(themeProvider: themeProvider, colors: colors),
-
-              const SizedBox(height: 12),
-
-              AnimatedAdminOption(
-                icon: Icons.language_rounded,
-                title: 'Idioma',
-                subtitle: 'Català',
-                gradientColors: const [Color(0xFF7C4DFF), Color(0xFFB388FF)],
-                delay: 300,
-                colors: colors,
-                onTap: () {
-                  _showInfoSnackBar(
-                    context,
-                    colors,
-                    'Funció d\'idioma pròximament',
-                  );
-                },
-              ),
-
-              const SizedBox(height: 12),
-
-              AnimatedAdminOption(
-                icon: Icons.notifications_rounded,
-                title: 'Notificacions',
-                subtitle: 'Gestiona les alertes de l\'app',
-                gradientColors: const [Color(0xFF00BCD4), Color(0xFF4DD0E1)],
-                delay: 400,
-                colors: colors,
-                onTap: () {
-                  _showInfoSnackBar(
-                    context,
-                    colors,
-                    'Notificacions pròximament',
-                  );
-                },
-              ),
-
-              const SizedBox(height: 28),
-
-              LogoutButton(
-                colors: colors,
-                onTap: () {
-                  _showLogoutDialog(context, colors);
-                },
-              ),
-
               const SizedBox(height: 24),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title, AppColors colors) {
-    return Text(
-      title,
-      style: GoogleFonts.outfit(
-        fontSize: 18,
-        fontWeight: FontWeight.w600,
-        color: colors.textPrimary,
       ),
     );
   }
@@ -261,98 +242,6 @@ class _AdminScreenState extends State<AdminScreen>
         return SlideTransition(position: animation.drive(tween), child: child);
       },
       transitionDuration: const Duration(milliseconds: 400),
-    );
-  }
-
-  void _showInfoSnackBar(
-    BuildContext context,
-    AppColors colors,
-    String message,
-  ) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message, style: GoogleFonts.outfit(color: Colors.white)),
-        backgroundColor: colors.dialog,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
-  }
-
-  void _showLogoutDialog(BuildContext context, AppColors colors) {
-    showDialog(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          backgroundColor: colors.dialog,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.red.withAlpha(26),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.logout_rounded,
-                  color: Colors.red,
-                  size: 22,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'Tancar sessió',
-                style: GoogleFonts.outfit(
-                  fontWeight: FontWeight.bold,
-                  color: colors.textPrimary,
-                ),
-              ),
-            ],
-          ),
-          content: Text(
-            'Estàs segur que vols tancar la sessió? Hauràs d\'iniciar sessió de nou per accedir.',
-            style: GoogleFonts.outfit(
-              color: colors.textSecondary,
-              fontSize: 14,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(
-                'Cancel·lar',
-                style: GoogleFonts.outfit(color: colors.cancelButton),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(dialogContext);
-                _showInfoSnackBar(
-                  context,
-                  colors,
-                  'Funció de logout pròximament',
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text(
-                'Tancar sessió',
-                style: GoogleFonts.outfit(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 }
