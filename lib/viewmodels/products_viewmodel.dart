@@ -12,6 +12,10 @@ class ProductsViewModel extends ChangeNotifier {
     return _repository.getProductsStream();
   }
 
+  Future<int> getProductsCount() async {
+    return _repository.getProductsCount();
+  }
+
   Future<void> fetchProducts() async {
     try {
       _products = await _repository.fetchProducts();

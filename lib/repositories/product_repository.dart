@@ -34,4 +34,10 @@ class ProductRepository {
   Future<void> deleteProduct(String id) async {
     await _firestore.collection(_collectionName).doc(id).delete();
   }
+
+  /// Retorna el nombre de productes sense descarregar cap document.
+  Future<int> getProductsCount() async {
+    final snapshot = await _firestore.collection(_collectionName).count().get();
+    return snapshot.count ?? 0;
+  }
 }

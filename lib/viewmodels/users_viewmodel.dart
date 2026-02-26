@@ -12,6 +12,10 @@ class UsersViewModel extends ChangeNotifier {
     return _repository.getUsersStream();
   }
 
+  Future<int> getUsersCount() async {
+    return _repository.getUsersCount();
+  }
+
   Future<void> fetchUsers() async {
     try {
       _users = await _repository.fetchUsers();

@@ -27,15 +27,31 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textPrimary = isDark ? Colors.white : Colors.black87;
+    final textSecondary = isDark ? Colors.white54 : Colors.grey[600]!;
+    final cardBg = isDark ? const Color(0xFF161B22) : Colors.white;
+    final errorBg = isDark ? const Color(0xFF1C2128) : Colors.grey[200]!;
+
     return FutureBuilder<List<Imatges>>(
       future: _imagesFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Center(
+            child: Text(
+              'Error: ${snapshot.error}',
+              style: TextStyle(color: textPrimary),
+            ),
+          );
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No images found.'));
+          return Center(
+            child: Text(
+              'No images found.',
+              style: TextStyle(color: textPrimary),
+            ),
+          );
         }
 
         final images = snapshot.data!;
@@ -44,32 +60,38 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 20),
-              // Carousel Section
               AutoSlideCarousel(images: images),
 
               const SizedBox(height: 40),
-              const Center(
+              Center(
                 child: Text(
                   'DecathDAM',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: textPrimary,
+                  ),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.all(16.0),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
                 child: Text(
                   'Nuestro proposito es que cumplas tus objetivos',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                  style: TextStyle(fontSize: 16, color: textSecondary),
                 ),
               ),
 
-              // --- Product Photos Section ---
               const SizedBox(height: 30),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
                   '¡Top descuentos en productos!',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: textPrimary,
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -86,15 +108,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     return Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Center(
-                        child: Text('Error: ${productSnapshot.error}'),
+                        child: Text(
+                          'Error: ${productSnapshot.error}',
+                          style: TextStyle(color: textPrimary),
+                        ),
                       ),
                     );
                   } else if (!productSnapshot.hasData ||
                       productSnapshot.data!.isEmpty) {
-                    return const Padding(
-                      padding: EdgeInsets.all(16.0),
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
                       child: Center(
-                        child: Text('No hi ha productes disponibles.'),
+                        child: Text(
+                          'No hi ha productes disponibles.',
+                          style: TextStyle(color: textSecondary),
+                        ),
                       ),
                     );
                   }
@@ -104,10 +132,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       .toList();
 
                   if (products.isEmpty) {
-                    return const Padding(
-                      padding: EdgeInsets.all(16.0),
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
                       child: Center(
-                        child: Text('No hi ha imatges de productes.'),
+                        child: Text(
+                          'No hi ha imatges de productes.',
+                          style: TextStyle(color: textSecondary),
+                        ),
                       ),
                     );
                   }
@@ -131,11 +162,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(14),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: cardBg,
                               borderRadius: BorderRadius.circular(14),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.08),
+                                  color: isDark
+                                      ? Colors.black.withAlpha(51)
+                                      : Colors.black.withAlpha(20),
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
@@ -148,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Container(
-                                    color: Colors.grey[200],
+                                    color: errorBg,
                                     child: const Center(
                                       child: Icon(
                                         Icons.broken_image,
@@ -188,7 +221,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 20),
 
-              // 4a imatge de Firebase
               if (images.length >= 4)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -204,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
-                            color: Colors.grey[200],
+                            color: errorBg,
                             child: const Center(
                               child: Icon(
                                 Icons.broken_image,
@@ -278,6 +310,8 @@ class _AutoSlideCarouselState extends State<AutoSlideCarousel> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       children: [
         SizedBox(
@@ -303,7 +337,9 @@ class _AutoSlideCarouselState extends State<AutoSlideCarousel> {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
-                            color: Colors.grey[300],
+                            color: isDark
+                                ? const Color(0xFF1C2128)
+                                : Colors.grey[300],
                             child: const Center(
                               child: Icon(
                                 Icons.broken_image,
@@ -325,7 +361,6 @@ class _AutoSlideCarouselState extends State<AutoSlideCarousel> {
                           );
                         },
                       ),
-                      // Optional Gradient overlay
                       Positioned.fill(
                         child: DecoratedBox(
                           decoration: BoxDecoration(
@@ -333,7 +368,7 @@ class _AutoSlideCarouselState extends State<AutoSlideCarousel> {
                               begin: Alignment.bottomCenter,
                               end: Alignment.topCenter,
                               colors: [
-                                Colors.black.withOpacity(0.3),
+                                Colors.black.withAlpha(77),
                                 Colors.transparent,
                               ],
                             ),
@@ -347,7 +382,6 @@ class _AutoSlideCarouselState extends State<AutoSlideCarousel> {
             },
           ),
         ),
-        // Indicators
         const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -361,7 +395,7 @@ class _AutoSlideCarouselState extends State<AutoSlideCarousel> {
                 shape: BoxShape.circle,
                 color: _currentPage == index
                     ? Theme.of(context).primaryColor
-                    : Colors.grey.withOpacity(0.5),
+                    : Colors.grey.withAlpha(128),
               ),
             ),
           ),

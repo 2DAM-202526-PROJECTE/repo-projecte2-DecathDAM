@@ -31,4 +31,10 @@ class UserRepository {
   Future<void> deleteUser(String id) async {
     await _firestore.collection(_collectionName).doc(id).delete();
   }
+
+  /// Retorna el nombre d'usuaris sense descarregar cap document.
+  Future<int> getUsersCount() async {
+    final snapshot = await _firestore.collection(_collectionName).count().get();
+    return snapshot.count ?? 0;
+  }
 }

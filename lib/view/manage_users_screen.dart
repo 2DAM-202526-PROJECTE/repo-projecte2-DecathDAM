@@ -40,28 +40,38 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
   @override
   Widget build(BuildContext context) {
     final usersViewModel = Provider.of<UsersViewModel>(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final bgColor = isDark ? const Color(0xFF0D1117) : const Color(0xFFF5F6FA);
+    final appBarBg = isDark ? const Color(0xFF161B22) : Colors.white;
+    final textPrimary = isDark ? Colors.white : Colors.black87;
+    final textSecondary = isDark ? Colors.white54 : Colors.grey[600]!;
+    final searchBg = isDark ? const Color(0xFF161B22) : Colors.white;
+    final searchBorder = isDark
+        ? Colors.white.withAlpha(15)
+        : Colors.grey.withAlpha(51);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0D1117),
+      backgroundColor: bgColor,
       appBar: AppBar(
         title: Text(
           'Administrar Usuaris',
           style: GoogleFonts.outfit(
             fontWeight: FontWeight.w600,
-            color: Colors.white,
+            color: textPrimary,
           ),
         ),
-        backgroundColor: const Color(0xFF161B22),
+        backgroundColor: appBarBg,
         elevation: 0,
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: textPrimary),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showAddUserDialog(context, usersViewModel),
+        onPressed: () => _showAddUserDialog(context, usersViewModel, isDark),
         backgroundColor: const Color(0xFFFF6D00),
         icon: const Icon(Icons.person_add_rounded, color: Colors.white),
         label: Text(
@@ -79,29 +89,23 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Container(
               decoration: BoxDecoration(
-                color: const Color(0xFF161B22),
+                color: searchBg,
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: Colors.white.withOpacity(0.06)),
+                border: Border.all(color: searchBorder),
               ),
               child: TextField(
                 controller: _searchController,
-                style: GoogleFonts.outfit(color: Colors.white),
+                style: GoogleFonts.outfit(color: textPrimary),
                 decoration: InputDecoration(
                   hintText: 'Cercar per nom o email...',
                   hintStyle: GoogleFonts.outfit(
-                    color: Colors.white38,
+                    color: textSecondary,
                     fontSize: 14,
                   ),
-                  prefixIcon: Icon(
-                    Icons.search_rounded,
-                    color: Colors.white.withOpacity(0.4),
-                  ),
+                  prefixIcon: Icon(Icons.search_rounded, color: textSecondary),
                   suffixIcon: _searchQuery.isNotEmpty
                       ? IconButton(
-                          icon: Icon(
-                            Icons.clear_rounded,
-                            color: Colors.white.withOpacity(0.4),
-                          ),
+                          icon: Icon(Icons.clear_rounded, color: textSecondary),
                           onPressed: () => _searchController.clear(),
                         )
                       : null,
@@ -162,13 +166,15 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                         Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF161B22),
+                            color: isDark
+                                ? const Color(0xFF161B22)
+                                : Colors.grey[100],
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Icon(
                             Icons.people_outline_rounded,
                             size: 56,
-                            color: Colors.white.withOpacity(0.2),
+                            color: textSecondary,
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -177,7 +183,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                           style: GoogleFonts.outfit(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
-                            color: Colors.white54,
+                            color: textSecondary,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -185,7 +191,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                           'Afegeix el primer usuari amb el botó +',
                           style: GoogleFonts.outfit(
                             fontSize: 13,
-                            color: Colors.white30,
+                            color: isDark ? Colors.white30 : Colors.grey[400],
                           ),
                         ),
                       ],
@@ -201,14 +207,14 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                         Icon(
                           Icons.search_off_rounded,
                           size: 48,
-                          color: Colors.white.withOpacity(0.2),
+                          color: textSecondary,
                         ),
                         const SizedBox(height: 12),
                         Text(
                           'Cap resultat per "$_searchQuery"',
                           style: GoogleFonts.outfit(
                             fontSize: 15,
-                            color: Colors.white38,
+                            color: textSecondary,
                           ),
                         ),
                       ],
@@ -225,6 +231,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                       index: index,
                       viewModel: usersViewModel,
                       parentController: _listAnimController,
+                      isDark: isDark,
                     );
                   },
                 );
@@ -236,10 +243,17 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
     );
   }
 
-  void _showAddUserDialog(BuildContext context, UsersViewModel viewModel) {
+  void _showAddUserDialog(
+    BuildContext context,
+    UsersViewModel viewModel,
+    bool isDark,
+  ) {
     final nameController = TextEditingController();
     final emailController = TextEditingController();
     String selectedRol = 'client';
+
+    final dialogBg = isDark ? const Color(0xFF1C2128) : Colors.white;
+    final dialogText = isDark ? Colors.white : Colors.black87;
 
     showDialog(
       context: context,
@@ -247,7 +261,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              backgroundColor: const Color(0xFF1C2128),
+              backgroundColor: dialogBg,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -255,7 +269,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                 'Afegir Usuari',
                 style: GoogleFonts.outfit(
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: dialogText,
                 ),
               ),
               content: SingleChildScrollView(
@@ -266,12 +280,14 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                       controller: nameController,
                       hint: 'Nom complet',
                       icon: Icons.person_outline_rounded,
+                      isDark: isDark,
                     ),
                     const SizedBox(height: 14),
                     _buildDialogField(
                       controller: emailController,
                       hint: 'Email',
                       icon: Icons.email_outlined,
+                      isDark: isDark,
                     ),
                     const SizedBox(height: 14),
                     Container(
@@ -280,21 +296,25 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0D1117),
+                        color: isDark
+                            ? const Color(0xFF0D1117)
+                            : Colors.grey[100],
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.08),
+                          color: isDark
+                              ? Colors.white.withAlpha(20)
+                              : Colors.grey.withAlpha(51),
                         ),
                       ),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: selectedRol,
                           isExpanded: true,
-                          dropdownColor: const Color(0xFF1C2128),
-                          style: GoogleFonts.outfit(color: Colors.white),
+                          dropdownColor: dialogBg,
+                          style: GoogleFonts.outfit(color: dialogText),
                           icon: Icon(
                             Icons.arrow_drop_down_rounded,
-                            color: Colors.white.withOpacity(0.5),
+                            color: isDark ? Colors.white38 : Colors.grey,
                           ),
                           items: [
                             DropdownMenuItem(
@@ -304,13 +324,15 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                                   Icon(
                                     Icons.person_outline,
                                     size: 18,
-                                    color: Colors.white.withOpacity(0.5),
+                                    color: isDark
+                                        ? Colors.white38
+                                        : Colors.grey,
                                   ),
                                   const SizedBox(width: 10),
                                   Text(
                                     'Client',
                                     style: GoogleFonts.outfit(
-                                      color: Colors.white,
+                                      color: dialogText,
                                     ),
                                   ),
                                 ],
@@ -323,13 +345,15 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                                   Icon(
                                     Icons.admin_panel_settings_outlined,
                                     size: 18,
-                                    color: Colors.white.withOpacity(0.5),
+                                    color: isDark
+                                        ? Colors.white38
+                                        : Colors.grey,
                                   ),
                                   const SizedBox(width: 10),
                                   Text(
                                     'Admin',
                                     style: GoogleFonts.outfit(
-                                      color: Colors.white,
+                                      color: dialogText,
                                     ),
                                   ),
                                 ],
@@ -350,7 +374,9 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                   onPressed: () => Navigator.pop(dialogContext),
                   child: Text(
                     'Cancel·lar',
-                    style: GoogleFonts.outfit(color: Colors.white38),
+                    style: GoogleFonts.outfit(
+                      color: isDark ? Colors.white38 : Colors.grey,
+                    ),
                   ),
                 ),
                 ElevatedButton(
@@ -423,24 +449,29 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
     required TextEditingController controller,
     required String hint,
     required IconData icon,
+    required bool isDark,
   }) {
+    final fieldBg = isDark ? const Color(0xFF0D1117) : Colors.grey[100]!;
+    final fieldBorder = isDark
+        ? Colors.white.withAlpha(20)
+        : Colors.grey.withAlpha(51);
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final hintColor = isDark ? Colors.white30 : Colors.grey;
+    final iconColor = isDark ? Colors.white38 : Colors.grey;
+
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1117),
+        color: fieldBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: fieldBorder),
       ),
       child: TextField(
         controller: controller,
-        style: GoogleFonts.outfit(color: Colors.white),
+        style: GoogleFonts.outfit(color: textColor),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: GoogleFonts.outfit(color: Colors.white30),
-          prefixIcon: Icon(
-            icon,
-            color: Colors.white.withOpacity(0.4),
-            size: 20,
-          ),
+          hintStyle: GoogleFonts.outfit(color: hintColor),
+          prefixIcon: Icon(icon, color: iconColor, size: 20),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 14,
@@ -459,12 +490,14 @@ class _AnimatedUserCard extends StatefulWidget {
   final int index;
   final UsersViewModel viewModel;
   final AnimationController parentController;
+  final bool isDark;
 
   const _AnimatedUserCard({
     required this.user,
     required this.index,
     required this.viewModel,
     required this.parentController,
+    required this.isDark,
   });
 
   @override
@@ -508,6 +541,7 @@ class _AnimatedUserCardState extends State<_AnimatedUserCard>
   @override
   Widget build(BuildContext context) {
     final user = widget.user;
+    final isDark = widget.isDark;
     final isAdmin = user.rol == 'admin';
     final initials = user.nom.isNotEmpty
         ? user.nom
@@ -516,6 +550,22 @@ class _AnimatedUserCardState extends State<_AnimatedUserCard>
               .map((w) => w.isNotEmpty ? w[0].toUpperCase() : '')
               .join()
         : '?';
+
+    final cardBg = isDark ? const Color(0xFF161B22) : Colors.white;
+    final cardBorder = user.actiu
+        ? (isDark ? Colors.white.withAlpha(15) : Colors.grey.withAlpha(38))
+        : Colors.red.withAlpha(38);
+    final cardShadow = isDark
+        ? Colors.black.withAlpha(38)
+        : Colors.black.withAlpha(13);
+    final nameColor = user.actiu
+        ? (isDark ? Colors.white : Colors.black87)
+        : (isDark ? Colors.white38 : Colors.grey);
+    final emailColor = isDark ? Colors.white38 : Colors.grey[500]!;
+    final actionBarBg = isDark ? const Color(0xFF0D1117) : Colors.grey[100]!;
+    final dividerColor = isDark
+        ? Colors.white.withAlpha(15)
+        : Colors.grey.withAlpha(38);
 
     return FadeTransition(
       opacity: _fadeAnimation,
@@ -532,17 +582,12 @@ class _AnimatedUserCardState extends State<_AnimatedUserCard>
               margin: const EdgeInsets.only(bottom: 12),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFF161B22),
+                color: cardBg,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: user.actiu
-                      ? Colors.white.withOpacity(0.06)
-                      : Colors.red.withOpacity(0.15),
-                  width: 1,
-                ),
+                border: Border.all(color: cardBorder, width: 1),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
+                    color: cardShadow,
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -596,9 +641,7 @@ class _AnimatedUserCardState extends State<_AnimatedUserCard>
                                     style: GoogleFonts.outfit(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w600,
-                                      color: user.actiu
-                                          ? Colors.white
-                                          : Colors.white38,
+                                      color: nameColor,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -613,12 +656,8 @@ class _AnimatedUserCardState extends State<_AnimatedUserCard>
                                   ),
                                   decoration: BoxDecoration(
                                     color: isAdmin
-                                        ? const Color(
-                                            0xFFFF6D00,
-                                          ).withOpacity(0.15)
-                                        : const Color(
-                                            0xFF1E88E5,
-                                          ).withOpacity(0.15),
+                                        ? const Color(0xFFFF6D00).withAlpha(38)
+                                        : const Color(0xFF1E88E5).withAlpha(38),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
@@ -639,7 +678,7 @@ class _AnimatedUserCardState extends State<_AnimatedUserCard>
                               user.email,
                               style: GoogleFonts.outfit(
                                 fontSize: 13,
-                                color: Colors.white38,
+                                color: emailColor,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -656,7 +695,7 @@ class _AnimatedUserCardState extends State<_AnimatedUserCard>
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.red.withOpacity(0.1),
+                            color: Colors.red.withAlpha(26),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
@@ -680,7 +719,7 @@ class _AnimatedUserCardState extends State<_AnimatedUserCard>
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0D1117),
+                      color: actionBarBg,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -694,11 +733,7 @@ class _AnimatedUserCardState extends State<_AnimatedUserCard>
                             onTap: () => _toggleRole(user),
                           ),
                         ),
-                        Container(
-                          width: 1,
-                          height: 28,
-                          color: Colors.white.withOpacity(0.06),
-                        ),
+                        Container(width: 1, height: 28, color: dividerColor),
                         // Toggle active
                         Expanded(
                           child: _ActionButton(
@@ -712,18 +747,15 @@ class _AnimatedUserCardState extends State<_AnimatedUserCard>
                             onTap: () => _toggleActive(user),
                           ),
                         ),
-                        Container(
-                          width: 1,
-                          height: 28,
-                          color: Colors.white.withOpacity(0.06),
-                        ),
+                        Container(width: 1, height: 28, color: dividerColor),
                         // Delete
                         Expanded(
                           child: _ActionButton(
                             icon: Icons.delete_outline_rounded,
                             label: 'Eliminar',
                             color: Colors.red[400]!,
-                            onTap: () => _showDeleteDialog(context, user),
+                            onTap: () =>
+                                _showDeleteDialog(context, user, isDark),
                           ),
                         ),
                       ],
@@ -803,12 +835,16 @@ class _AnimatedUserCardState extends State<_AnimatedUserCard>
     }
   }
 
-  void _showDeleteDialog(BuildContext context, UserModel user) {
+  void _showDeleteDialog(BuildContext context, UserModel user, bool isDark) {
+    final dialogBg = isDark ? const Color(0xFF1C2128) : Colors.white;
+    final dialogText = isDark ? Colors.white : Colors.black87;
+    final dialogSub = isDark ? Colors.white70 : Colors.grey[600]!;
+
     showDialog(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          backgroundColor: const Color(0xFF1C2128),
+          backgroundColor: dialogBg,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -816,17 +852,20 @@ class _AnimatedUserCardState extends State<_AnimatedUserCard>
             'Eliminar usuari?',
             style: GoogleFonts.outfit(
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: dialogText,
             ),
           ),
           content: RichText(
             text: TextSpan(
-              style: GoogleFonts.outfit(color: Colors.white70, fontSize: 14),
+              style: GoogleFonts.outfit(color: dialogSub, fontSize: 14),
               children: [
                 const TextSpan(text: 'Estàs segur que vols eliminar '),
                 TextSpan(
                   text: '"${user.nom}"',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: dialogText,
+                  ),
                 ),
                 const TextSpan(text: '? Aquesta acció no es pot desfer.'),
               ],
@@ -837,7 +876,9 @@ class _AnimatedUserCardState extends State<_AnimatedUserCard>
               onPressed: () => Navigator.pop(dialogContext),
               child: Text(
                 'Cancel·lar',
-                style: GoogleFonts.outfit(color: Colors.white38),
+                style: GoogleFonts.outfit(
+                  color: isDark ? Colors.white38 : Colors.grey,
+                ),
               ),
             ),
             ElevatedButton(
@@ -928,9 +969,7 @@ class _ActionButtonState extends State<_ActionButton> {
         duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: _isHovered
-              ? widget.color.withOpacity(0.1)
-              : Colors.transparent,
+          color: _isHovered ? widget.color.withAlpha(26) : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(

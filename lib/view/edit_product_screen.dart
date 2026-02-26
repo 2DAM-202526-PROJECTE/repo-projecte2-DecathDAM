@@ -76,9 +76,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
         await productsViewModel.updateProduct(widget.product.id, productData);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Producte actualitzat correctament'),
+            SnackBar(
+              content: const Text('Producte actualitzat correctament'),
               backgroundColor: Colors.green,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
           );
           Navigator.pop(context);
@@ -89,6 +93,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
             SnackBar(
               content: Text('Error en actualitzar: $e'),
               backgroundColor: Colors.red,
+              behavior: SnackBarBehavior.floating,
             ),
           );
         }
@@ -102,20 +107,26 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? const Color(0xFF0D1117) : const Color(0xFFF5F6FA);
+    final textPrimary = isDark ? Colors.white : const Color(0xFF1A1A1A);
+    final textSecondary = isDark ? Colors.white54 : Colors.grey[600]!;
+    final labelColor = isDark ? Colors.white70 : Colors.grey[800]!;
+
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: bgColor,
       appBar: AppBar(
         title: Text(
           'Editar Producte',
           style: GoogleFonts.outfit(
             fontWeight: FontWeight.w600,
-            color: Colors.black87,
+            color: textPrimary,
           ),
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: isDark ? const Color(0xFF161B22) : Colors.white,
         elevation: 0,
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black87),
+        iconTheme: IconThemeData(color: textPrimary),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
@@ -129,28 +140,26 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 style: GoogleFonts.outfit(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF1A1A1A),
+                  color: textPrimary,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Actualitza la informació del producte.',
-                style: GoogleFonts.outfit(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                ),
+                style: GoogleFonts.outfit(fontSize: 14, color: textSecondary),
               ),
               const SizedBox(height: 32),
 
-              _buildLabel('Nom del Producte'),
+              _buildLabel('Nom del Producte', labelColor),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _nameController,
                 decoration: _buildInputDecoration(
                   hint: 'Ex: Bambes de Running Kalenji',
                   icon: Icons.shopping_bag_outlined,
+                  isDark: isDark,
                 ),
-                style: GoogleFonts.outfit(),
+                style: GoogleFonts.outfit(color: textPrimary),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Si us plau, introdueix un nom';
@@ -160,7 +169,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               ),
               const SizedBox(height: 24),
 
-              _buildLabel('Descripció'),
+              _buildLabel('Descripció', labelColor),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _descController,
@@ -168,8 +177,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 decoration: _buildInputDecoration(
                   hint: 'Descriu les característiques tècniques...',
                   icon: Icons.description_outlined,
+                  isDark: isDark,
                 ).copyWith(alignLabelWithHint: true),
-                style: GoogleFonts.outfit(),
+                style: GoogleFonts.outfit(color: textPrimary),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Si us plau, introdueix una descripció';
@@ -185,7 +195,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildLabel('Preu (€)'),
+                        _buildLabel('Preu (€)', labelColor),
                         const SizedBox(height: 8),
                         TextFormField(
                           controller: _priceController,
@@ -195,8 +205,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           decoration: _buildInputDecoration(
                             hint: '0.00',
                             icon: Icons.euro,
+                            isDark: isDark,
                           ),
-                          style: GoogleFonts.outfit(),
+                          style: GoogleFonts.outfit(color: textPrimary),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Introdueix un preu';
@@ -215,16 +226,20 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildLabel('Categoria'),
+                        _buildLabel('Categoria', labelColor),
                         const SizedBox(height: 8),
                         DropdownButtonFormField<String>(
                           value: _selectedCategory,
+                          dropdownColor: isDark
+                              ? const Color(0xFF1C2128)
+                              : Colors.white,
+                          style: GoogleFonts.outfit(color: textPrimary),
                           items: _categories.map((String category) {
                             return DropdownMenuItem<String>(
                               value: category,
                               child: Text(
                                 category,
-                                style: GoogleFonts.outfit(),
+                                style: GoogleFonts.outfit(color: textPrimary),
                               ),
                             );
                           }).toList(),
@@ -236,6 +251,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           decoration: _buildInputDecoration(
                             hint: 'Tria una',
                             icon: Icons.category_outlined,
+                            isDark: isDark,
                           ),
                           validator: (value) =>
                               value == null ? 'Tria una categoria' : null,
@@ -247,15 +263,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
               ),
               const SizedBox(height: 24),
 
-              _buildLabel('URL de la Imatge'),
+              _buildLabel('URL de la Imatge', labelColor),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _urlController,
                 decoration: _buildInputDecoration(
                   hint: 'https://exemple.com/imatge.jpg',
                   icon: Icons.link,
+                  isDark: isDark,
                 ),
-                style: GoogleFonts.outfit(),
+                style: GoogleFonts.outfit(color: textPrimary),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Si us plau, introdueix una URL';
@@ -266,7 +283,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
               const SizedBox(height: 48),
 
-              // Action Button
               SizedBox(
                 height: 56,
                 child: ElevatedButton(
@@ -304,13 +320,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
     );
   }
 
-  Widget _buildLabel(String text) {
+  Widget _buildLabel(String text, Color color) {
     return Text(
       text,
       style: GoogleFonts.outfit(
         fontWeight: FontWeight.w600,
         fontSize: 14,
-        color: Colors.grey[800],
+        color: color,
       ),
     );
   }
@@ -318,19 +334,26 @@ class _EditProductScreenState extends State<EditProductScreen> {
   InputDecoration _buildInputDecoration({
     required String hint,
     required IconData icon,
+    required bool isDark,
   }) {
+    final fillColor = isDark ? const Color(0xFF161B22) : Colors.white;
+    final borderColor = isDark ? Colors.white.withAlpha(20) : Colors.grey[200]!;
+    final hintColor = isDark ? Colors.white30 : Colors.grey[400]!;
+    final iconColor = isDark ? Colors.white38 : Colors.grey[400]!;
+
     return InputDecoration(
       hintText: hint,
-      prefixIcon: Icon(icon, color: Colors.grey[400]),
+      hintStyle: GoogleFonts.outfit(color: hintColor),
+      prefixIcon: Icon(icon, color: iconColor),
       filled: true,
-      fillColor: Colors.white,
+      fillColor: fillColor,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide.none,
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: Colors.grey[200]!),
+        borderSide: BorderSide(color: borderColor),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),

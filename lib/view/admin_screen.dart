@@ -1,5 +1,3 @@
-import 'package:decathdam/models/product_model.dart';
-import 'package:decathdam/models/user_model.dart';
 import 'package:decathdam/view/creation_product_screen.dart';
 import 'package:decathdam/view/manage_products_screen.dart';
 import 'package:decathdam/view/manage_users_screen.dart';
@@ -253,10 +251,10 @@ class _AdminScreenState extends State<AdminScreen>
     return Row(
       children: [
         Expanded(
-          child: StreamBuilder<List<Product>>(
-            stream: productsVM.getProductsStream(),
+          child: FutureBuilder<int>(
+            future: productsVM.getProductsCount(),
             builder: (context, snapshot) {
-              final count = snapshot.data?.length ?? 0;
+              final count = snapshot.data ?? 0;
               return _DashboardCard(
                 icon: Icons.inventory_2_rounded,
                 label: 'Productes',
@@ -268,10 +266,10 @@ class _AdminScreenState extends State<AdminScreen>
         ),
         const SizedBox(width: 14),
         Expanded(
-          child: StreamBuilder<List<UserModel>>(
-            stream: usersVM.getUsersStream(),
+          child: FutureBuilder<int>(
+            future: usersVM.getUsersCount(),
             builder: (context, snapshot) {
-              final count = snapshot.data?.length ?? 0;
+              final count = snapshot.data ?? 0;
               return _DashboardCard(
                 icon: Icons.people_rounded,
                 label: 'Usuaris',

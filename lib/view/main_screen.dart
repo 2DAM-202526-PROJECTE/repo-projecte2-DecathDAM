@@ -31,14 +31,24 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DecathDAM'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(
+          'DecathDAM',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: isDark ? Colors.white : Colors.black87,
+          ),
+        ),
+        backgroundColor: isDark ? const Color(0xFF161B22) : Colors.white,
+        elevation: 0,
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
+        backgroundColor: isDark ? const Color(0xFF161B22) : Colors.white,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inici'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Explora'),
@@ -56,7 +66,8 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue[800],
+        selectedItemColor: isDark ? const Color(0xFF42A5F5) : Colors.blue[800],
+        unselectedItemColor: isDark ? Colors.white38 : Colors.grey[600],
         onTap: _onItemTapped,
       ),
     );
