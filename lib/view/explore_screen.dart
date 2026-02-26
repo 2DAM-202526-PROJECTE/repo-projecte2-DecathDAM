@@ -4,8 +4,32 @@ import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ExploreScreen extends StatelessWidget {
+class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
+
+  @override
+  State<ExploreScreen> createState() => _ExploreScreenState();
+}
+
+class _ExploreScreenState extends State<ExploreScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  List<Product> _filterProducts(List<Product> products) {
+    if (_searchQuery.isEmpty) return products;
+    final query = _searchQuery.toLowerCase();
+    return products.where((product) {
+      return product.nom.toLowerCase().contains(query) ||
+          product.descripcio.toLowerCase().contains(query) ||
+          product.categoria.toLowerCase().contains(query);
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +41,28 @@ class ExploreScreen extends StatelessWidget {
       child: Column(
         children: [
           TextField(
+            controller: _searchController,
             style: TextStyle(color: colors.textPrimary),
+            onChanged: (value) {
+              setState(() {
+                _searchQuery = value;
+              });
+            },
             decoration: InputDecoration(
               hintText: 'Cerca productes...',
               hintStyle: TextStyle(color: colors.textHint),
               prefixIcon: Icon(Icons.search, color: colors.iconSecondary),
+              suffixIcon: _searchQuery.isNotEmpty
+                  ? IconButton(
+                      icon: Icon(Icons.clear, color: colors.iconSecondary),
+                      onPressed: () {
+                        setState(() {
+                          _searchController.clear();
+                          _searchQuery = '';
+                        });
+                      },
+                    )
+                  : null,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(color: colors.inputBorder),
@@ -54,8 +95,10 @@ class ExploreScreen extends StatelessWidget {
                     ),
                   );
                 }
-                final products = snapshot.data ?? [];
-                if (products.isEmpty) {
+                final allProducts = snapshot.data ?? [];
+                final products = _filterProducts(allProducts);
+
+                if (allProducts.isEmpty) {
                   return Center(
                     child: Text(
                       'No hi ha productes',
@@ -63,6 +106,28 @@ class ExploreScreen extends StatelessWidget {
                     ),
                   );
                 }
+
+                if (products.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.search_off,
+                          size: 64,
+                          color: colors.textSecondary,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No s\'han trobat resultats per "$_searchQuery"',
+                          style: TextStyle(color: colors.textSecondary),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
                 return GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
