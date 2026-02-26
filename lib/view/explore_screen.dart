@@ -1,3 +1,4 @@
+import 'package:decathdam/config/app_theme.dart';
 import 'package:decathdam/models/product_model.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -9,44 +10,32 @@ class ExploreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productsViewModel = Provider.of<ProductsViewModel>(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textPrimary = isDark ? Colors.white : Colors.black87;
-    final textSecondary = isDark ? Colors.white54 : Colors.grey[600]!;
-    final searchBg = isDark ? const Color(0xFF161B22) : Colors.grey[100]!;
-    final searchBorder = isDark
-        ? Colors.white.withAlpha(15)
-        : Colors.grey[300]!;
-    final cardBg = isDark ? const Color(0xFF161B22) : Colors.white;
+    final colors = AppColors.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
         children: [
           TextField(
-            style: TextStyle(color: textPrimary),
+            style: TextStyle(color: colors.textPrimary),
             decoration: InputDecoration(
               hintText: 'Cerca productes...',
-              hintStyle: TextStyle(
-                color: isDark ? Colors.white38 : Colors.grey[500],
-              ),
-              prefixIcon: Icon(
-                Icons.search,
-                color: isDark ? Colors.white38 : Colors.grey[600],
-              ),
+              hintStyle: TextStyle(color: colors.textHint),
+              prefixIcon: Icon(Icons.search, color: colors.iconSecondary),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: searchBorder),
+                borderSide: BorderSide(color: colors.inputBorder),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: searchBorder),
+                borderSide: BorderSide(color: colors.inputBorder),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(color: Color(0xFF1E88E5)),
               ),
               filled: true,
-              fillColor: searchBg,
+              fillColor: colors.inputFill,
             ),
           ),
           const SizedBox(height: 10),
@@ -61,7 +50,7 @@ class ExploreScreen extends StatelessWidget {
                   return Center(
                     child: Text(
                       'Error: ${snapshot.error}',
-                      style: TextStyle(color: textPrimary),
+                      style: TextStyle(color: colors.textPrimary),
                     ),
                   );
                 }
@@ -70,7 +59,7 @@ class ExploreScreen extends StatelessWidget {
                   return Center(
                     child: Text(
                       'No hi ha productes',
-                      style: TextStyle(color: textSecondary),
+                      style: TextStyle(color: colors.textSecondary),
                     ),
                   );
                 }
@@ -85,8 +74,8 @@ class ExploreScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final product = products[index];
                     return Card(
-                      elevation: isDark ? 2 : 4,
-                      color: cardBg,
+                      elevation: colors.isDark ? 2 : 4,
+                      color: colors.card,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -107,17 +96,15 @@ class ExploreScreen extends StatelessWidget {
                                           (context, error, stackTrace) => Icon(
                                             Icons.broken_image,
                                             size: 50,
-                                            color: textSecondary,
+                                            color: colors.textSecondary,
                                           ),
                                     )
                                   : Container(
-                                      color: isDark
-                                          ? const Color(0xFF0D1117)
-                                          : Colors.grey[300],
+                                      color: colors.imagePlaceholder,
                                       child: Icon(
                                         Icons.image,
                                         size: 50,
-                                        color: textSecondary,
+                                        color: colors.textSecondary,
                                       ),
                                     ),
                             ),
@@ -132,7 +119,7 @@ class ExploreScreen extends StatelessWidget {
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
-                                    color: textPrimary,
+                                    color: colors.textPrimary,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -141,9 +128,7 @@ class ExploreScreen extends StatelessWidget {
                                 Text(
                                   '${product.preu.toStringAsFixed(2)} €',
                                   style: TextStyle(
-                                    color: isDark
-                                        ? const Color(0xFF42A5F5)
-                                        : Colors.blue[800],
+                                    color: colors.accentBlue,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

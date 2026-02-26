@@ -1,3 +1,4 @@
+import 'package:decathdam/config/app_theme.dart';
 import 'package:decathdam/view/creation_product_screen.dart';
 import 'package:decathdam/view/manage_products_screen.dart';
 import 'package:decathdam/view/manage_users_screen.dart';
@@ -45,22 +46,10 @@ class _AdminScreenState extends State<AdminScreen>
     final productsViewModel = Provider.of<ProductsViewModel>(context);
     final usersViewModel = Provider.of<UsersViewModel>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    // Theme-aware colors
-    final bgColor = isDark ? const Color(0xFF0D1117) : const Color(0xFFF5F6FA);
-    final cardBg = isDark ? const Color(0xFF161B22) : Colors.white;
-    final textPrimary = isDark ? Colors.white : const Color(0xFF1A1A2E);
-    final textSecondary = isDark ? Colors.white54 : Colors.grey[600]!;
-    final borderColor = isDark
-        ? Colors.white.withAlpha(15)
-        : Colors.black.withAlpha(13);
-    final cardShadow = isDark
-        ? Colors.black.withAlpha(51)
-        : Colors.black.withAlpha(18);
+    final colors = AppColors.of(context);
 
     return Scaffold(
-      backgroundColor: bgColor,
+      backgroundColor: colors.background,
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SingleChildScrollView(
@@ -74,13 +63,16 @@ class _AdminScreenState extends State<AdminScreen>
                 style: GoogleFonts.outfit(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: textPrimary,
+                  color: colors.textPrimary,
                 ),
               ),
               const SizedBox(height: 6),
               Text(
                 'Gestiona productes i usuaris',
-                style: GoogleFonts.outfit(fontSize: 14, color: textSecondary),
+                style: GoogleFonts.outfit(
+                  fontSize: 14,
+                  color: colors.textSecondary,
+                ),
               ),
               const SizedBox(height: 28),
 
@@ -90,7 +82,7 @@ class _AdminScreenState extends State<AdminScreen>
               const SizedBox(height: 32),
 
               // Section: Gestió ràpida
-              _buildSectionTitle('Gestió ràpida', textPrimary),
+              _buildSectionTitle('Gestió ràpida', colors),
               const SizedBox(height: 16),
 
               _AnimatedAdminOption(
@@ -99,11 +91,7 @@ class _AdminScreenState extends State<AdminScreen>
                 subtitle: 'Afegeix nous productes al catàleg',
                 gradientColors: const [Color(0xFF00C853), Color(0xFF00E676)],
                 delay: 0,
-                cardBg: cardBg,
-                borderColor: borderColor,
-                cardShadow: cardShadow,
-                textPrimary: textPrimary,
-                textSecondary: textSecondary,
+                colors: colors,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -119,11 +107,7 @@ class _AdminScreenState extends State<AdminScreen>
                 subtitle: 'Edita o elimina productes existents',
                 gradientColors: const [Color(0xFF2196F3), Color(0xFF42A5F5)],
                 delay: 100,
-                cardBg: cardBg,
-                borderColor: borderColor,
-                cardShadow: cardShadow,
-                textPrimary: textPrimary,
-                textSecondary: textSecondary,
+                colors: colors,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -139,11 +123,7 @@ class _AdminScreenState extends State<AdminScreen>
                 subtitle: 'Gestiona rols i permisos dels usuaris',
                 gradientColors: const [Color(0xFFFF6D00), Color(0xFFFF9100)],
                 delay: 200,
-                cardBg: cardBg,
-                borderColor: borderColor,
-                cardShadow: cardShadow,
-                textPrimary: textPrimary,
-                textSecondary: textSecondary,
+                colors: colors,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -155,19 +135,11 @@ class _AdminScreenState extends State<AdminScreen>
               const SizedBox(height: 36),
 
               // Section: Ajustes
-              _buildSectionTitle('Ajustes', textPrimary),
+              _buildSectionTitle('Ajustes', colors),
               const SizedBox(height: 16),
 
               // Theme toggle card
-              _SettingsThemeCard(
-                themeProvider: themeProvider,
-                isDark: isDark,
-                cardBg: cardBg,
-                borderColor: borderColor,
-                cardShadow: cardShadow,
-                textPrimary: textPrimary,
-                textSecondary: textSecondary,
-              ),
+              _SettingsThemeCard(themeProvider: themeProvider, colors: colors),
 
               const SizedBox(height: 12),
 
@@ -178,15 +150,11 @@ class _AdminScreenState extends State<AdminScreen>
                 subtitle: 'Català',
                 gradientColors: const [Color(0xFF7C4DFF), Color(0xFFB388FF)],
                 delay: 300,
-                cardBg: cardBg,
-                borderColor: borderColor,
-                cardShadow: cardShadow,
-                textPrimary: textPrimary,
-                textSecondary: textSecondary,
+                colors: colors,
                 onTap: () {
                   _showInfoSnackBar(
                     context,
-                    isDark,
+                    colors,
                     'Funció d\'idioma pròximament',
                   );
                 },
@@ -201,15 +169,11 @@ class _AdminScreenState extends State<AdminScreen>
                 subtitle: 'Gestiona les alertes de l\'app',
                 gradientColors: const [Color(0xFF00BCD4), Color(0xFF4DD0E1)],
                 delay: 400,
-                cardBg: cardBg,
-                borderColor: borderColor,
-                cardShadow: cardShadow,
-                textPrimary: textPrimary,
-                textSecondary: textSecondary,
+                colors: colors,
                 onTap: () {
                   _showInfoSnackBar(
                     context,
-                    isDark,
+                    colors,
                     'Notificacions pròximament',
                   );
                 },
@@ -219,9 +183,9 @@ class _AdminScreenState extends State<AdminScreen>
 
               // Logout button
               _LogoutButton(
-                isDark: isDark,
+                colors: colors,
                 onTap: () {
-                  _showLogoutDialog(context, isDark);
+                  _showLogoutDialog(context, colors);
                 },
               ),
 
@@ -233,13 +197,13 @@ class _AdminScreenState extends State<AdminScreen>
     );
   }
 
-  Widget _buildSectionTitle(String title, Color textColor) {
+  Widget _buildSectionTitle(String title, AppColors colors) {
     return Text(
       title,
       style: GoogleFonts.outfit(
         fontSize: 18,
         fontWeight: FontWeight.w600,
-        color: textColor,
+        color: colors.textPrimary,
       ),
     );
   }
@@ -300,29 +264,27 @@ class _AdminScreenState extends State<AdminScreen>
     );
   }
 
-  void _showInfoSnackBar(BuildContext context, bool isDark, String message) {
+  void _showInfoSnackBar(
+    BuildContext context,
+    AppColors colors,
+    String message,
+  ) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message, style: GoogleFonts.outfit(color: Colors.white)),
-        backgroundColor: isDark
-            ? const Color(0xFF1C2128)
-            : Colors.blueGrey[800],
+        backgroundColor: colors.dialog,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }
 
-  void _showLogoutDialog(BuildContext context, bool isDark) {
-    final dialogBg = isDark ? const Color(0xFF1C2128) : Colors.white;
-    final dialogText = isDark ? Colors.white : Colors.black87;
-    final dialogSub = isDark ? Colors.white70 : Colors.grey[600]!;
-
+  void _showLogoutDialog(BuildContext context, AppColors colors) {
     showDialog(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          backgroundColor: dialogBg,
+          backgroundColor: colors.dialog,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -345,23 +307,24 @@ class _AdminScreenState extends State<AdminScreen>
                 'Tancar sessió',
                 style: GoogleFonts.outfit(
                   fontWeight: FontWeight.bold,
-                  color: dialogText,
+                  color: colors.textPrimary,
                 ),
               ),
             ],
           ),
           content: Text(
             'Estàs segur que vols tancar la sessió? Hauràs d\'iniciar sessió de nou per accedir.',
-            style: GoogleFonts.outfit(color: dialogSub, fontSize: 14),
+            style: GoogleFonts.outfit(
+              color: colors.textSecondary,
+              fontSize: 14,
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
               child: Text(
                 'Cancel·lar',
-                style: GoogleFonts.outfit(
-                  color: isDark ? Colors.white38 : Colors.grey,
-                ),
+                style: GoogleFonts.outfit(color: colors.cancelButton),
               ),
             ),
             ElevatedButton(
@@ -369,7 +332,7 @@ class _AdminScreenState extends State<AdminScreen>
                 Navigator.pop(dialogContext);
                 _showInfoSnackBar(
                   context,
-                  isDark,
+                  colors,
                   'Funció de logout pròximament',
                 );
               },
@@ -466,22 +429,9 @@ class _DashboardCard extends StatelessWidget {
 
 class _SettingsThemeCard extends StatefulWidget {
   final ThemeProvider themeProvider;
-  final bool isDark;
-  final Color cardBg;
-  final Color borderColor;
-  final Color cardShadow;
-  final Color textPrimary;
-  final Color textSecondary;
+  final AppColors colors;
 
-  const _SettingsThemeCard({
-    required this.themeProvider,
-    required this.isDark,
-    required this.cardBg,
-    required this.borderColor,
-    required this.cardShadow,
-    required this.textPrimary,
-    required this.textSecondary,
-  });
+  const _SettingsThemeCard({required this.themeProvider, required this.colors});
 
   @override
   State<_SettingsThemeCard> createState() => _SettingsThemeCardState();
@@ -521,6 +471,7 @@ class _SettingsThemeCardState extends State<_SettingsThemeCard>
 
   @override
   Widget build(BuildContext context) {
+    final colors = widget.colors;
     final currentMode = widget.themeProvider.themeMode;
 
     return SlideTransition(
@@ -530,12 +481,12 @@ class _SettingsThemeCardState extends State<_SettingsThemeCard>
         child: Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            color: widget.cardBg,
+            color: colors.card,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: widget.borderColor, width: 1),
+            border: Border.all(color: colors.border, width: 1),
             boxShadow: [
               BoxShadow(
-                color: widget.cardShadow,
+                color: colors.cardShadow,
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -570,7 +521,7 @@ class _SettingsThemeCardState extends State<_SettingsThemeCard>
                           style: GoogleFonts.outfit(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: widget.textPrimary,
+                            color: colors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 3),
@@ -578,7 +529,7 @@ class _SettingsThemeCardState extends State<_SettingsThemeCard>
                           'Canvia entre mode clar, fosc o sistema',
                           style: GoogleFonts.outfit(
                             fontSize: 12,
-                            color: widget.textSecondary,
+                            color: colors.textSecondary,
                           ),
                         ),
                       ],
@@ -591,9 +542,7 @@ class _SettingsThemeCardState extends State<_SettingsThemeCard>
               Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: widget.isDark
-                      ? const Color(0xFF0D1117)
-                      : const Color(0xFFF0F0F5),
+                  color: colors.actionBar,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -602,7 +551,7 @@ class _SettingsThemeCardState extends State<_SettingsThemeCard>
                       icon: Icons.light_mode_rounded,
                       label: 'Clar',
                       isSelected: currentMode == ThemeMode.light,
-                      isDark: widget.isDark,
+                      colors: colors,
                       onTap: () =>
                           widget.themeProvider.setThemeMode(ThemeMode.light),
                     ),
@@ -611,7 +560,7 @@ class _SettingsThemeCardState extends State<_SettingsThemeCard>
                       icon: Icons.dark_mode_rounded,
                       label: 'Fosc',
                       isSelected: currentMode == ThemeMode.dark,
-                      isDark: widget.isDark,
+                      colors: colors,
                       onTap: () =>
                           widget.themeProvider.setThemeMode(ThemeMode.dark),
                     ),
@@ -620,7 +569,7 @@ class _SettingsThemeCardState extends State<_SettingsThemeCard>
                       icon: Icons.settings_suggest_rounded,
                       label: 'Sistema',
                       isSelected: currentMode == ThemeMode.system,
-                      isDark: widget.isDark,
+                      colors: colors,
                       onTap: () =>
                           widget.themeProvider.setThemeMode(ThemeMode.system),
                     ),
@@ -641,14 +590,14 @@ class _ThemeChip extends StatefulWidget {
   final IconData icon;
   final String label;
   final bool isSelected;
-  final bool isDark;
+  final AppColors colors;
   final VoidCallback onTap;
 
   const _ThemeChip({
     required this.icon,
     required this.label,
     required this.isSelected,
-    required this.isDark,
+    required this.colors,
     required this.onTap,
   });
 
@@ -661,12 +610,10 @@ class _ThemeChipState extends State<_ThemeChip> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedBg = widget.isDark
-        ? const Color(0xFF1E88E5)
-        : const Color(0xFF1565C0);
-    final unselectedBg = Colors.transparent;
-    final selectedText = Colors.white;
-    final unselectedText = widget.isDark ? Colors.white54 : Colors.grey[600]!;
+    final selectedBg = widget.colors.navSelected;
+    const unselectedBg = Colors.transparent;
+    const selectedText = Colors.white;
+    final unselectedText = widget.colors.textSecondary;
 
     return Expanded(
       child: GestureDetector(
@@ -727,10 +674,10 @@ class _ThemeChipState extends State<_ThemeChip> {
 // ─── Logout Button ───────────────────────────────────────────────────────────
 
 class _LogoutButton extends StatefulWidget {
-  final bool isDark;
+  final AppColors colors;
   final VoidCallback onTap;
 
-  const _LogoutButton({required this.isDark, required this.onTap});
+  const _LogoutButton({required this.colors, required this.onTap});
 
   @override
   State<_LogoutButton> createState() => _LogoutButtonState();
@@ -766,10 +713,10 @@ class _LogoutButtonState extends State<_LogoutButton>
 
   @override
   Widget build(BuildContext context) {
-    final borderCol = widget.isDark
+    final borderCol = widget.colors.isDark
         ? Colors.red.withAlpha(64)
         : Colors.red.withAlpha(51);
-    final bgCol = widget.isDark
+    final bgCol = widget.colors.isDark
         ? Colors.red.withAlpha(13)
         : Colors.red.withAlpha(10);
 
@@ -824,11 +771,7 @@ class _AnimatedAdminOption extends StatefulWidget {
   final List<Color> gradientColors;
   final int delay;
   final VoidCallback onTap;
-  final Color cardBg;
-  final Color borderColor;
-  final Color cardShadow;
-  final Color textPrimary;
-  final Color textSecondary;
+  final AppColors colors;
 
   const _AnimatedAdminOption({
     required this.icon,
@@ -837,11 +780,7 @@ class _AnimatedAdminOption extends StatefulWidget {
     required this.gradientColors,
     required this.delay,
     required this.onTap,
-    required this.cardBg,
-    required this.borderColor,
-    required this.cardShadow,
-    required this.textPrimary,
-    required this.textSecondary,
+    required this.colors,
   });
 
   @override
@@ -884,6 +823,8 @@ class _AnimatedAdminOptionState extends State<_AnimatedAdminOption>
 
   @override
   Widget build(BuildContext context) {
+    final colors = widget.colors;
+
     return SlideTransition(
       position: _slideAnimation,
       child: FadeTransition(
@@ -902,12 +843,12 @@ class _AnimatedAdminOptionState extends State<_AnimatedAdminOption>
             child: Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: widget.cardBg,
+                color: colors.card,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: widget.borderColor, width: 1),
+                border: Border.all(color: colors.border, width: 1),
                 boxShadow: [
                   BoxShadow(
-                    color: widget.cardShadow,
+                    color: colors.cardShadow,
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -933,7 +874,7 @@ class _AnimatedAdminOptionState extends State<_AnimatedAdminOption>
                           style: GoogleFonts.outfit(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: widget.textPrimary,
+                            color: colors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 3),
@@ -941,7 +882,7 @@ class _AnimatedAdminOptionState extends State<_AnimatedAdminOption>
                           widget.subtitle,
                           style: GoogleFonts.outfit(
                             fontSize: 12,
-                            color: widget.textSecondary,
+                            color: colors.textSecondary,
                           ),
                         ),
                       ],
@@ -950,7 +891,7 @@ class _AnimatedAdminOptionState extends State<_AnimatedAdminOption>
                   Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 16,
-                    color: widget.textSecondary,
+                    color: colors.textSecondary,
                   ),
                 ],
               ),

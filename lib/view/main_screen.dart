@@ -1,3 +1,4 @@
+import 'package:decathdam/config/app_theme.dart';
 import 'package:decathdam/view/admin_screen.dart';
 import 'package:decathdam/view/cart_screen.dart';
 import 'package:decathdam/view/explore_screen.dart';
@@ -31,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colors = AppColors.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -39,16 +40,16 @@ class _MainScreenState extends State<MainScreen> {
           'DecathDAM',
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white : Colors.black87,
+            color: colors.textPrimary,
           ),
         ),
-        backgroundColor: isDark ? const Color(0xFF161B22) : Colors.white,
+        backgroundColor: colors.surface,
         elevation: 0,
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: isDark ? const Color(0xFF161B22) : Colors.white,
+        backgroundColor: colors.surface,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inici'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Explora'),
@@ -66,8 +67,8 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: isDark ? const Color(0xFF42A5F5) : Colors.blue[800],
-        unselectedItemColor: isDark ? Colors.white38 : Colors.grey[600],
+        selectedItemColor: colors.navSelected,
+        unselectedItemColor: colors.navUnselected,
         onTap: _onItemTapped,
       ),
     );

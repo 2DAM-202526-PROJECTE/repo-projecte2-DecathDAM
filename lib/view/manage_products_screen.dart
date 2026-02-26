@@ -1,3 +1,4 @@
+import 'package:decathdam/config/app_theme.dart';
 import 'package:decathdam/models/product_model.dart';
 import 'package:decathdam/view/edit_product_screen.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
@@ -11,25 +12,22 @@ class ManageProductsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productsViewModel = Provider.of<ProductsViewModel>(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = isDark ? const Color(0xFF0D1117) : const Color(0xFFF5F6FA);
-    final textPrimary = isDark ? Colors.white : Colors.black87;
-    final textSecondary = isDark ? Colors.white54 : Colors.grey[600]!;
+    final colors = AppColors.of(context);
 
     return Scaffold(
-      backgroundColor: bgColor,
+      backgroundColor: colors.background,
       appBar: AppBar(
         title: Text(
           'Administrar Productes',
           style: GoogleFonts.outfit(
             fontWeight: FontWeight.w600,
-            color: textPrimary,
+            color: colors.textPrimary,
           ),
         ),
-        backgroundColor: isDark ? const Color(0xFF161B22) : Colors.white,
+        backgroundColor: colors.surface,
         elevation: 0,
         centerTitle: true,
-        iconTheme: IconThemeData(color: textPrimary),
+        iconTheme: IconThemeData(color: colors.textPrimary),
       ),
       body: StreamBuilder<List<Product>>(
         stream: productsViewModel.getProductsStream(),
@@ -57,14 +55,14 @@ class ManageProductsScreen extends StatelessWidget {
                   Icon(
                     Icons.inventory_2_outlined,
                     size: 64,
-                    color: textSecondary,
+                    color: colors.textSecondary,
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'No hi ha productes',
                     style: GoogleFonts.outfit(
                       fontSize: 18,
-                      color: textSecondary,
+                      color: colors.textSecondary,
                     ),
                   ),
                 ],
@@ -81,7 +79,7 @@ class ManageProductsScreen extends StatelessWidget {
                 context,
                 product,
                 productsViewModel,
-                isDark,
+                colors,
               );
             },
           );
@@ -94,17 +92,12 @@ class ManageProductsScreen extends StatelessWidget {
     BuildContext context,
     Product product,
     ProductsViewModel viewModel,
-    bool isDark,
+    AppColors colors,
   ) {
-    final cardBg = isDark ? const Color(0xFF161B22) : Colors.white;
-    final textPrimary = isDark ? Colors.white : Colors.black87;
-    final textSecondary = isDark ? Colors.white54 : Colors.grey[600]!;
-    final imageBg = isDark ? const Color(0xFF0D1117) : Colors.grey[200]!;
-
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      elevation: isDark ? 2 : 2,
-      color: cardBg,
+      elevation: 2,
+      color: colors.card,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -115,7 +108,7 @@ class ManageProductsScreen extends StatelessWidget {
               child: Container(
                 width: 70,
                 height: 70,
-                color: imageBg,
+                color: colors.imagePlaceholder,
                 child: product.url.isNotEmpty
                     ? Image.network(
                         product.url,
@@ -123,11 +116,11 @@ class ManageProductsScreen extends StatelessWidget {
                         errorBuilder: (context, error, stackTrace) {
                           return Icon(
                             Icons.image_not_supported,
-                            color: textSecondary,
+                            color: colors.textSecondary,
                           );
                         },
                       )
-                    : Icon(Icons.image, color: textSecondary),
+                    : Icon(Icons.image, color: colors.textSecondary),
               ),
             ),
             const SizedBox(width: 16),
@@ -140,7 +133,7 @@ class ManageProductsScreen extends StatelessWidget {
                     style: GoogleFonts.outfit(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
-                      color: textPrimary,
+                      color: colors.textPrimary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -149,7 +142,7 @@ class ManageProductsScreen extends StatelessWidget {
                   Text(
                     product.categoria,
                     style: GoogleFonts.outfit(
-                      color: textSecondary,
+                      color: colors.textSecondary,
                       fontSize: 13,
                     ),
                   ),
@@ -157,9 +150,7 @@ class ManageProductsScreen extends StatelessWidget {
                   Text(
                     '${product.preu.toStringAsFixed(2)} €',
                     style: GoogleFonts.outfit(
-                      color: isDark
-                          ? const Color(0xFF42A5F5)
-                          : const Color(0xFF0077C8),
+                      color: colors.accentBlue,
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
                     ),
@@ -180,7 +171,7 @@ class ManageProductsScreen extends StatelessWidget {
                     );
                   },
                   icon: const Icon(Icons.edit_outlined),
-                  color: isDark ? const Color(0xFF42A5F5) : Colors.blue[700],
+                  color: colors.accentBlue,
                   tooltip: 'Editar',
                 ),
                 IconButton(
@@ -188,7 +179,7 @@ class ManageProductsScreen extends StatelessWidget {
                     context,
                     product,
                     viewModel,
-                    isDark,
+                    colors,
                   ),
                   icon: const Icon(Icons.delete_outline),
                   color: Colors.red[400],
@@ -206,17 +197,13 @@ class ManageProductsScreen extends StatelessWidget {
     BuildContext context,
     Product product,
     ProductsViewModel viewModel,
-    bool isDark,
+    AppColors colors,
   ) {
-    final dialogBg = isDark ? const Color(0xFF1C2128) : Colors.white;
-    final dialogText = isDark ? Colors.white : Colors.black87;
-    final dialogSub = isDark ? Colors.white70 : Colors.grey[600]!;
-
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          backgroundColor: dialogBg,
+          backgroundColor: colors.dialog,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -224,21 +211,19 @@ class ManageProductsScreen extends StatelessWidget {
             'Eliminar producte?',
             style: GoogleFonts.outfit(
               fontWeight: FontWeight.bold,
-              color: dialogText,
+              color: colors.textPrimary,
             ),
           ),
           content: Text(
             'Estàs segur que vols eliminar "${product.nom}"? Aquesta acció no es pot desfer.',
-            style: GoogleFonts.outfit(color: dialogSub),
+            style: GoogleFonts.outfit(color: colors.textSecondary),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
               child: Text(
                 'Cancel·lar',
-                style: GoogleFonts.outfit(
-                  color: isDark ? Colors.white38 : Colors.grey[600],
-                ),
+                style: GoogleFonts.outfit(color: colors.cancelButton),
               ),
             ),
             ElevatedButton(

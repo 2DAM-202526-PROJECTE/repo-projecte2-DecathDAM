@@ -1,3 +1,4 @@
+import 'package:decathdam/config/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:decathdam/models/imatges_model.dart';
@@ -27,11 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textPrimary = isDark ? Colors.white : Colors.black87;
-    final textSecondary = isDark ? Colors.white54 : Colors.grey[600]!;
-    final cardBg = isDark ? const Color(0xFF161B22) : Colors.white;
-    final errorBg = isDark ? const Color(0xFF1C2128) : Colors.grey[200]!;
+    final colors = AppColors.of(context);
 
     return FutureBuilder<List<Imatges>>(
       future: _imagesFuture,
@@ -42,14 +39,14 @@ class _HomeScreenState extends State<HomeScreen> {
           return Center(
             child: Text(
               'Error: ${snapshot.error}',
-              style: TextStyle(color: textPrimary),
+              style: TextStyle(color: colors.textPrimary),
             ),
           );
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return Center(
             child: Text(
               'No images found.',
-              style: TextStyle(color: textPrimary),
+              style: TextStyle(color: colors.textPrimary),
             ),
           );
         }
@@ -69,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: textPrimary,
+                    color: colors.textPrimary,
                   ),
                 ),
               ),
@@ -78,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
                   'Nuestro proposito es que cumplas tus objetivos',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, color: textSecondary),
+                  style: TextStyle(fontSize: 16, color: colors.textSecondary),
                 ),
               ),
 
@@ -90,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: textPrimary,
+                    color: colors.textPrimary,
                   ),
                 ),
               ),
@@ -110,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Center(
                         child: Text(
                           'Error: ${productSnapshot.error}',
-                          style: TextStyle(color: textPrimary),
+                          style: TextStyle(color: colors.textPrimary),
                         ),
                       ),
                     );
@@ -121,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Center(
                         child: Text(
                           'No hi ha productes disponibles.',
-                          style: TextStyle(color: textSecondary),
+                          style: TextStyle(color: colors.textSecondary),
                         ),
                       ),
                     );
@@ -137,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Center(
                         child: Text(
                           'No hi ha imatges de productes.',
-                          style: TextStyle(color: textSecondary),
+                          style: TextStyle(color: colors.textSecondary),
                         ),
                       ),
                     );
@@ -162,13 +159,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(14),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: cardBg,
+                              color: colors.card,
                               borderRadius: BorderRadius.circular(14),
                               boxShadow: [
                                 BoxShadow(
-                                  color: isDark
-                                      ? Colors.black.withAlpha(51)
-                                      : Colors.black.withAlpha(20),
+                                  color: colors.cardShadow,
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
@@ -181,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Container(
-                                    color: errorBg,
+                                    color: colors.errorPlaceholder,
                                     child: const Center(
                                       child: Icon(
                                         Icons.broken_image,
@@ -236,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
-                            color: errorBg,
+                            color: colors.errorPlaceholder,
                             child: const Center(
                               child: Icon(
                                 Icons.broken_image,
@@ -310,7 +305,7 @@ class _AutoSlideCarouselState extends State<AutoSlideCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colors = AppColors.of(context);
 
     return Column(
       children: [
@@ -337,9 +332,7 @@ class _AutoSlideCarouselState extends State<AutoSlideCarousel> {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
-                            color: isDark
-                                ? const Color(0xFF1C2128)
-                                : Colors.grey[300],
+                            color: colors.errorPlaceholder,
                             child: const Center(
                               child: Icon(
                                 Icons.broken_image,
