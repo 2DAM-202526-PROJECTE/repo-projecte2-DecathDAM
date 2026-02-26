@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 /// Classe centralitzada amb tots els colors de l'app adaptats al tema.
-/// Ús: `final colors = AppColors.of(context);`
 class AppColors {
   final bool isDark;
 
