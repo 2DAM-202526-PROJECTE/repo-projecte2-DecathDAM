@@ -4,6 +4,7 @@ import 'package:decathdam/viewmodels/favorites_viewmodel.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/view/product_details_screen.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -153,92 +154,111 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   itemCount: products.length,
                   itemBuilder: (context, index) {
                     final product = products[index];
-                    return Card(
-                      elevation: colors.isDark ? 2 : 4,
-                      color: colors.card,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Stack(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(15),
-                                  ),
-                                  child: product.url.isNotEmpty
-                                      ? Image.network(
-                                          product.url,
-                                          fit: BoxFit.cover,
-                                          width: double.infinity,
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  Icon(
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ProductDetailsScreen(product: product),
+                          ),
+                        );
+                      },
+                      child: Card(
+                        elevation: colors.isDark ? 2 : 4,
+                        color: colors.card,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Stack(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(15),
+                                    ),
+                                    child: Hero(
+                                      tag: 'product_image_${product.id}',
+                                      child: product.url.isNotEmpty
+                                          ? Image.network(
+                                              product.url,
+                                              fit: BoxFit.cover,
+                                              width: double.infinity,
+                                              errorBuilder:
+                                                  (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                  ) => Icon(
                                                     Icons.broken_image,
                                                     size: 50,
                                                     color: colors.textSecondary,
                                                   ),
-                                        )
-                                      : Container(
-                                          color: colors.imagePlaceholder,
-                                          child: Icon(
-                                            Icons.image,
-                                            size: 50,
-                                            color: colors.textSecondary,
-                                          ),
+                                            )
+                                          : Container(
+                                              color: colors.imagePlaceholder,
+                                              child: Icon(
+                                                Icons.image,
+                                                size: 50,
+                                                color: colors.textSecondary,
+                                              ),
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        product.nom,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: colors.textPrimary,
                                         ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      product.nom,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: colors.textPrimary,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      '${product.preu.toStringAsFixed(2)} €',
-                                      style: TextStyle(
-                                        color: colors.accentBlue,
-                                        fontWeight: FontWeight.bold,
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        '${product.preu.toStringAsFixed(2)} €',
+                                        style: TextStyle(
+                                          color: colors.accentBlue,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Positioned(
-                            bottom: 8,
-                            right: 8,
-                            child: GestureDetector(
-                              onTap: () {
-                                favoritesViewModel.toggleFavorite(product.id);
-                              },
-                              child: Icon(
-                                favoritesViewModel.isFavorite(product.id)
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: favoritesViewModel.isFavorite(product.id)
-                                    ? Colors.red
-                                    : colors.textSecondary,
-                                size: 24,
+                              ],
+                            ),
+                            Positioned(
+                              bottom: 8,
+                              right: 8,
+                              child: GestureDetector(
+                                onTap: () {
+                                  favoritesViewModel.toggleFavorite(product.id);
+                                },
+                                child: Icon(
+                                  favoritesViewModel.isFavorite(product.id)
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color:
+                                      favoritesViewModel.isFavorite(product.id)
+                                      ? Colors.red
+                                      : colors.textSecondary,
+                                  size: 24,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },

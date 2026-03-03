@@ -205,7 +205,7 @@ class _CreationProductScreenState extends State<CreationProductScreen> {
                         _buildLabel('Categoria', colors),
                         const SizedBox(height: 8),
                         DropdownButtonFormField<String>(
-                          value: _selectedCategory,
+                          initialValue: _selectedCategory,
                           dropdownColor: colors.dialog,
                           style: GoogleFonts.outfit(color: colors.textPrimary),
                           items: _categories.map((String category) {
