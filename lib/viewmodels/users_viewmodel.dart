@@ -8,8 +8,10 @@ class UsersViewModel extends ChangeNotifier {
 
   List<UserModel> get users => _users;
 
+  Stream<List<UserModel>>? _usersStream;
   Stream<List<UserModel>> getUsersStream() {
-    return _repository.getUsersStream();
+    _usersStream ??= _repository.getUsersStream();
+    return _usersStream!;
   }
 
   Future<int> getUsersCount() async {

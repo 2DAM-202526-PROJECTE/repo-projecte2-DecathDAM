@@ -1,6 +1,8 @@
 import 'package:decathdam/config/app_theme.dart';
 import 'package:decathdam/models/product_model.dart';
+import 'package:decathdam/viewmodels/cart_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
   final Product product;
@@ -129,7 +131,7 @@ class ProductDetailsScreen extends StatelessWidget {
           color: colors.surface,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               offset: const Offset(0, -2),
               blurRadius: 10,
             ),
@@ -145,7 +147,7 @@ class ProductDetailsScreen extends StatelessWidget {
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.2),
+                    color: Colors.grey.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(Icons.arrow_back, color: colors.textPrimary),
@@ -156,10 +158,19 @@ class ProductDetailsScreen extends StatelessWidget {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
+                    context.read<CartViewModel>().addToCart(product);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('${product.nom} afegit a la cistella'),
                         duration: const Duration(seconds: 2),
+                        action: SnackBarAction(
+                          label: 'DESFER',
+                          onPressed: () {
+                            context.read<CartViewModel>().removeFromCart(
+                              product.id,
+                            );
+                          },
+                        ),
                       ),
                     );
                   },

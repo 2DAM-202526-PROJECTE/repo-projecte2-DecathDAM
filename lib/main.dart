@@ -1,4 +1,5 @@
 import 'package:decathdam/view/main_screen.dart';
+import 'package:decathdam/viewmodels/cart_viewmodel.dart';
 import 'package:decathdam/viewmodels/favorites_viewmodel.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:decathdam/viewmodels/theme_provider.dart';
@@ -22,6 +23,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UsersViewModel()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => FavoritesViewModel()),
+        ChangeNotifierProvider(create: (_) => CartViewModel()),
       ],
       child: const MyApp(),
     ),

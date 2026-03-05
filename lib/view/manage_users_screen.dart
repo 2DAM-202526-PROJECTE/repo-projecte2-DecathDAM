@@ -17,6 +17,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
     with SingleTickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  late Stream<List<UserModel>> _usersStream;
   late AnimationController _listAnimController;
 
   @override
@@ -30,6 +31,12 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
     _searchController.addListener(() {
       setState(() => _searchQuery = _searchController.text.toLowerCase());
     });
+
+    // Inicialitzem l'stream aquí per evitar recrear-lo a cada build
+    _usersStream = Provider.of<UsersViewModel>(
+      context,
+      listen: false,
+    ).getUsersStream();
   }
 
   @override
@@ -121,7 +128,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
           // Users list
           Expanded(
             child: StreamBuilder<List<UserModel>>(
-              stream: usersViewModel.getUsersStream(),
+              stream: _usersStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(

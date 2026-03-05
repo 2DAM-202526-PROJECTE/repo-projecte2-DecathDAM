@@ -6,8 +6,24 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class ManageProductsScreen extends StatelessWidget {
+class ManageProductsScreen extends StatefulWidget {
   const ManageProductsScreen({super.key});
+
+  @override
+  State<ManageProductsScreen> createState() => _ManageProductsScreenState();
+}
+
+class _ManageProductsScreenState extends State<ManageProductsScreen> {
+  late Stream<List<Product>> _productsStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _productsStream = Provider.of<ProductsViewModel>(
+      context,
+      listen: false,
+    ).getProductsStream();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +46,7 @@ class ManageProductsScreen extends StatelessWidget {
         iconTheme: IconThemeData(color: colors.textPrimary),
       ),
       body: StreamBuilder<List<Product>>(
-        stream: productsViewModel.getProductsStream(),
+        stream: _productsStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

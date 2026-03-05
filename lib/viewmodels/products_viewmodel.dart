@@ -8,8 +8,10 @@ class ProductsViewModel extends ChangeNotifier {
 
   List<Product> get products => _products;
 
+  Stream<List<Product>>? _productsStream;
   Stream<List<Product>> getProductsStream() {
-    return _repository.getProductsStream();
+    _productsStream ??= _repository.getProductsStream();
+    return _productsStream!;
   }
 
   Future<int> getProductsCount() async {

@@ -43,3 +43,12 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Documentacio Tecnica Firebase
+/docs/documentacio_tecnica_firebase.md
+/docs/documentacio_tecnica_firebase.pdf
+
+# Imatges de la documentacio
+/docs/assets
+/extracted_images
+
