@@ -2,6 +2,7 @@ import 'package:decathdam/config/app_theme.dart';
 import 'package:decathdam/view/widgets/animated_admin_option.dart';
 import 'package:decathdam/view/widgets/logout_button.dart';
 import 'package:decathdam/view/widgets/settings_theme_card.dart';
+import 'package:decathdam/viewmodels/auth_viewmodel.dart';
 import 'package:decathdam/viewmodels/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -157,13 +158,17 @@ class SettingsScreen extends StatelessWidget {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
-                Navigator.pop(dialogContext);
-                _showInfoSnackBar(
-                  context,
-                  colors,
-                  'Funció de logout pròximament',
-                );
+              onPressed: () async {
+                final authVM = Provider.of<AuthViewModel>(context, listen: false);
+                Navigator.pop(dialogContext); // Tanca el diàleg
+                
+                // Tanca la sessió (l'AuthWrapper detectarà el canvi i ens portarà al login)
+                await authVM.logout();
+                
+                // Opcionalment tanquem també la pantalla d'ajustos per si el rebuild triga
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,

@@ -43,6 +43,7 @@ dependencies:
   flutter_stripe: ^12.1.0
   http: ^1.2.1
   flutter_launcher_icons: ^0.14.4
+  google_sign_in: ^6.2.2
 
 dev_dependencies:
   flutter_test:
