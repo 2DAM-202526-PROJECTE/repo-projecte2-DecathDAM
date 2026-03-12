@@ -1,3 +1,4 @@
+import 'package:decathdam/services/payment_service.dart';
 import 'package:decathdam/view/main_screen.dart';
 import 'package:decathdam/viewmodels/cart_viewmodel.dart';
 import 'package:decathdam/viewmodels/favorites_viewmodel.dart';
@@ -12,6 +13,11 @@ import 'package:provider/provider.dart';
 void main() async {
   // Imprescindible: assegura que Flutter estigui llest abans d'iniciar Firebase
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicialització de Stripe
+  await PaymentService.init();
+
+  // Connecta l'app amb Firebase usant la configuració del teu fitxer
 
   // Connecta l'app amb Firebase usant la configuració del teu fitxer
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

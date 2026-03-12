@@ -1,4 +1,5 @@
 import 'package:decathdam/config/app_theme.dart';
+import 'package:decathdam/services/payment_service.dart';
 import 'package:decathdam/viewmodels/cart_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -307,14 +308,59 @@ class CartScreen extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          // Acció final per implementar
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Finalitzant compra...'),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
+                        onPressed: () async {
+                          try {
+                            // Mostrem un diàleg de càrrega
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (context) => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+
+                            // El total en cèntims per a Stripe (p. ex. 10.50€ -> 1050)
+                            final amountInCents = (cart.totalPrice * 100)
+                                .toInt();
+
+                            await PaymentService.makePayment(
+                              amountInCents,
+                              'eur',
+                            );
+
+                            // Tanquem el diàleg de càrrega
+                            if (context.mounted) Navigator.pop(context);
+
+                            // Si tot va bé, buidem la cistella i mostrem èxit
+                            cart.clearCart();
+
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Pagament realitzat amb èxit! Gràcies per la teva compra.',
+                                  ),
+                                  backgroundColor: Colors.green,
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            // Tanquem el diàleg de càrrega si encara està obert
+                            if (context.mounted) Navigator.pop(context);
+
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Error en el pagament o cancel·lat',
+                                  ),
+                                  backgroundColor: Colors.red,
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                            }
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: colors.accentBlue,

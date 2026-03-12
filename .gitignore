@@ -52,3 +52,6 @@ app.*.map.json
 /docs/assets
 /extracted_images
 
+
+# Secrets
+lib/services/secrets.dart
