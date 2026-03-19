@@ -1,5 +1,6 @@
 import 'package:decathdam/config/app_theme.dart';
 import 'package:decathdam/view/creation_product_screen.dart';
+import 'package:decathdam/view/creation_user_screen.dart';
 import 'package:decathdam/view/manage_products_screen.dart';
 import 'package:decathdam/view/manage_users_screen.dart';
 import 'package:decathdam/view/settings_screen.dart';
@@ -161,6 +162,22 @@ class _AdminScreenState extends State<AdminScreen>
                   Navigator.push(
                     context,
                     _createRoute(const ManageProductsScreen()),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+
+              AnimatedAdminOption(
+                icon: Icons.person_add_alt_1_rounded,
+                title: 'Crear Usuari',
+                subtitle: 'Afegeix un nou usuari amb dades completes',
+                gradientColors: const [Color(0xFFFB8C00), Color(0xFFFFA726)],
+                delay: 150,
+                colors: colors,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    _createRoute(const CreationUserScreen()),
                   );
                 },
               ),

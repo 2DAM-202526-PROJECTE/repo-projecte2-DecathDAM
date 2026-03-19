@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 /// Servei d'autenticació que encapsula Firebase Auth i Google Sign-In.
@@ -110,11 +111,19 @@ class AuthService {
       'email': email,
       'rol': 'client',
       'actiu': true,
+      'adreca': '',
+      'telefon': '',
+      'dni': '',
+      'dataNaixement': '',
+      'genere': '',
+      'codiPostal': '',
+      'ciutat': '',
     });
   }
 
   /// Tradueix els codis d'error de Firebase a missatges amigables.
   static String getErrorMessage(String code) {
+    debugPrint("FirebaseAuthException code: \$code");
     switch (code) {
       case 'user-not-found':
         return 'No existeix cap compte amb aquest email.';
@@ -133,7 +142,8 @@ class AuthService {
       case 'network-request-failed':
         return 'Error de connexió. Comprova la teva connexió a Internet.';
       default:
-        return 'S\'ha produït un error ($code). Torna-ho a provar.';
+        return 'S\'ha produït un error (\$code). Torna-ho a provar.';
     }
   }
 }
+

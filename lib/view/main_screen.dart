@@ -1,10 +1,13 @@
 import 'package:decathdam/config/app_theme.dart';
 import 'package:decathdam/view/admin_screen.dart';
 import 'package:decathdam/view/cart_screen.dart';
+import 'package:decathdam/view/client_profile_screen.dart';
 import 'package:decathdam/view/explore_screen.dart';
 import 'package:decathdam/view/favorites_screen.dart';
 import 'package:decathdam/view/home_screen.dart';
+import 'package:decathdam/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -23,15 +26,17 @@ class _MainScreenState extends State<MainScreen> {
   final GlobalKey<FavoritesScreenState> _favoritesKey =
       GlobalKey<FavoritesScreenState>();
 
-  late final List<Widget> _widgetOptions;
-
+  // Eliminem _widgetOptions de initState perquè ara dependrà de AuthViewModel
   @override
   void initState() {
     super.initState();
-    _widgetOptions = <Widget>[
+  }
+
+  List<Widget> _buildWidgetOptions(bool isAdmin) {
+    return <Widget>[
       const HomeScreen(),
       const ExploreScreen(),
-      const AdminScreen(),
+      isAdmin ? const AdminScreen() : const ClientProfileScreen(),
       FavoritesScreen(key: _favoritesKey),
       const CartScreen(),
     ];
@@ -50,6 +55,9 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
+    final authViewModel = Provider.of<AuthViewModel>(context);
+    final isAdmin = authViewModel.currentUserModel?.rol == 'admin';
+    final widgetOptions = _buildWidgetOptions(isAdmin);
 
     return Scaffold(
       appBar: AppBar(
@@ -63,22 +71,27 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColor: colors.surface,
         elevation: 0,
       ),
-      body: _widgetOptions.elementAt(_selectedIndex),
+      body: widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: colors.surface,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inici'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Explora'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.admin_panel_settings),
-            label: 'Admin',
-          ),
-          BottomNavigationBarItem(
+        items: <BottomNavigationBarItem>[
+          const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inici'),
+          const BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Explora'),
+          isAdmin
+              ? const BottomNavigationBarItem(
+                  icon: Icon(Icons.admin_panel_settings),
+                  label: 'Admin',
+                )
+              : const BottomNavigationBarItem(
+                  icon: Icon(Icons.person),
+                  label: 'Perfil',
+                ),
+          const BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: 'Favorits',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
             label: 'Cistella',
           ),
