@@ -25,7 +25,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
       context,
       listen: false,
     );
-    for (final id in _pendingRemovals) {
+    for (final id in Set<String>.from(_pendingRemovals)) {
       favoritesViewModel.toggleFavorite(id);
     }
     _pendingRemovals.clear();
