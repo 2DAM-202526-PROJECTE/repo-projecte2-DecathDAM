@@ -59,4 +59,33 @@ class UserModel {
       'ciutat': ciutat,
     };
   }
+
+  UserModel copyWith({
+    String? nom,
+    String? email,
+    String? rol,
+    bool? actiu,
+    String? adreca,
+    String? telefon,
+    String? dni,
+    String? dataNaixement,
+    String? genere,
+    String? codiPostal,
+    String? ciutat,
+  }) {
+    return UserModel(
+      id: id,
+      nom: nom ?? this.nom,
+      email: email ?? this.email,
+      rol: rol ?? this.rol,
+      actiu: actiu ?? this.actiu,
+      adreca: adreca ?? this.adreca,
+      telefon: telefon ?? this.telefon,
+      dni: dni ?? this.dni,
+      dataNaixement: dataNaixement ?? this.dataNaixement,
+      genere: genere ?? this.genere,
+      codiPostal: codiPostal ?? this.codiPostal,
+      ciutat: ciutat ?? this.ciutat,
+    );
+  }
 }

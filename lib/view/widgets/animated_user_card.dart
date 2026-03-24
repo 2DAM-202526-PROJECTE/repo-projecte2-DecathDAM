@@ -276,7 +276,8 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
   void _toggleRole(UserModel user) async {
     final newRole = user.rol == 'admin' ? 'client' : 'admin';
     try {
-      await widget.viewModel.updateUser(user.id, {'rol': newRole});
+      final updatedUser = user.copyWith(rol: newRole);
+      await widget.viewModel.updateUser(updatedUser);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -307,7 +308,8 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
 
   void _toggleActive(UserModel user) async {
     try {
-      await widget.viewModel.updateUser(user.id, {'actiu': !user.actiu});
+      final updatedUser = user.copyWith(actiu: !user.actiu);
+      await widget.viewModel.updateUser(updatedUser);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

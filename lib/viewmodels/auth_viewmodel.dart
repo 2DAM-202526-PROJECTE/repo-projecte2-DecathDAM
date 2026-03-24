@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 
 /// ViewModel que gestiona l'estat d'autenticació de l'app.
 class AuthViewModel extends ChangeNotifier {
-  final AuthService _authService = AuthService();
-  final UserRepository _userRepository = UserRepository();
+  final AuthService _authService;
+  final UserRepository _userRepository;
 
   bool _isLoading = false;
   String? _errorMessage;
@@ -20,7 +20,9 @@ class AuthViewModel extends ChangeNotifier {
   UserModel? get currentUserModel => _currentUserModel;
   Stream<User?> get authStateChanges => _authService.authStateChanges;
 
-  AuthViewModel() {
+  AuthViewModel({AuthService? authService, UserRepository? userRepository})
+      : _authService = authService ?? AuthService(),
+        _userRepository = userRepository ?? UserRepository() {
     // Escolta els canvis d'autenticació per mantenir UserModel sincronitzat
     _authService.authStateChanges.listen((User? user) async {
       await _fetchUserModel(user);
@@ -54,6 +56,7 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+      debugPrint("Intentant login per a: $email");
       await _authService.signInWithEmail(email, password);
       _isLoading = false;
       notifyListeners();
@@ -64,8 +67,8 @@ class AuthViewModel extends ChangeNotifier {
       notifyListeners();
       return false;
     } catch (e) {
-      debugPrint("Error al fer login: \$e");
-      _errorMessage = 'Error inesperat: \$e';
+      debugPrint("Error al fer login: $e");
+      _errorMessage = 'Error inesperat: $e';
       _isLoading = false;
       notifyListeners();
       return false;
@@ -90,8 +93,8 @@ class AuthViewModel extends ChangeNotifier {
       notifyListeners();
       return false;
     } catch (e) {
-      debugPrint("Error al registrar: \$e");
-      _errorMessage = 'Error inesperat: \$e';
+      debugPrint("Error al registrar: $e");
+      _errorMessage = 'Error inesperat: $e';
       _isLoading = false;
       notifyListeners();
       return false;
@@ -154,25 +157,8 @@ class AuthViewModel extends ChangeNotifier {
       await currentUser!.updateDisplayName(nom);
 
       // 2. Actualitza a Firestore
-      final Map<String, dynamic> data = {
-        'nom': nom,
-        'adreca': adreca,
-        'telefon': telefon,
-        'dni': dni,
-        'dataNaixement': dataNaixement,
-        'genere': genere,
-        'codiPostal': codiPostal,
-        'ciutat': ciutat,
-      };
-      await _userRepository.updateUser(currentUser!.uid, data);
-
-      // 3. Actualitza l'estat local
-      _currentUserModel = UserModel(
-        id: _currentUserModel!.id,
+      final updatedUser = _currentUserModel!.copyWith(
         nom: nom,
-        email: _currentUserModel!.email,
-        rol: _currentUserModel!.rol,
-        actiu: _currentUserModel!.actiu,
         adreca: adreca,
         telefon: telefon,
         dni: dni,
@@ -181,6 +167,10 @@ class AuthViewModel extends ChangeNotifier {
         codiPostal: codiPostal,
         ciutat: ciutat,
       );
+      await _userRepository.updateUser(updatedUser);
+
+      // 3. Actualitza l'estat local
+      _currentUserModel = updatedUser;
 
       _isLoading = false;
       notifyListeners();

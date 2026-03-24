@@ -1,3 +1,5 @@
+import 'package:decathdam/repositories/user_repository.dart';
+import 'package:decathdam/services/auth_service.dart';
 import 'package:decathdam/services/payment_service.dart';
 import 'package:decathdam/view/auth_wrapper.dart';
 import 'package:decathdam/viewmodels/cart_viewmodel.dart';
@@ -19,16 +21,25 @@ void main() async {
   await PaymentService.init();
 
   // Connecta l'app amb Firebase usant la configuració del teu fitxer
-
-  // Connecta l'app amb Firebase usant la configuració del teu fitxer
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Repositoris i serveis
+  final userRepository = UserRepository();
+  final authService = AuthService(userRepository: userRepository);
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ChangeNotifierProvider(
+          create: (_) => AuthViewModel(
+            authService: authService,
+            userRepository: userRepository,
+          ),
+        ),
         ChangeNotifierProvider(create: (_) => ProductsViewModel()),
-        ChangeNotifierProvider(create: (_) => UsersViewModel()),
+        ChangeNotifierProvider(
+          create: (_) => UsersViewModel(userRepository: userRepository),
+        ),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => FavoritesViewModel()),
         ChangeNotifierProvider(create: (_) => CartViewModel()),

@@ -3,14 +3,36 @@ import 'package:decathdam/repositories/user_repository.dart';
 import 'package:flutter/material.dart';
 
 class UsersViewModel extends ChangeNotifier {
-  final UserRepository _repository = UserRepository();
+  final UserRepository _repository;
   List<UserModel> _users = [];
+  String _searchQuery = '';
+
+  UsersViewModel({UserRepository? userRepository})
+      : _repository = userRepository ?? UserRepository();
 
   List<UserModel> get users => _users;
+  String get searchQuery => _searchQuery;
+
+  /// Retorna la llista d'usuaris filtrada per la cerca actual.
+  List<UserModel> get filteredUsers {
+    if (_searchQuery.isEmpty) return _users;
+    return _users.where((user) {
+      return user.nom.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          user.email.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
+  }
+
+  void updateSearchQuery(String query) {
+    _searchQuery = query;
+    notifyListeners();
+  }
 
   Stream<List<UserModel>>? _usersStream;
   Stream<List<UserModel>> getUsersStream() {
-    _usersStream ??= _repository.getUsersStream();
+    _usersStream ??= _repository.getUsersStream().map((list) {
+      _users = list; // Mantenim la llista local actualitzada
+      return list;
+    });
     return _usersStream!;
   }
 
@@ -27,9 +49,9 @@ class UsersViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> addUser(Map<String, dynamic> userData) async {
+  Future<void> addUser(UserModel user) async {
     try {
-      await _repository.addUser(userData);
+      await _repository.addUser(user);
       notifyListeners();
     } catch (e) {
       debugPrint("Error adding user: $e");
@@ -37,9 +59,9 @@ class UsersViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> updateUser(String id, Map<String, dynamic> userData) async {
+  Future<void> updateUser(UserModel user) async {
     try {
-      await _repository.updateUser(id, userData);
+      await _repository.updateUser(user);
       notifyListeners();
     } catch (e) {
       debugPrint("Error updating user: $e");

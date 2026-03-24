@@ -1,4 +1,5 @@
 import 'package:decathdam/config/app_theme.dart';
+import 'package:decathdam/models/user_model.dart';
 import 'package:decathdam/viewmodels/users_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -44,19 +45,21 @@ class _CreationUserScreenState extends State<CreationUserScreen> {
     final usersVM = context.read<UsersViewModel>();
     
     try {
-      await usersVM.addUser({
-        'nom': _nomController.text.trim(),
-        'email': _emailController.text.trim(),
-        'rol': _selectedRol,
-        'actiu': true,
-        'adreca': _adrecaController.text.trim(),
-        'telefon': _telefonController.text.trim(),
-        'dni': _dniController.text.trim(),
-        'dataNaixement': _dataNaixementController.text.trim(),
-        'genere': _genereController.text.trim(),
-        'codiPostal': _codiPostalController.text.trim(),
-        'ciutat': _ciutatController.text.trim(),
-      });
+      final newUser = UserModel(
+        id: DateTime.now().millisecondsSinceEpoch.toString(), // ID temporal
+        nom: _nomController.text.trim(),
+        email: _emailController.text.trim(),
+        rol: _selectedRol,
+        actiu: true,
+        adreca: _adrecaController.text.trim(),
+        telefon: _telefonController.text.trim(),
+        dni: _dniController.text.trim(),
+        dataNaixement: _dataNaixementController.text.trim(),
+        genere: _genereController.text.trim(),
+        codiPostal: _codiPostalController.text.trim(),
+        ciutat: _ciutatController.text.trim(),
+      );
+      await usersVM.addUser(newUser);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

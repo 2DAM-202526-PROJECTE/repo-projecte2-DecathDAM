@@ -1,4 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:decathdam/repositories/user_repository.dart';
+import 'package:decathdam/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -7,9 +8,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final UserRepository _userRepository;
 
-  static const String _usersCollection = 'usuaris';
+  AuthService({UserRepository? userRepository})
+      : _userRepository = userRepository ?? UserRepository();
 
   /// Usuari autenticat actual (null si no hi ha sessió).
   User? get currentUser => _auth.currentUser;
@@ -39,16 +41,18 @@ class AuthService {
       password: password,
     );
 
-    // Actualitza el displayName a Firebase Auth
+    // Actualitza le displayName a Firebase Auth
     await credential.user?.updateDisplayName(nom);
 
-    // Crea el document a Firestore
+    // Crea el document a Firestore usant el repositori
     if (credential.user != null) {
-      await _createUserDocument(
-        uid: credential.user!.uid,
+      await _userRepository.addUser(UserModel(
+        id: credential.user!.uid,
         nom: nom,
         email: email.trim(),
-      );
+        rol: 'client',
+        actiu: true,
+      ));
     }
 
     return credential;
@@ -78,13 +82,16 @@ class AuthService {
     // Inicia sessió a Firebase
     final userCredential = await _auth.signInWithCredential(credential);
 
-    // Si és un nou usuari, crea el document a Firestore
-    if (userCredential.additionalUserInfo?.isNewUser == true) {
-      await _createUserDocument(
-        uid: userCredential.user!.uid,
+    // Si és un nou usuari, crea el document a Firestore usant el repositori
+    if (userCredential.additionalUserInfo?.isNewUser == true &&
+        userCredential.user != null) {
+      await _userRepository.addUser(UserModel(
+        id: userCredential.user!.uid,
         nom: userCredential.user!.displayName ?? 'Usuari Google',
         email: userCredential.user!.email ?? '',
-      );
+        rol: 'client',
+        actiu: true,
+      ));
     }
 
     return userCredential;
@@ -98,32 +105,9 @@ class AuthService {
     await _auth.signOut();
   }
 
-  // ─── Helpers ───────────────────────────────────────────────────────────
-
-  /// Crea el document d'usuari a Firestore amb rol 'client'.
-  Future<void> _createUserDocument({
-    required String uid,
-    required String nom,
-    required String email,
-  }) async {
-    await _firestore.collection(_usersCollection).doc(uid).set({
-      'nom': nom,
-      'email': email,
-      'rol': 'client',
-      'actiu': true,
-      'adreca': '',
-      'telefon': '',
-      'dni': '',
-      'dataNaixement': '',
-      'genere': '',
-      'codiPostal': '',
-      'ciutat': '',
-    });
-  }
-
   /// Tradueix els codis d'error de Firebase a missatges amigables.
   static String getErrorMessage(String code) {
-    debugPrint("FirebaseAuthException code: \$code");
+    debugPrint("FirebaseAuthException code: $code");
     switch (code) {
       case 'user-not-found':
         return 'No existeix cap compte amb aquest email.';
@@ -142,7 +126,7 @@ class AuthService {
       case 'network-request-failed':
         return 'Error de connexió. Comprova la teva connexió a Internet.';
       default:
-        return 'S\'ha produït un error (\$code). Torna-ho a provar.';
+        return 'S\'ha produït un error ($code). Torna-ho a provar.';
     }
   }
 }

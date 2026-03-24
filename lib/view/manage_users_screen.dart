@@ -16,7 +16,6 @@ class ManageUsersScreen extends StatefulWidget {
 class _ManageUsersScreenState extends State<ManageUsersScreen>
     with SingleTickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
   late Stream<List<UserModel>> _usersStream;
   late AnimationController _listAnimController;
 
@@ -29,7 +28,8 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
     );
     _listAnimController.forward();
     _searchController.addListener(() {
-      setState(() => _searchQuery = _searchController.text.toLowerCase());
+      Provider.of<UsersViewModel>(context, listen: false)
+          .updateSearchQuery(_searchController.text);
     });
 
     // Inicialitzem l'stream aquí per evitar recrear-lo a cada build
@@ -94,7 +94,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                     Icons.search_rounded,
                     color: colors.iconSecondary,
                   ),
-                  suffixIcon: _searchQuery.isNotEmpty
+                  suffixIcon: usersViewModel.searchQuery.isNotEmpty
                       ? IconButton(
                           icon: Icon(
                             Icons.clear_rounded,
@@ -146,18 +146,14 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                 }
 
                 final allUsers = snapshot.data ?? [];
-                final users = allUsers.where((user) {
-                  if (_searchQuery.isEmpty) return true;
-                  return user.nom.toLowerCase().contains(_searchQuery) ||
-                      user.email.toLowerCase().contains(_searchQuery);
-                }).toList();
+                final users = usersViewModel.filteredUsers;
 
                 if (allUsers.isEmpty) {
                   return _buildEmptyState(colors);
                 }
 
                 if (users.isEmpty) {
-                  return _buildNoResultsState(colors);
+                  return _buildNoResultsState(colors, usersViewModel);
                 }
 
                 return ListView.builder(
@@ -217,7 +213,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
     );
   }
 
-  Widget _buildNoResultsState(AppColors colors) {
+  Widget _buildNoResultsState(AppColors colors, UsersViewModel usersViewModel) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -225,7 +221,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
           Icon(Icons.search_off_rounded, size: 48, color: colors.textSecondary),
           const SizedBox(height: 12),
           Text(
-            'Cap resultat per "$_searchQuery"',
+            'Cap resultat per "${usersViewModel.searchQuery}"',
             style: GoogleFonts.outfit(
               fontSize: 15,
               color: colors.textSecondary,
