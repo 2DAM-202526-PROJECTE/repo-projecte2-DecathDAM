@@ -16,6 +16,7 @@ class ProductDetailsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: colors.background,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           product.nom,
           style: TextStyle(
@@ -25,10 +26,6 @@ class ProductDetailsScreen extends StatelessWidget {
         ),
         backgroundColor: colors.surface,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: colors.icon),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: SingleChildScrollView(
         child: Column(

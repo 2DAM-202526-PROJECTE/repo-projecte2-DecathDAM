@@ -3,6 +3,7 @@ import 'package:decathdam/view/creation_product_screen.dart';
 import 'package:decathdam/view/creation_user_screen.dart';
 import 'package:decathdam/view/manage_products_screen.dart';
 import 'package:decathdam/view/manage_users_screen.dart';
+import 'package:decathdam/view/manage_featured_screen.dart';
 import 'package:decathdam/view/settings_screen.dart';
 import 'package:decathdam/view/widgets/animated_admin_option.dart';
 import 'package:decathdam/view/widgets/dashboard_card.dart';
@@ -162,6 +163,22 @@ class _AdminScreenState extends State<AdminScreen>
                   Navigator.push(
                     context,
                     _createRoute(const ManageProductsScreen()),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+
+              AnimatedAdminOption(
+                icon: Icons.star_rounded,
+                title: 'Productes Destacats',
+                subtitle: 'Tria quins productes es veuen a l\'inici',
+                gradientColors: const [Color(0xFFFFB300), Color(0xFFFFCA28)],
+                delay: 125,
+                colors: colors,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    _createRoute(const ManageFeaturedScreen()),
                   );
                 },
               ),
