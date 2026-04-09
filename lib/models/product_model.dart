@@ -3,7 +3,6 @@ class Product {
   final String nom;
   final String descripcio;
   final double preu;
-  final String imatge;
   final String categoria;
   final String url;
 
@@ -12,7 +11,6 @@ class Product {
     required this.nom,
     required this.descripcio,
     required this.preu,
-    required this.imatge,
     required this.categoria,
     required this.url,
   });
@@ -23,7 +21,6 @@ class Product {
       nom: data['nom'] ?? '',
       descripcio: data['descripcio'] ?? '',
       preu: (data['preu'] ?? 0).toDouble(),
-      imatge: data['imatge'] ?? '',
       categoria: data['categoria'] ?? '',
       url: data['url'] ?? '',
     );

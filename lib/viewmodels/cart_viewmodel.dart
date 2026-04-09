@@ -12,29 +12,14 @@ class CartItem {
 
 class CartViewModel extends ChangeNotifier {
   final Map<String, CartItem> _items = {};
-  String _selectedCountry = 'Espanya';
-
-  // Tax rates by country (simulated)
-  final Map<String, double> _taxRates = {
-    'Espanya': 0.21,
-    'França': 0.20,
-    'Andorra': 0.045,
-    'Estats Units': 0.07,
-  };
 
   List<CartItem> get items => _items.values.toList();
-  String get selectedCountry => _selectedCountry;
-  List<String> get availableCountries => _taxRates.keys.toList();
 
   double get subtotal {
     return _items.values.fold(0, (sum, item) => sum + item.total);
   }
 
-  double get taxRate => _taxRates[_selectedCountry] ?? 0.21;
-
-  double get taxAmount => subtotal * taxRate;
-
-  double get totalPrice => subtotal + taxAmount;
+  double get totalPrice => subtotal;
 
   void addToCart(Product product) {
     if (_items.containsKey(product.id)) {
@@ -71,13 +56,6 @@ class CartViewModel extends ChangeNotifier {
   void clearCart() {
     _items.clear();
     notifyListeners();
-  }
-
-  void setCountry(String country) {
-    if (_taxRates.containsKey(country)) {
-      _selectedCountry = country;
-      notifyListeners();
-    }
   }
 
   int get totalItemsCount {

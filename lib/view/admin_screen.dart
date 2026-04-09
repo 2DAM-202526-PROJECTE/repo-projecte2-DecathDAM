@@ -198,6 +198,34 @@ class _AdminScreenState extends State<AdminScreen>
                 },
               ),
 
+              const SizedBox(height: 12),
+
+              AnimatedAdminOption(
+                icon: Icons.auto_awesome_rounded,
+                title: 'Generar Dades de Prova',
+                subtitle: 'Crea productes realistes automàticament',
+                gradientColors: const [Color(0xFF673AB7), Color(0xFF9575CD)],
+                delay: 250,
+                colors: colors,
+                onTap: () {
+                  _showSeedConfirmationDialog(context, productsViewModel);
+                },
+              ),
+
+              const SizedBox(height: 12),
+
+              AnimatedAdminOption(
+                icon: Icons.build_circle_rounded,
+                title: 'Reparar Imatges',
+                subtitle: 'Arregla les imatges que no es veuen',
+                gradientColors: const [Color(0xFFE91E63), Color(0xFFF06292)],
+                delay: 300,
+                colors: colors,
+                onTap: () {
+                  _showFixImagesDialog(context, productsViewModel);
+                },
+              ),
+
               const SizedBox(height: 24),
             ],
           ),
@@ -242,6 +270,111 @@ class _AdminScreenState extends State<AdminScreen>
           ),
         ),
       ],
+    );
+  }
+
+  void _showSeedConfirmationDialog(
+    BuildContext context,
+    ProductsViewModel productsVM,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Generar Dades de Prova'),
+        content: const Text(
+          'Aquesta acció afegirà 10 productes realistes al catàleg. Vols continuar?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel·lar'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              // Mostrar snackbar de càrrega
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Generant productes...')),
+              );
+
+              try {
+                await productsVM.seedSampleProducts();
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Productes generats correctament!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                  setState(() {}); // Forçar refresc del dashboard
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Error al generar productes: $e'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              }
+            },
+            child: const Text('Generar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showFixImagesDialog(
+    BuildContext context,
+    ProductsViewModel productsVM,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Reparar Imatges'),
+        content: const Text(
+          'Aquesta acció buscarà productes amb imatges trencades (de la càrrega anterior) i les intentarà arreglar. Vols continuar?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel·lar'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Reparant imatges...')),
+              );
+
+              try {
+                await productsVM.fixProductImages();
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Imatges reparades correctament!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                  setState(() {});
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Error al reparar imatges: $e'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              }
+            },
+            child: const Text('Reparar'),
+          ),
+        ],
+      ),
     );
   }
 

@@ -50,7 +50,6 @@ class _CreationProductScreenState extends State<CreationProductScreen> {
         'preu': double.tryParse(_priceController.text) ?? 0.0,
         'url': _urlController.text,
         'categoria': _selectedCategory ?? 'Altres',
-        'imatge': '',
       };
 
       try {

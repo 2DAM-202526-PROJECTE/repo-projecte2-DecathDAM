@@ -1,6 +1,7 @@
 import 'package:decathdam/config/app_theme.dart';
-import 'package:decathdam/services/payment_service.dart';
 import 'package:decathdam/viewmodels/cart_viewmodel.dart';
+import 'package:decathdam/view/main_screen.dart';
+import 'package:decathdam/view/checkout_address_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,7 +42,12 @@ class CartScreen extends StatelessWidget {
                 const SizedBox(height: 32),
                 ElevatedButton(
                   onPressed: () {
-                    // Navegar a exploració o home
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) => const MainScreen(initialIndex: 1),
+                      ),
+                      (route) => false,
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: colors.accentBlue,
@@ -63,48 +69,6 @@ class CartScreen extends StatelessWidget {
 
         return Column(
           children: [
-            // Country selector at the top (discreet)
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 8.0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'País de facturació:',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: colors.textSecondary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: cart.selectedCountry,
-                      items: cart.availableCountries.map((country) {
-                        return DropdownMenuItem(
-                          value: country,
-                          child: Text(
-                            country,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: colors.textPrimary,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (val) {
-                        if (val != null) cart.setCountry(val);
-                      },
-                      dropdownColor: colors.surface,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Divider(height: 1),
             Expanded(
               child: ListView.separated(
                 padding: const EdgeInsets.all(16),
@@ -281,23 +245,6 @@ class CartScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     _buildPriceRow(
-                      'Subtotal',
-                      cart.subtotal,
-                      colors.textSecondary,
-                      16,
-                    ),
-                    const SizedBox(height: 8),
-                    _buildPriceRow(
-                      'IVA (${(cart.taxRate * 100).toInt()}%)',
-                      cart.taxAmount,
-                      colors.textSecondary,
-                      16,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12.0),
-                      child: Divider(),
-                    ),
-                    _buildPriceRow(
                       'Total',
                       cart.totalPrice,
                       colors.textPrimary,
@@ -305,63 +252,17 @@ class CartScreen extends StatelessWidget {
                       isBold: true,
                     ),
                     const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          try {
-                            // Mostrem un diàleg de càrrega
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (context) => const Center(
-                                child: CircularProgressIndicator(),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CheckoutAddressScreen(cart: cart),
                               ),
                             );
-
-                            // El total en cèntims per a Stripe (p. ex. 10.50€ -> 1050)
-                            final amountInCents = (cart.totalPrice * 100)
-                                .toInt();
-
-                            await PaymentService.makePayment(
-                              amountInCents,
-                              'eur',
-                            );
-
-                            // Tanquem el diàleg de càrrega
-                            if (context.mounted) Navigator.pop(context);
-
-                            // Si tot va bé, buidem la cistella i mostrem èxit
-                            cart.clearCart();
-
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Pagament realitzat amb èxit! Gràcies per la teva compra.',
-                                  ),
-                                  backgroundColor: Colors.green,
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
-                            }
-                          } catch (e) {
-                            // Tanquem el diàleg de càrrega si encara està obert
-                            if (context.mounted) Navigator.pop(context);
-
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Error en el pagament o cancel·lat',
-                                  ),
-                                  backgroundColor: Colors.red,
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
-                            }
-                          }
-                        },
+                          },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: colors.accentBlue,
                           foregroundColor: Colors.white,
@@ -420,3 +321,4 @@ class CartScreen extends StatelessWidget {
     );
   }
 }
+

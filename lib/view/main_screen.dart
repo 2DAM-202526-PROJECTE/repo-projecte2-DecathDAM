@@ -10,14 +10,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final int initialIndex;
+
+  const MainScreen({
+    super.key,
+    this.initialIndex = 0,
+  });
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
 
   // Index de la pestanya de Favorits
   static const int _favoritesIndex = 3;
@@ -26,10 +31,10 @@ class _MainScreenState extends State<MainScreen> {
   final GlobalKey<FavoritesScreenState> _favoritesKey =
       GlobalKey<FavoritesScreenState>();
 
-  // Eliminem _widgetOptions de initState perquè ara dependrà de AuthViewModel
   @override
   void initState() {
     super.initState();
+    _selectedIndex = widget.initialIndex;
   }
 
   List<Widget> _buildWidgetOptions(bool isAdmin) {

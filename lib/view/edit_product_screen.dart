@@ -70,7 +70,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
         'preu': double.tryParse(_priceController.text) ?? 0.0,
         'url': _urlController.text,
         'categoria': _selectedCategory ?? 'Altres',
-        'imatge': widget.product.imatge,
       };
 
       try {

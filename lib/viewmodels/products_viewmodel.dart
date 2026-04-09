@@ -1,5 +1,6 @@
 import 'package:decathdam/models/product_model.dart';
 import 'package:decathdam/repositories/product_repository.dart';
+import 'package:decathdam/services/seed_service.dart';
 import 'package:flutter/material.dart';
 
 class ProductsViewModel extends ChangeNotifier {
@@ -56,6 +57,30 @@ class ProductsViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint("Error deleting product: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> seedSampleProducts() async {
+    try {
+      final seedService = SeedService();
+      await seedService.seedProducts();
+      await fetchProducts(); // Refresh the list
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Error seeding products: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> fixProductImages() async {
+    try {
+      final seedService = SeedService();
+      await seedService.fixImages();
+      await fetchProducts(); // Refresh the list
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Error fixing product images: $e");
       rethrow;
     }
   }
