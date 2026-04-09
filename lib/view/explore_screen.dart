@@ -29,9 +29,18 @@ class _ExploreScreenState extends State<ExploreScreen> {
     if (_searchQuery.isEmpty) return products;
     final query = _searchQuery.toLowerCase();
     return products.where((product) {
+      final priceStr1 = product.preu.toString();
+      final priceStr2 = product.preu.toStringAsFixed(2);
+      final priceStr3 = priceStr1.replaceAll('.', ',');
+      final priceStr4 = priceStr2.replaceAll('.', ',');
+
       return product.nom.toLowerCase().contains(query) ||
           product.descripcio.toLowerCase().contains(query) ||
-          product.categoria.toLowerCase().contains(query);
+          product.categoria.toLowerCase().contains(query) ||
+          priceStr1.contains(query) ||
+          priceStr2.contains(query) ||
+          priceStr3.contains(query) ||
+          priceStr4.contains(query);
     }).toList();
   }
 
