@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:decathdam/config/firebase_options.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/services/push_notifications_service.dart';
 
 void main() async {
   // Imprescindible: assegura que Flutter estigui llest abans d'iniciar Firebase
@@ -22,6 +23,9 @@ void main() async {
 
   // Connecta l'app amb Firebase usant la configuració del teu fitxer
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Inicialitza el servei de notificacions d'alta prioritat
+  await PushNotificationService.initialize();
 
   // Repositoris i serveis
   final userRepository = UserRepository();

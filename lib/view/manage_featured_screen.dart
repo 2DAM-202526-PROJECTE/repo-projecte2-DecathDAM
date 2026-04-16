@@ -108,7 +108,7 @@ class ManageFeaturedScreen extends StatelessWidget {
                         ),
                         trailing: Switch(
                           value: product.destacat,
-                          activeColor: colors.accentBlue,
+                          activeThumbColor: colors.accentBlue,
                           onChanged: (value) async {
                             if (value && featuredCount >= 4) {
                               ScaffoldMessenger.of(context).showSnackBar(
