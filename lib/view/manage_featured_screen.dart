@@ -10,7 +10,10 @@ class ManageFeaturedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
-    final productsViewModel = Provider.of<ProductsViewModel>(context, listen: false);
+    final productsViewModel = Provider.of<ProductsViewModel>(
+      context,
+      listen: false,
+    );
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -62,10 +65,7 @@ class ManageFeaturedScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   'Selecciona fins a 4 productes per mostrar a la pàgina principal. Actuauments seleccionats: $featuredCount/4',
-                  style: TextStyle(
-                    color: colors.textSecondary,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: colors.textSecondary, fontSize: 14),
                 ),
               ),
               Expanded(
@@ -75,7 +75,10 @@ class ManageFeaturedScreen extends StatelessWidget {
                     final product = products[index];
                     return Card(
                       color: colors.card,
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -128,11 +131,11 @@ class ManageFeaturedScreen extends StatelessWidget {
                                 {'destacat': value},
                               );
                             } catch (e) {
-                               if(context.mounted) {
-                                 ScaffoldMessenger.of(context).showSnackBar(
-                                   SnackBar(content: Text('Error: $e')),
-                                 );
-                               }
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Error: $e')),
+                                );
+                              }
                             }
                           },
                         ),

@@ -20,6 +20,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   late TextEditingController _descController;
   late TextEditingController _priceController;
   late TextEditingController _urlController;
+  late TextEditingController _discountController;
   String? _selectedCategory;
   bool _isLoading = false;
 
@@ -41,6 +42,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
       text: widget.product.preu.toString(),
     );
     _urlController = TextEditingController(text: widget.product.url);
+    _discountController = TextEditingController(
+      text: widget.product.descompte.toString(),
+    );
     _selectedCategory = widget.product.categoria.isNotEmpty
         ? widget.product.categoria
         : 'Altres';
@@ -52,6 +56,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     _descController.dispose();
     _priceController.dispose();
     _urlController.dispose();
+    _discountController.dispose();
     super.dispose();
   }
 
@@ -70,6 +75,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         'preu': double.tryParse(_priceController.text) ?? 0.0,
         'url': _urlController.text,
         'categoria': _selectedCategory ?? 'Altres',
+        'descompte': int.tryParse(_discountController.text) ?? 0,
       };
 
       try {
@@ -275,6 +281,29 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Si us plau, introdueix una URL';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+
+              _buildLabel('Descompte (%)', colors),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _discountController,
+                keyboardType: TextInputType.number,
+                decoration: _buildInputDecoration(
+                  hint: 'Ex: 10',
+                  icon: Icons.local_offer_outlined,
+                  colors: colors,
+                ),
+                style: GoogleFonts.outfit(color: colors.textPrimary),
+                validator: (value) {
+                  if (value != null && value.isNotEmpty) {
+                    final discount = int.tryParse(value);
+                    if (discount == null || discount < 0 || discount > 100) {
+                      return 'Introdueix un percentatge entre 0 i 100';
+                    }
                   }
                   return null;
                 },
