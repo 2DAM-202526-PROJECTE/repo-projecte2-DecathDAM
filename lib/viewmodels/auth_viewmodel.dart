@@ -101,6 +101,32 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
+  // ─── Restablir Contrasenya ─────────────────────────────────────────────
+
+  Future<bool> resetPassword(String email) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _authService.sendPasswordResetEmail(email);
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } on FirebaseAuthException catch (e) {
+      _errorMessage = AuthService.getErrorMessage(e.code);
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    } catch (e) {
+      debugPrint("Error al restablir contrasenya: $e");
+      _errorMessage = 'Error inesperat: $e';
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
   // ─── Login amb Google ──────────────────────────────────────────────────
 
   Future<bool> loginWithGoogle() async {

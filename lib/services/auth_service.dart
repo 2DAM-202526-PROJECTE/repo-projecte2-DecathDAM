@@ -58,6 +58,11 @@ class AuthService {
     return credential;
   }
 
+  /// Envia un correu de restabliment de contrasenya.
+  Future<void> sendPasswordResetEmail(String email) async {
+    await _auth.sendPasswordResetEmail(email: email.trim());
+  }
+
   // ─── Google Sign-In ────────────────────────────────────────────────────
 
   /// Inicia sessió amb Google. Si és un usuari nou, crea el document a Firestore.

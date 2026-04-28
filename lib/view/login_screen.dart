@@ -276,6 +276,22 @@ class _LoginScreenState extends State<LoginScreen>
                 return null;
               },
             ),
+            const SizedBox(height: 12),
+            // Has oblidat la contrasenya?
+            Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: () => _showForgotPasswordBottomSheet(context, colors, isDark),
+                child: Text(
+                  'Has oblidat la contrasenya?',
+                  style: GoogleFonts.outfit(
+                    color: const Color(0xFF42A5F5),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 28),
             // Login button
             Consumer<AuthViewModel>(
@@ -525,6 +541,166 @@ class _LoginScreenState extends State<LoginScreen>
           ),
         ),
       ],
+    );
+  }
+
+  void _showForgotPasswordBottomSheet(
+      BuildContext context, AppColors colors, bool isDark) {
+    final resetEmailController = TextEditingController(text: _emailController.text);
+    final formKey = GlobalKey<FormState>();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        bool isSending = false;
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(ctx).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: isDark
+                  ? const Color(0xFF161B22)
+                  : Colors.white,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              border: Border.all(
+                color: isDark
+                    ? Colors.white.withAlpha(15)
+                    : Colors.black.withAlpha(8),
+              ),
+            ),
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.symmetric(horizontal: 160),
+                    decoration: BoxDecoration(
+                      color: colors.divider,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Recuperar Contrasenya',
+                    style: GoogleFonts.outfit(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      color: colors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Introdueix el teu correu electrònic i t\'enviarem un enllaç per restablir la teva contrasenya.',
+                    style: GoogleFonts.outfit(
+                      fontSize: 15,
+                      color: colors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  _buildTextField(
+                    controller: resetEmailController,
+                    label: 'Email',
+                    icon: Icons.email_outlined,
+                    keyboardType: TextInputType.emailAddress,
+                    colors: colors,
+                    isDark: isDark,
+                    validator: (v) {
+                      if (v == null || v.isEmpty) return 'Introdueix el teu email';
+                      if (!v.contains('@')) return 'Email no vàlid';
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  StatefulBuilder(
+                    builder: (BuildContext modalContext, StateSetter setModalState) {
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        height: 52,
+                        child: ElevatedButton(
+                          onPressed: isSending
+                              ? null
+                              : () async {
+                                  if (!formKey.currentState!.validate()) return;
+                                  setModalState(() => isSending = true);
+                                  
+                                  final authVM = modalContext.read<AuthViewModel>();
+                                  final messenger = ScaffoldMessenger.of(modalContext);
+                                  
+                                  final success = await authVM.resetPassword(resetEmailController.text);
+                                  
+                                  if (!ctx.mounted) return;
+                                  Navigator.pop(ctx);
+                                  
+                                  messenger.showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        success 
+                                          ? 'Correu enviat! Revisa la teva bústia d\'entrada.' 
+                                          : (authVM.errorMessage ?? 'Error a l\'enviar el correu'),
+                                      ),
+                                      backgroundColor: success ? Colors.green : Colors.redAccent,
+                                      behavior: SnackBarBehavior.floating,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                  );
+                                },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            elevation: 0,
+                            backgroundColor: Colors.transparent,
+                          ),
+                          child: Ink(
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF1565C0), Color(0xFF42A5F5)],
+                              ),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: isSending
+                                  ? const SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2.5,
+                                      ),
+                                    )
+                                  : Text(
+                                      'Enviar enllaç',
+                                      style: GoogleFonts.outfit(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
