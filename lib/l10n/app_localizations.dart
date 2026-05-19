@@ -1305,6 +1305,24 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Usuari eliminat: {user}'**
   String userDeleted(String user);
+
+  /// No description provided for @purchaseHistory.
+  ///
+  /// In ca, this message translates to:
+  /// **'Historial de compres'**
+  String get purchaseHistory;
+
+  /// No description provided for @noPurchases.
+  ///
+  /// In ca, this message translates to:
+  /// **'No tens cap compra encara'**
+  String get noPurchases;
+
+  /// No description provided for @orderNumber.
+  ///
+  /// In ca, this message translates to:
+  /// **'Comanda #{id}'**
+  String orderNumber(Object id);
 }
 
 class _AppLocalizationsDelegate

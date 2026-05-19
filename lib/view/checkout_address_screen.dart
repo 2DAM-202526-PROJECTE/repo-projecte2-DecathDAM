@@ -5,6 +5,7 @@ import 'package:decathdam/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:decathdam/l10n/app_localizations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CheckoutAddressScreen extends StatefulWidget {
   final CartViewModel cart;
@@ -66,6 +67,27 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
       await PaymentService.makePayment(amountInCents, 'eur');
 
       if (context.mounted) Navigator.pop(context); // Tancar dialog de càrrega
+
+      // Desar l'historial de compres
+      final authVM = Provider.of<AuthViewModel>(context, listen: false);
+      final user = authVM.currentUserModel;
+      if (user != null) {
+        final orderItems = widget.cart.items.map((item) => {
+          'productId': item.product.id,
+          'productName': item.product.nom,
+          'quantity': item.quantity,
+          'price': item.product.preu,
+          'productImageUrl': item.product.url,
+        }).toList();
+
+        await FirebaseFirestore.instance.collection('orders').add({
+          'userId': user.id,
+          'items': orderItems,
+          'totalAmount': widget.cart.totalPrice,
+          'date': FieldValue.serverTimestamp(),
+          'status': 'completed',
+        });
+      }
 
       widget.cart.clearCart();
 

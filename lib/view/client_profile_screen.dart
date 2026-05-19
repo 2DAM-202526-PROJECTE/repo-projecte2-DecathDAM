@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:decathdam/l10n/app_localizations.dart';
 import 'package:decathdam/viewmodels/locale_provider.dart';
+import 'package:decathdam/view/purchase_history_screen.dart';
 import 'dart:ui';
 
 class ClientProfileScreen extends StatefulWidget {
@@ -299,6 +300,18 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const PersonalInfoScreen()),
+              );
+            },
+          ),
+          Divider(color: colors.divider, height: 1),
+          _buildOptionTile(
+            colors: colors,
+            icon: Icons.history,
+            title: l10n.purchaseHistory,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const PurchaseHistoryScreen()),
               );
             },
           ),

@@ -639,4 +639,15 @@ class AppLocalizationsCa extends AppLocalizations {
   String userDeleted(String user) {
     return 'Usuari eliminat: $user';
   }
+
+  @override
+  String get purchaseHistory => 'Historial de compres';
+
+  @override
+  String get noPurchases => 'No tens cap compra encara';
+
+  @override
+  String orderNumber(Object id) {
+    return 'Comanda #$id';
+  }
 }

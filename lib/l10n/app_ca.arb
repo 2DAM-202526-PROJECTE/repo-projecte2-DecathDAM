@@ -208,5 +208,8 @@
   "deleteUserText": "Estàs segur que vols eliminar \"{user}\"? Aquesta acció no es pot desfer.",
   "@deleteUserText": { "placeholders": { "user": { "type": "String" } } },
   "userDeleted": "Usuari eliminat: {user}",
-  "@userDeleted": { "placeholders": { "user": { "type": "String" } } }
+  "@userDeleted": { "placeholders": { "user": { "type": "String" } } },
+  "purchaseHistory": "Historial de compres",
+  "noPurchases": "No tens cap compra encara",
+  "orderNumber": "Comanda #{id}"
 }

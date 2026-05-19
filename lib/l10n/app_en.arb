@@ -208,5 +208,8 @@
   "deleteUserText": "Are you sure you want to delete \"{user}\"? This action cannot be undone.",
   "@deleteUserText": { "placeholders": { "user": { "type": "String" } } },
   "userDeleted": "User deleted: {user}",
-  "@userDeleted": { "placeholders": { "user": { "type": "String" } } }
+  "@userDeleted": { "placeholders": { "user": { "type": "String" } } },
+  "purchaseHistory": "Purchase history",
+  "noPurchases": "You don't have any purchases yet",
+  "orderNumber": "Order #{id}"
 }

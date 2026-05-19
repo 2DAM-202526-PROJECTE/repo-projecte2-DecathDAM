@@ -208,5 +208,8 @@
   "deleteUserText": "¿Estás seguro de que quieres eliminar a \"{user}\"? Esta acción no se puede deshacer.",
   "@deleteUserText": { "placeholders": { "user": { "type": "String" } } },
   "userDeleted": "Usuario eliminado: {user}",
-  "@userDeleted": { "placeholders": { "user": { "type": "String" } } }
+  "@userDeleted": { "placeholders": { "user": { "type": "String" } } },
+  "purchaseHistory": "Historial de compras",
+  "noPurchases": "Aún no tienes compras",
+  "orderNumber": "Pedido #{id}"
 }

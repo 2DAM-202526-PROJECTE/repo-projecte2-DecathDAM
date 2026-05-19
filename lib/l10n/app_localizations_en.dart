@@ -635,4 +635,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String userDeleted(String user) {
     return 'User deleted: $user';
   }
+
+  @override
+  String get purchaseHistory => 'Purchase history';
+
+  @override
+  String get noPurchases => 'You don\'t have any purchases yet';
+
+  @override
+  String orderNumber(Object id) {
+    return 'Order #$id';
+  }
 }
