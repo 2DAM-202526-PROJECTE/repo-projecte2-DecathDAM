@@ -76,7 +76,10 @@ class ManageFeaturedScreen extends StatelessWidget {
                     final product = products[index];
                     return Card(
                       color: colors.card,
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -129,11 +132,11 @@ class ManageFeaturedScreen extends StatelessWidget {
                                 {'destacat': value},
                               );
                             } catch (e) {
-                               if(context.mounted) {
-                                 ScaffoldMessenger.of(context).showSnackBar(
-                                   SnackBar(content: Text('Error: $e')),
-                                 );
-                               }
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Error: $e')),
+                                );
+                              }
                             }
                           },
                         ),

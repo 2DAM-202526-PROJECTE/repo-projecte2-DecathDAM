@@ -4,6 +4,7 @@ import 'package:decathdam/view/creation_user_screen.dart';
 import 'package:decathdam/view/manage_products_screen.dart';
 import 'package:decathdam/view/manage_users_screen.dart';
 import 'package:decathdam/view/manage_featured_screen.dart';
+import 'package:decathdam/view/manage_offers_screen.dart';
 import 'package:decathdam/view/settings_screen.dart';
 import 'package:decathdam/view/widgets/animated_admin_option.dart';
 import 'package:decathdam/view/widgets/dashboard_card.dart';
@@ -185,6 +186,23 @@ class _AdminScreenState extends State<AdminScreen>
                 },
               ),
               const SizedBox(height: 12),
+
+              AnimatedAdminOption(
+                icon: Icons.local_offer_rounded,
+                title: 'Productes en Oferta',
+                subtitle: 'Gestiona les rebaixes i percentatges',
+                gradientColors: const [Color(0xFFF44336), Color(0xFFEF5350)],
+                delay: 135,
+                colors: colors,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    _createRoute(const ManageOffersScreen()),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+
 
               AnimatedAdminOption(
                 icon: Icons.person_add_alt_1_rounded,

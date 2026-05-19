@@ -6,6 +6,7 @@ class Product {
   final String categoria;
   final String url;
   final bool destacat;
+  final int descompte;
 
   Product({
     required this.id,
@@ -15,6 +16,7 @@ class Product {
     required this.categoria,
     required this.url,
     this.destacat = false,
+    this.descompte = 0,
   });
 
   factory Product.fromFirestore(String id, Map<String, dynamic> data) {
@@ -26,6 +28,8 @@ class Product {
       categoria: data['categoria'] ?? '',
       url: data['url'] ?? '',
       destacat: data['destacat'] ?? false,
+      descompte: data['descompte'] ?? 0,
     );
   }
 }
+

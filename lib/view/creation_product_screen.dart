@@ -18,6 +18,7 @@ class _CreationProductScreenState extends State<CreationProductScreen> {
   final TextEditingController _descController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _urlController = TextEditingController();
+  final TextEditingController _discountController = TextEditingController();
   String? _selectedCategory;
 
   final List<String> _categories = [
@@ -35,6 +36,7 @@ class _CreationProductScreenState extends State<CreationProductScreen> {
     _descController.dispose();
     _priceController.dispose();
     _urlController.dispose();
+    _discountController.dispose();
     super.dispose();
   }
 
@@ -52,6 +54,7 @@ class _CreationProductScreenState extends State<CreationProductScreen> {
         'preu': double.tryParse(_priceController.text) ?? 0.0,
         'url': _urlController.text,
         'categoria': _selectedCategory ?? 'Altres',
+        'descompte': int.tryParse(_discountController.text) ?? 0,
       };
 
       try {
@@ -253,6 +256,29 @@ class _CreationProductScreenState extends State<CreationProductScreen> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return l10n.enterUrl;
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+
+              _buildLabel('Descompte (%)', colors),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _discountController,
+                keyboardType: TextInputType.number,
+                decoration: _buildInputDecoration(
+                  hint: 'Ex: 10',
+                  icon: Icons.local_offer_outlined,
+                  colors: colors,
+                ),
+                style: GoogleFonts.outfit(color: colors.textPrimary),
+                validator: (value) {
+                  if (value != null && value.isNotEmpty) {
+                    final discount = int.tryParse(value);
+                    if (discount == null || discount < 0 || discount > 100) {
+                      return 'Introdueix un percentatge entre 0 i 100';
+                    }
                   }
                   return null;
                 },
