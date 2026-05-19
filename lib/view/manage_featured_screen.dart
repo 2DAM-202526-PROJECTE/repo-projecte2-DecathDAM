@@ -8,6 +8,7 @@ import 'package:decathdam/l10n/app_localizations.dart';
 class ManageFeaturedScreen extends StatelessWidget {
   const ManageFeaturedScreen({super.key});
 
+  @override
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
     final productsViewModel = Provider.of<ProductsViewModel>(context, listen: false);

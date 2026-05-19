@@ -86,6 +86,7 @@ class _CreationProductScreenState extends State<CreationProductScreen> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
     final l10n = AppLocalizations.of(context)!;

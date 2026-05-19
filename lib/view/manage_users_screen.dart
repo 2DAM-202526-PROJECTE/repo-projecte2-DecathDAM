@@ -47,6 +47,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
     super.dispose();
   }
 
+  @override
   Widget build(BuildContext context) {
     final usersViewModel = Provider.of<UsersViewModel>(context);
     final colors = AppColors.of(context);

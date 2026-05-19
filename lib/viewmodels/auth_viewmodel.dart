@@ -209,4 +209,32 @@ class AuthViewModel extends ChangeNotifier {
       return false;
     }
   }
+
+  // ─── Actualitzar Subscripció ───────────────────────────────────────────
+
+  Future<bool> updateSubscription(String subscripcio) async {
+    if (currentUser == null || _currentUserModel == null) return false;
+
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final updatedUser = _currentUserModel!.copyWith(
+        subscripcio: subscripcio,
+      );
+      await _userRepository.updateUser(updatedUser);
+      _currentUserModel = updatedUser;
+
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint("Error al actualitzar la subscripció: $e");
+      _errorMessage = 'Error en actualitzar la subscripció: $e';
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
 }

@@ -1,6 +1,5 @@
 import 'package:decathdam/config/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:decathdam/l10n/app_localizations.dart';
 

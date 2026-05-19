@@ -26,6 +26,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
     ).getProductsStream();
   }
 
+  @override
   Widget build(BuildContext context) {
     final productsViewModel = Provider.of<ProductsViewModel>(context);
     final colors = AppColors.of(context);

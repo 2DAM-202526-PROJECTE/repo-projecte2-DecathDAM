@@ -12,6 +12,7 @@ class UserModel {
   final String codiPostal;
   final String ciutat;
   final String idioma;
+  final String subscripcio;
 
   UserModel({
     required this.id,
@@ -27,6 +28,7 @@ class UserModel {
     this.codiPostal = '',
     this.ciutat = '',
     this.idioma = 'ca',
+    this.subscripcio = 'Sense subscripció',
   });
 
   factory UserModel.fromFirestore(String id, Map<String, dynamic> data) {
@@ -44,6 +46,7 @@ class UserModel {
       codiPostal: data['codiPostal'] ?? '',
       ciutat: data['ciutat'] ?? '',
       idioma: data['idioma'] ?? 'ca',
+      subscripcio: data['subscripcio'] ?? 'Sense subscripció',
     );
   }
 
@@ -61,6 +64,7 @@ class UserModel {
       'codiPostal': codiPostal,
       'ciutat': ciutat,
       'idioma': idioma,
+      'subscripcio': subscripcio,
     };
   }
 
@@ -77,6 +81,7 @@ class UserModel {
     String? codiPostal,
     String? ciutat,
     String? idioma,
+    String? subscripcio,
   }) {
     return UserModel(
       id: id,
@@ -92,6 +97,7 @@ class UserModel {
       codiPostal: codiPostal ?? this.codiPostal,
       ciutat: ciutat ?? this.ciutat,
       idioma: idioma ?? this.idioma,
+      subscripcio: subscripcio ?? this.subscripcio,
     );
   }
 }

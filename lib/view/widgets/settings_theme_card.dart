@@ -50,6 +50,7 @@ class _SettingsThemeCardState extends State<SettingsThemeCard>
     super.dispose();
   }
 
+  @override
   Widget build(BuildContext context) {
     final colors = widget.colors;
     final currentMode = widget.themeProvider.themeMode;

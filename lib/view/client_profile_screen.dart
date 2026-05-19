@@ -1,5 +1,6 @@
 import 'package:decathdam/config/app_theme.dart';
 import 'package:decathdam/view/personal_info_screen.dart';
+import 'package:decathdam/view/subscriptions_screen.dart';
 import 'package:decathdam/viewmodels/auth_viewmodel.dart';
 import 'package:decathdam/viewmodels/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -220,6 +221,25 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
                     ),
                   ),
                 ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.purpleAccent.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    'SUBSCRIPCIÓ: ${user?.subscripcio.toUpperCase() ?? 'SENSE SUBSCRIPCIÓ'}',
+                    style: const TextStyle(
+                      color: Colors.purpleAccent,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
                 if (authVM.isLoading) ...[
                   const SizedBox(height: 20),
                   const CircularProgressIndicator(),
@@ -330,6 +350,18 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
                 }
               },
             ),
+          ),
+          Divider(color: colors.divider, height: 1),
+          _buildOptionTile(
+            colors: colors,
+            icon: Icons.card_membership,
+            title: 'Subscripcions',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const SubscriptionsScreen()),
+              );
+            },
           ),
           Divider(color: colors.divider, height: 1),
           _buildOptionTile(

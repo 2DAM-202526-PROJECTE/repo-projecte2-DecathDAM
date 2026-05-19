@@ -60,6 +60,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
     super.dispose();
   }
 
+  @override
   Widget build(BuildContext context) {
     final user = widget.user;
     final colors = widget.colors;
