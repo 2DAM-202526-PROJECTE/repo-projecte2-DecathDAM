@@ -2,6 +2,7 @@ import 'package:decathdam/config/app_theme.dart';
 import 'package:decathdam/viewmodels/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class SettingsThemeCard extends StatefulWidget {
   final ThemeProvider themeProvider;
@@ -49,10 +50,10 @@ class _SettingsThemeCardState extends State<SettingsThemeCard>
     super.dispose();
   }
 
-  @override
   Widget build(BuildContext context) {
     final colors = widget.colors;
     final currentMode = widget.themeProvider.themeMode;
+    final l10n = AppLocalizations.of(context)!;
 
     return SlideTransition(
       position: _slideAnimation,
@@ -97,7 +98,7 @@ class _SettingsThemeCardState extends State<SettingsThemeCard>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Aparença',
+                          l10n.appearance,
                           style: GoogleFonts.outfit(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -106,7 +107,7 @@ class _SettingsThemeCardState extends State<SettingsThemeCard>
                         ),
                         const SizedBox(height: 3),
                         Text(
-                          'Canvia entre mode clar, fosc o sistema',
+                          l10n.changeTheme,
                           style: GoogleFonts.outfit(
                             fontSize: 12,
                             color: colors.textSecondary,
@@ -128,7 +129,7 @@ class _SettingsThemeCardState extends State<SettingsThemeCard>
                   children: [
                     _ThemeChip(
                       icon: Icons.light_mode_rounded,
-                      label: 'Clar',
+                      label: l10n.lightTheme,
                       isSelected: currentMode == ThemeMode.light,
                       colors: colors,
                       onTap: () =>
@@ -137,7 +138,7 @@ class _SettingsThemeCardState extends State<SettingsThemeCard>
                     const SizedBox(width: 4),
                     _ThemeChip(
                       icon: Icons.dark_mode_rounded,
-                      label: 'Fosc',
+                      label: l10n.darkTheme,
                       isSelected: currentMode == ThemeMode.dark,
                       colors: colors,
                       onTap: () =>
@@ -146,7 +147,7 @@ class _SettingsThemeCardState extends State<SettingsThemeCard>
                     const SizedBox(width: 4),
                     _ThemeChip(
                       icon: Icons.settings_suggest_rounded,
-                      label: 'Sistema',
+                      label: l10n.systemTheme,
                       isSelected: currentMode == ThemeMode.system,
                       colors: colors,
                       onTap: () =>

@@ -5,6 +5,7 @@ import 'package:decathdam/viewmodels/users_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class ManageUsersScreen extends StatefulWidget {
   const ManageUsersScreen({super.key});
@@ -46,16 +47,16 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
     super.dispose();
   }
 
-  @override
   Widget build(BuildContext context) {
     final usersViewModel = Provider.of<UsersViewModel>(context);
     final colors = AppColors.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colors.background,
       appBar: AppBar(
         title: Text(
-          'Administrar Usuaris',
+          l10n.manageUsers,
           style: GoogleFonts.outfit(
             fontWeight: FontWeight.w600,
             color: colors.textPrimary,
@@ -85,7 +86,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                 controller: _searchController,
                 style: GoogleFonts.outfit(color: colors.textPrimary),
                 decoration: InputDecoration(
-                  hintText: 'Cercar per nom o email...',
+                  hintText: l10n.searchUsers,
                   hintStyle: GoogleFonts.outfit(
                     color: colors.textSecondary,
                     fontSize: 14,
@@ -149,11 +150,11 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                 final users = usersViewModel.filteredUsers;
 
                 if (allUsers.isEmpty) {
-                  return _buildEmptyState(colors);
+                  return _buildEmptyState(colors, l10n);
                 }
 
                 if (users.isEmpty) {
-                  return _buildNoResultsState(colors, usersViewModel);
+                  return _buildNoResultsState(colors, usersViewModel, l10n);
                 }
 
                 return ListView.builder(
@@ -177,7 +178,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
     );
   }
 
-  Widget _buildEmptyState(AppColors colors) {
+  Widget _buildEmptyState(AppColors colors, AppLocalizations l10n) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -196,7 +197,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
           ),
           const SizedBox(height: 20),
           Text(
-            'No hi ha usuaris',
+            l10n.noUsers,
             style: GoogleFonts.outfit(
               fontSize: 18,
               fontWeight: FontWeight.w500,
@@ -205,7 +206,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
           ),
           const SizedBox(height: 8),
           Text(
-            'Afegeix el primer usuari amb el botó +',
+            l10n.addFirstUser,
             style: GoogleFonts.outfit(fontSize: 13, color: colors.textMuted),
           ),
         ],
@@ -213,7 +214,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
     );
   }
 
-  Widget _buildNoResultsState(AppColors colors, UsersViewModel usersViewModel) {
+  Widget _buildNoResultsState(AppColors colors, UsersViewModel usersViewModel, AppLocalizations l10n) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -221,7 +222,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
           Icon(Icons.search_off_rounded, size: 48, color: colors.textSecondary),
           const SizedBox(height: 12),
           Text(
-            'Cap resultat per "${usersViewModel.searchQuery}"',
+            l10n.noResultsFor(usersViewModel.searchQuery),
             style: GoogleFonts.outfit(
               fontSize: 15,
               color: colors.textSecondary,

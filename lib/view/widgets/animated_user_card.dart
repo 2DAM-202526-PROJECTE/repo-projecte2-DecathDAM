@@ -4,6 +4,7 @@ import 'package:decathdam/view/widgets/action_button.dart';
 import 'package:decathdam/viewmodels/users_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class AnimatedUserCard extends StatefulWidget {
   final UserModel user;
@@ -59,10 +60,10 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
     super.dispose();
   }
 
-  @override
   Widget build(BuildContext context) {
     final user = widget.user;
     final colors = widget.colors;
+    final l10n = AppLocalizations.of(context)!;
     final isAdmin = user.rol == 'admin';
     final initials = user.nom.isNotEmpty
         ? user.nom
@@ -168,7 +169,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
-                                    isAdmin ? 'Admin' : 'Client',
+                                    isAdmin ? l10n.adminRole : l10n.clientRole,
                                     style: GoogleFonts.outfit(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w600,
@@ -205,7 +206,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
-                            'Inactiu',
+                            l10n.inactive,
                             style: GoogleFonts.outfit(
                               fontSize: 11,
                               color: Colors.red[300],
@@ -233,7 +234,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
                         Expanded(
                           child: ActionButton(
                             icon: Icons.swap_horiz_rounded,
-                            label: isAdmin ? 'Fer Client' : 'Fer Admin',
+                            label: isAdmin ? l10n.makeClient : l10n.makeAdmin,
                             color: const Color(0xFF42A5F5),
                             onTap: () => _toggleRole(user),
                           ),
@@ -244,7 +245,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
                             icon: user.actiu
                                 ? Icons.block_rounded
                                 : Icons.check_circle_outline_rounded,
-                            label: user.actiu ? 'Desactivar' : 'Activar',
+                            label: user.actiu ? l10n.deactivate : l10n.activate,
                             color: user.actiu
                                 ? Colors.amber
                                 : const Color(0xFF00C853),
@@ -255,7 +256,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
                         Expanded(
                           child: ActionButton(
                             icon: Icons.delete_outline_rounded,
-                            label: 'Eliminar',
+                            label: l10n.delete,
                             color: Colors.red[400]!,
                             onTap: () =>
                                 _showDeleteDialog(context, user, colors),
@@ -275,6 +276,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
 
   void _toggleRole(UserModel user) async {
     final newRole = user.rol == 'admin' ? 'client' : 'admin';
+    final l10n = AppLocalizations.of(context)!;
     try {
       final updatedUser = user.copyWith(rol: newRole);
       await widget.viewModel.updateUser(updatedUser);
@@ -282,7 +284,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '${user.nom} ara és ${newRole == 'admin' ? 'Admin' : 'Client'}',
+              l10n.userNowIsRole(user.nom, newRole == 'admin' ? l10n.adminRole : l10n.clientRole),
               style: GoogleFonts.outfit(),
             ),
             backgroundColor: const Color(0xFF1E88E5),
@@ -307,6 +309,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
   }
 
   void _toggleActive(UserModel user) async {
+    final l10n = AppLocalizations.of(context)!;
     try {
       final updatedUser = user.copyWith(actiu: !user.actiu);
       await widget.viewModel.updateUser(updatedUser);
@@ -314,7 +317,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '${user.nom} ${!user.actiu ? 'activat' : 'desactivat'}',
+              !user.actiu ? l10n.userActivated(user.nom) : l10n.userDeactivated(user.nom),
               style: GoogleFonts.outfit(),
             ),
             backgroundColor: !user.actiu
@@ -345,6 +348,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
     UserModel user,
     AppColors colors,
   ) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (dialogContext) {
@@ -354,7 +358,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
             borderRadius: BorderRadius.circular(20),
           ),
           title: Text(
-            'Eliminar usuari?',
+            l10n.deleteUserConfirmation,
             style: GoogleFonts.outfit(
               fontWeight: FontWeight.bold,
               color: colors.textPrimary,
@@ -367,7 +371,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
                 fontSize: 14,
               ),
               children: [
-                const TextSpan(text: 'Estàs segur que vols eliminar '),
+                TextSpan(text: l10n.deleteUserText(user.nom).split('"${user.nom}"')[0]),
                 TextSpan(
                   text: '"${user.nom}"',
                   style: TextStyle(
@@ -375,7 +379,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
                     color: colors.textPrimary,
                   ),
                 ),
-                const TextSpan(text: '? Aquesta acció no es pot desfer.'),
+                TextSpan(text: l10n.deleteUserText(user.nom).split('"${user.nom}"').length > 1 ? l10n.deleteUserText(user.nom).split('"${user.nom}"')[1] : ''),
               ],
             ),
           ),
@@ -383,7 +387,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
               child: Text(
-                'Cancel·lar',
+                l10n.cancel,
                 style: GoogleFonts.outfit(color: colors.cancelButton),
               ),
             ),
@@ -396,7 +400,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Usuari eliminat: ${user.nom}',
+                          l10n.userDeleted(user.nom),
                           style: GoogleFonts.outfit(),
                         ),
                         backgroundColor: Colors.red[600],
@@ -426,7 +430,7 @@ class _AnimatedUserCardState extends State<AnimatedUserCard>
                 ),
               ),
               child: Text(
-                'Eliminar',
+                l10n.delete,
                 style: GoogleFonts.outfit(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,

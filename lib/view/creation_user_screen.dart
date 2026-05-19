@@ -4,6 +4,7 @@ import 'package:decathdam/viewmodels/users_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class CreationUserScreen extends StatefulWidget {
   const CreationUserScreen({super.key});
@@ -40,6 +41,7 @@ class _CreationUserScreenState extends State<CreationUserScreen> {
   }
 
   Future<void> _handleCreateUser() async {
+    final l10n = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
 
     final usersVM = context.read<UsersViewModel>();
@@ -64,7 +66,7 @@ class _CreationUserScreenState extends State<CreationUserScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Usuari creat correctament'),
+            content: Text(l10n.userCreatedSuccess),
             backgroundColor: Colors.green,
           ),
         );
@@ -74,7 +76,7 @@ class _CreationUserScreenState extends State<CreationUserScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al crear usuari: $e'),
+            content: Text('${l10n.errorCreatingUser}$e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -82,15 +84,15 @@ class _CreationUserScreenState extends State<CreationUserScreen> {
     }
   }
 
-  @override
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colors.background,
       appBar: AppBar(
         title: Text(
-          'Crear Nou Usuari',
+          l10n.createNewUser,
           style: GoogleFonts.outfit(
             fontWeight: FontWeight.bold,
             color: colors.textPrimary,
@@ -107,44 +109,44 @@ class _CreationUserScreenState extends State<CreationUserScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSectionTitle('Informació Bàsica', colors),
+              _buildSectionTitle(l10n.basicInfo, colors),
               const SizedBox(height: 16),
               _buildTextField(
                 controller: _nomController,
-                label: 'Nom complet',
+                label: l10n.fullName,
                 icon: Icons.person_outline,
                 colors: colors,
-                validator: (v) => v?.isEmpty ?? true ? 'Camp obligatori' : null,
+                validator: (v) => v?.isEmpty ?? true ? l10n.requiredField : null,
               ),
               const SizedBox(height: 16),
               _buildTextField(
                 controller: _emailController,
-                label: 'Email',
+                label: l10n.email,
                 icon: Icons.email_outlined,
                 colors: colors,
                 keyboardType: TextInputType.emailAddress,
                 validator: (v) {
-                  if (v?.isEmpty ?? true) return 'Camp obligatori';
-                  if (!v!.contains('@')) return 'Email no vàlid';
+                  if (v?.isEmpty ?? true) return l10n.requiredField;
+                  if (!v!.contains('@')) return l10n.invalidEmail;
                   return null;
                 },
               ),
               const SizedBox(height: 16),
-              _buildRolPicker(colors),
+              _buildRolPicker(colors, l10n),
               
               const SizedBox(height: 32),
-              _buildSectionTitle('Dades Personals', colors),
+              _buildSectionTitle(l10n.personalData, colors),
               const SizedBox(height: 16),
               _buildTextField(
                 controller: _dniController,
-                label: 'DNI',
+                label: l10n.dni,
                 icon: Icons.badge_outlined,
                 colors: colors,
               ),
               const SizedBox(height: 16),
               _buildTextField(
                 controller: _telefonController,
-                label: 'Telèfon',
+                label: l10n.phone,
                 icon: Icons.phone_outlined,
                 colors: colors,
                 keyboardType: TextInputType.phone,
@@ -155,17 +157,17 @@ class _CreationUserScreenState extends State<CreationUserScreen> {
                   Expanded(
                     child: _buildTextField(
                       controller: _dataNaixementController,
-                      label: 'Data Naixement',
+                      label: l10n.birthDate,
                       icon: Icons.cake_outlined,
                       colors: colors,
-                      hintText: 'DD/MM/AAAA',
+                      hintText: l10n.dateFormat,
                     ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: _buildTextField(
                       controller: _genereController,
-                      label: 'Gènere',
+                      label: l10n.gender,
                       icon: Icons.people_outline,
                       colors: colors,
                     ),
@@ -174,11 +176,11 @@ class _CreationUserScreenState extends State<CreationUserScreen> {
               ),
 
               const SizedBox(height: 32),
-              _buildSectionTitle('Adreça de Lliurament', colors),
+              _buildSectionTitle(l10n.deliveryAddress, colors),
               const SizedBox(height: 16),
               _buildTextField(
                 controller: _adrecaController,
-                label: 'Adreça (Carrer, núm, porta)',
+                label: l10n.addressLabel,
                 icon: Icons.home_outlined,
                 colors: colors,
               ),
@@ -189,7 +191,7 @@ class _CreationUserScreenState extends State<CreationUserScreen> {
                     flex: 2,
                     child: _buildTextField(
                       controller: _codiPostalController,
-                      label: 'Codi Postal',
+                      label: l10n.postalCode,
                       icon: Icons.mark_as_unread_outlined,
                       colors: colors,
                       keyboardType: TextInputType.number,
@@ -200,7 +202,7 @@ class _CreationUserScreenState extends State<CreationUserScreen> {
                     flex: 3,
                     child: _buildTextField(
                       controller: _ciutatController,
-                      label: 'Ciutat',
+                      label: l10n.city,
                       icon: Icons.location_city_outlined,
                       colors: colors,
                     ),
@@ -223,7 +225,7 @@ class _CreationUserScreenState extends State<CreationUserScreen> {
                     elevation: 4,
                   ),
                   child: Text(
-                    'Crear Usuari',
+                    l10n.createUserButton,
                     style: GoogleFonts.outfit(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -289,12 +291,12 @@ class _CreationUserScreenState extends State<CreationUserScreen> {
     );
   }
 
-  Widget _buildRolPicker(AppColors colors) {
+  Widget _buildRolPicker(AppColors colors, AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Rol d\'usuari',
+          l10n.userRoleLabel,
           style: GoogleFonts.outfit(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -316,9 +318,9 @@ class _CreationUserScreenState extends State<CreationUserScreen> {
               dropdownColor: colors.surface,
               icon: const Icon(Icons.arrow_drop_down_rounded, color: Color(0xFFFF6D00)),
               style: GoogleFonts.outfit(color: colors.textPrimary),
-              items: const [
-                DropdownMenuItem(value: 'client', child: Text('Client')),
-                DropdownMenuItem(value: 'admin', child: Text('Administrador')),
+              items: [
+                DropdownMenuItem(value: 'client', child: Text(l10n.clientRole)),
+                DropdownMenuItem(value: 'admin', child: Text(l10n.adminRole)),
               ],
               onChanged: (val) => setState(() => _selectedRol = val!),
             ),

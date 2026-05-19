@@ -2,6 +2,7 @@ import 'package:decathdam/config/app_theme.dart';
 import 'package:decathdam/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
   const PersonalInfoScreen({super.key});
@@ -56,10 +57,12 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   }
 
   Future<void> _saveChanges(BuildContext context, AuthViewModel authVM) async {
+    final l10n = AppLocalizations.of(context)!;
+
     final newName = _nameController.text.trim();
     if (newName.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('El nom no pot estar buit')),
+        SnackBar(content: Text(l10n.nameCannotBeEmpty)),
       );
       return;
     }
@@ -80,7 +83,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Informació actualitzada correctament'),
+          content: Text(l10n.infoUpdated),
           backgroundColor: Colors.green.shade600,
         ),
       );
@@ -88,7 +91,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(authVM.errorMessage ?? 'Error al actualitzar'),
+          content: Text(authVM.errorMessage ?? l10n.errorUpdating),
           backgroundColor: Colors.red.shade600,
         ),
       );
@@ -99,12 +102,13 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
     final authVM = Provider.of<AuthViewModel>(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colors.background,
       appBar: AppBar(
         title: Text(
-          'La meva informació',
+          l10n.myInformation,
           style:
               TextStyle(color: colors.textPrimary, fontWeight: FontWeight.bold),
         ),
@@ -120,7 +124,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Dades Personals',
+                    l10n.personalData,
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -129,31 +133,30 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                   ),
                   const SizedBox(height: 24),
                   _buildTextField(
-                    label: 'Nom Complet',
+                    label: l10n.fullName,
                     controller: _nameController,
                     colors: colors,
                     icon: Icons.person,
                   ),
                   const SizedBox(height: 20),
                   _buildTextField(
-                    label: 'Correu Electrònic',
+                    label: l10n.email,
                     controller: _emailController,
                     colors: colors,
                     icon: Icons.email,
                     readOnly: true,
-                    helpText:
-                        'El correu electrònic no es pot modificar directament per seguretat.',
+                    helpText: l10n.emailCannotBeModified,
                   ),
                   const SizedBox(height: 20),
                   _buildTextField(
-                    label: 'DNI',
+                    label: l10n.dni,
                     controller: _dniController,
                     colors: colors,
                     icon: Icons.badge,
                   ),
                   const SizedBox(height: 20),
                   _buildTextField(
-                    label: 'Telèfon',
+                    label: l10n.phone,
                     controller: _phoneController,
                     colors: colors,
                     icon: Icons.phone,
@@ -161,22 +164,22 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                   ),
                   const SizedBox(height: 20),
                   _buildTextField(
-                    label: 'Data de Naixement',
+                    label: l10n.birthDate,
                     controller: _birthDateController,
                     colors: colors,
                     icon: Icons.cake,
-                    hintText: 'DD/MM/AAAA',
+                    hintText: l10n.dateFormat,
                   ),
                   const SizedBox(height: 20),
                   _buildTextField(
-                    label: 'Gènere',
+                    label: l10n.gender,
                     controller: _genderController,
                     colors: colors,
                     icon: Icons.people,
                   ),
                   const SizedBox(height: 32),
                   Text(
-                    'Adreça de lliurament',
+                    l10n.shippingAddress,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -185,7 +188,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
-                    label: 'Carrer, número, pis, porta',
+                    label: l10n.address,
                     controller: _addressController,
                     colors: colors,
                     icon: Icons.home,
@@ -196,7 +199,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                       Expanded(
                         flex: 2,
                         child: _buildTextField(
-                          label: 'Codi Postal',
+                          label: l10n.postalCode,
                           controller: _postalCodeController,
                           colors: colors,
                           icon: Icons.mark_as_unread,
@@ -207,7 +210,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                       Expanded(
                         flex: 3,
                         child: _buildTextField(
-                          label: 'Ciutat',
+                          label: l10n.city,
                           controller: _cityController,
                           colors: colors,
                           icon: Icons.location_city,
@@ -229,8 +232,8 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                         ),
                         elevation: 5,
                       ),
-                      child: const Text(
-                        'Desar Canvis',
+                      child: Text(
+                        l10n.saveChanges,
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w600),
                       ),

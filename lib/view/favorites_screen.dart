@@ -4,6 +4,7 @@ import 'package:decathdam/viewmodels/favorites_viewmodel.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -47,6 +48,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
   Widget build(BuildContext context) {
     final favoritesViewModel = Provider.of<FavoritesViewModel>(context);
     final colors = AppColors.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return StreamBuilder<List<Product>>(
       stream: _productsStream,
@@ -80,7 +82,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Els teus favorits',
+                  l10n.yourFavorites,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -89,7 +91,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Encara no tens productes guardats',
+                  l10n.noSavedProducts,
                   style: TextStyle(fontSize: 16, color: colors.textSecondary),
                 ),
               ],

@@ -4,6 +4,7 @@ import 'package:decathdam/view/main_screen.dart';
 import 'package:decathdam/view/checkout_address_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -11,6 +12,7 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Consumer<CartViewModel>(
       builder: (context, cart, child) {
@@ -26,7 +28,7 @@ class CartScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'La teva cistella està buida',
+                  l10n.emptyCartTitle,
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -35,7 +37,7 @@ class CartScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Explora els nostres productes i afegeix-ne algun!',
+                  l10n.emptyCartMessage,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16, color: colors.textSecondary),
                 ),
@@ -60,7 +62,7 @@ class CartScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: const Text('Anar a la botiga'),
+                  child: Text(l10n.goToStore),
                 ),
               ],
             ),
@@ -146,7 +148,7 @@ class CartScreen extends StatelessWidget {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '${product.preu.toStringAsFixed(2)} € / unitat',
+                                '${product.preu.toStringAsFixed(2)} € ${l10n.perUnit}',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: colors.textSecondary,
@@ -245,7 +247,7 @@ class CartScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     _buildPriceRow(
-                      'Total',
+                      l10n.total,
                       cart.totalPrice,
                       colors.textPrimary,
                       20,
@@ -272,8 +274,8 @@ class CartScreen extends StatelessWidget {
                           ),
                           elevation: 0,
                         ),
-                        child: const Text(
-                          'Pagar ara',
+                        child: Text(
+                          l10n.payNow,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

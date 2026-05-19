@@ -3,6 +3,7 @@ import 'package:decathdam/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -70,7 +71,7 @@ class _RegisterScreenState extends State<RegisterScreen>
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(authVM.errorMessage ?? 'Error desconegut'),
+            content: Text(authVM.errorMessage ?? AppLocalizations.of(context)!.unknownError),
             backgroundColor: Colors.redAccent,
             behavior: SnackBarBehavior.floating,
             shape:
@@ -85,6 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen>
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
     final isDark = colors.isDark;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: Container(
@@ -117,15 +119,15 @@ class _RegisterScreenState extends State<RegisterScreen>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // ─── Header ────────────────────────────────────
-                      _buildHeader(colors, isDark),
+                      _buildHeader(colors, isDark, l10n),
                       const SizedBox(height: 32),
 
                       // ─── Form Card ─────────────────────────────────
-                      _buildFormCard(colors, isDark),
+                      _buildFormCard(colors, isDark, l10n),
                       const SizedBox(height: 32),
 
                       // ─── Login link ────────────────────────────────
-                      _buildLoginLink(colors),
+                      _buildLoginLink(colors, l10n),
                       const SizedBox(height: 20),
                     ],
                   ),
@@ -138,7 +140,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     );
   }
 
-  Widget _buildHeader(AppColors colors, bool isDark) {
+  Widget _buildHeader(AppColors colors, bool isDark, AppLocalizations l10n) {
     return Column(
       children: [
         Container(
@@ -167,7 +169,7 @@ class _RegisterScreenState extends State<RegisterScreen>
         ),
         const SizedBox(height: 16),
         Text(
-          'Crear compte',
+          l10n.createAccount,
           style: GoogleFonts.outfit(
             fontSize: 28,
             fontWeight: FontWeight.w700,
@@ -177,7 +179,7 @@ class _RegisterScreenState extends State<RegisterScreen>
         ),
         const SizedBox(height: 4),
         Text(
-          'Uneix-te a DecathDAM',
+          l10n.joinApp,
           style: GoogleFonts.outfit(
             fontSize: 15,
             fontWeight: FontWeight.w400,
@@ -188,7 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     );
   }
 
-  Widget _buildFormCard(AppColors colors, bool isDark) {
+  Widget _buildFormCard(AppColors colors, bool isDark, AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -219,13 +221,13 @@ class _RegisterScreenState extends State<RegisterScreen>
             // Nom
             _buildTextField(
               controller: _nomController,
-              label: 'Nom complet',
+              label: l10n.fullName,
               icon: Icons.person_outline,
               colors: colors,
               isDark: isDark,
               validator: (v) {
                 if (v == null || v.trim().isEmpty) {
-                  return 'Introdueix el teu nom';
+                  return l10n.enterName;
                 }
                 return null;
               },
@@ -234,14 +236,14 @@ class _RegisterScreenState extends State<RegisterScreen>
             // Email
             _buildTextField(
               controller: _emailController,
-              label: 'Email',
+              label: l10n.email,
               icon: Icons.email_outlined,
               keyboardType: TextInputType.emailAddress,
               colors: colors,
               isDark: isDark,
               validator: (v) {
-                if (v == null || v.isEmpty) return 'Introdueix el teu email';
-                if (!v.contains('@')) return 'Email no vàlid';
+                if (v == null || v.isEmpty) return l10n.enterEmail;
+                if (!v.contains('@')) return l10n.invalidEmail;
                 return null;
               },
             ),
@@ -249,7 +251,7 @@ class _RegisterScreenState extends State<RegisterScreen>
             // Contrasenya
             _buildTextField(
               controller: _passwordController,
-              label: 'Contrasenya',
+              label: l10n.password,
               icon: Icons.lock_outline,
               obscure: _obscurePassword,
               colors: colors,
@@ -266,8 +268,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                     setState(() => _obscurePassword = !_obscurePassword),
               ),
               validator: (v) {
-                if (v == null || v.isEmpty) return 'Introdueix una contrasenya';
-                if (v.length < 6) return 'Mínim 6 caràcters';
+                if (v == null || v.isEmpty) return l10n.enterNewPassword;
+                if (v.length < 6) return l10n.minPasswordLength;
                 return null;
               },
             ),
@@ -275,7 +277,7 @@ class _RegisterScreenState extends State<RegisterScreen>
             // Confirmar contrasenya
             _buildTextField(
               controller: _confirmPasswordController,
-              label: 'Confirmar contrasenya',
+              label: l10n.confirmPassword,
               icon: Icons.lock_outline,
               obscure: _obscureConfirm,
               colors: colors,
@@ -292,9 +294,9 @@ class _RegisterScreenState extends State<RegisterScreen>
                     setState(() => _obscureConfirm = !_obscureConfirm),
               ),
               validator: (v) {
-                if (v == null || v.isEmpty) return 'Confirma la contrasenya';
+                if (v == null || v.isEmpty) return l10n.enterConfirmPassword;
                 if (v != _passwordController.text) {
-                  return 'Les contrasenyes no coincideixen';
+                  return l10n.passwordsDoNotMatch;
                 }
                 return null;
               },
@@ -335,7 +337,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                 ),
                               )
                             : Text(
-                                'Crear compte',
+                                l10n.createAccount,
                                 style: GoogleFonts.outfit(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -419,12 +421,12 @@ class _RegisterScreenState extends State<RegisterScreen>
     );
   }
 
-  Widget _buildLoginLink(AppColors colors) {
+  Widget _buildLoginLink(AppColors colors, AppLocalizations l10n) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'Ja tens compte? ',
+          l10n.alreadyHaveAccount,
           style: GoogleFonts.outfit(
             color: colors.textSecondary,
             fontSize: 14,
@@ -433,7 +435,7 @@ class _RegisterScreenState extends State<RegisterScreen>
         GestureDetector(
           onTap: () => Navigator.of(context).pop(),
           child: Text(
-            'Inicia sessió',
+            l10n.loginButton,
             style: GoogleFonts.outfit(
               color: const Color(0xFF42A5F5),
               fontSize: 14,

@@ -4,6 +4,7 @@ import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class EditProductScreen extends StatefulWidget {
   final Product product;
@@ -55,7 +56,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.dispose();
   }
 
-  Future<void> _submitForm() async {
+  Future<void> _submitForm(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
@@ -77,7 +79,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Producte actualitzat correctament'),
+              content: Text(l10n.productUpdatedSuccess),
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
@@ -91,7 +93,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error en actualitzar: $e'),
+              content: Text('${l10n.errorUpdatingProduct}$e'),
               backgroundColor: Colors.red,
               behavior: SnackBarBehavior.floating,
             ),
@@ -105,15 +107,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  @override
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colors.background,
       appBar: AppBar(
         title: Text(
-          'Editar Producte',
+          l10n.editProduct,
           style: GoogleFonts.outfit(
             fontWeight: FontWeight.w600,
             color: colors.textPrimary,
@@ -132,7 +134,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Modificar Producte',
+                l10n.modifyProduct,
                 style: GoogleFonts.outfit(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -141,7 +143,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Actualitza la informació del producte.',
+                l10n.updateProductInfo,
                 style: GoogleFonts.outfit(
                   fontSize: 14,
                   color: colors.textSecondary,
@@ -149,39 +151,39 @@ class _EditProductScreenState extends State<EditProductScreen> {
               ),
               const SizedBox(height: 32),
 
-              _buildLabel('Nom del Producte', colors),
+              _buildLabel(l10n.productName, colors),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _nameController,
                 decoration: _buildInputDecoration(
-                  hint: 'Ex: Bambes de Running Kalenji',
+                  hint: l10n.productNameExample,
                   icon: Icons.shopping_bag_outlined,
                   colors: colors,
                 ),
                 style: GoogleFonts.outfit(color: colors.textPrimary),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Si us plau, introdueix un nom';
+                    return l10n.enterProductName;
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 24),
 
-              _buildLabel('Descripció', colors),
+              _buildLabel(l10n.description, colors),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _descController,
                 maxLines: 3,
                 decoration: _buildInputDecoration(
-                  hint: 'Descriu les característiques tècniques...',
+                  hint: l10n.descriptionHint,
                   icon: Icons.description_outlined,
                   colors: colors,
                 ).copyWith(alignLabelWithHint: true),
                 style: GoogleFonts.outfit(color: colors.textPrimary),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Si us plau, introdueix una descripció';
+                    return l10n.enterDescription;
                   }
                   return null;
                 },
@@ -194,7 +196,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildLabel('Preu (€)', colors),
+                        _buildLabel(l10n.priceLabel, colors),
                         const SizedBox(height: 8),
                         TextFormField(
                           controller: _priceController,
@@ -202,17 +204,17 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             decimal: true,
                           ),
                           decoration: _buildInputDecoration(
-                            hint: '0.00',
+                            hint: l10n.priceExample,
                             icon: Icons.euro,
                             colors: colors,
                           ),
                           style: GoogleFonts.outfit(color: colors.textPrimary),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Introdueix un preu';
+                              return l10n.enterPrice;
                             }
                             if (double.tryParse(value) == null) {
-                              return 'Preu no vàlid';
+                              return l10n.invalidPrice;
                             }
                             return null;
                           },
@@ -225,7 +227,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildLabel('Categoria', colors),
+                        _buildLabel(l10n.categoryTitle, colors),
                         const SizedBox(height: 8),
                         DropdownButtonFormField<String>(
                           initialValue: _selectedCategory,
@@ -248,12 +250,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             });
                           },
                           decoration: _buildInputDecoration(
-                            hint: 'Tria una',
+                            hint: l10n.chooseOne,
                             icon: Icons.category_outlined,
                             colors: colors,
                           ),
                           validator: (value) =>
-                              value == null ? 'Tria una categoria' : null,
+                              value == null ? l10n.chooseCategory : null,
                         ),
                       ],
                     ),
@@ -262,19 +264,19 @@ class _EditProductScreenState extends State<EditProductScreen> {
               ),
               const SizedBox(height: 24),
 
-              _buildLabel('URL de la Imatge', colors),
+              _buildLabel(l10n.imageUrl, colors),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _urlController,
                 decoration: _buildInputDecoration(
-                  hint: 'https://exemple.com/imatge.jpg',
+                  hint: l10n.imageUrlHint,
                   icon: Icons.link,
                   colors: colors,
                 ),
                 style: GoogleFonts.outfit(color: colors.textPrimary),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Si us plau, introdueix una URL';
+                    return l10n.enterUrl;
                   }
                   return null;
                 },
@@ -285,7 +287,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               SizedBox(
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _submitForm,
+                  onPressed: _isLoading ? null : () => _submitForm(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0077C8),
                     foregroundColor: Colors.white,
@@ -304,7 +306,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           ),
                         )
                       : Text(
-                          'Desar Canvis',
+                          l10n.saveChanges,
                           style: GoogleFonts.outfit(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

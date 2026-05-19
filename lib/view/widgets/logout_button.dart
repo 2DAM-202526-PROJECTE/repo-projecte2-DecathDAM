@@ -1,6 +1,8 @@
 import 'package:decathdam/config/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class LogoutButton extends StatefulWidget {
   final AppColors colors;
@@ -75,7 +77,7 @@ class _LogoutButtonState extends State<LogoutButton>
                 const Icon(Icons.logout_rounded, color: Colors.red, size: 20),
                 const SizedBox(width: 10),
                 Text(
-                  'Tancar sessió',
+                  AppLocalizations.of(context)!.logout,
                   style: GoogleFonts.outfit(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,

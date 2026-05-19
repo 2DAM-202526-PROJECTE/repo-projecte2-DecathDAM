@@ -5,6 +5,7 @@ import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class ManageProductsScreen extends StatefulWidget {
   const ManageProductsScreen({super.key});
@@ -25,16 +26,16 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
     ).getProductsStream();
   }
 
-  @override
   Widget build(BuildContext context) {
     final productsViewModel = Provider.of<ProductsViewModel>(context);
     final colors = AppColors.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colors.background,
       appBar: AppBar(
         title: Text(
-          'Administrar Productes',
+          l10n.manageProducts,
           style: GoogleFonts.outfit(
             fontWeight: FontWeight.w600,
             color: colors.textPrimary,
@@ -75,7 +76,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No hi ha productes',
+                    l10n.noProducts,
                     style: GoogleFonts.outfit(
                       fontSize: 18,
                       color: colors.textSecondary,
@@ -96,6 +97,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                 product,
                 productsViewModel,
                 colors,
+                l10n,
               );
             },
           );
@@ -109,6 +111,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
     Product product,
     ProductsViewModel viewModel,
     AppColors colors,
+    AppLocalizations l10n,
   ) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -188,7 +191,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                   },
                   icon: const Icon(Icons.edit_outlined),
                   color: colors.accentBlue,
-                  tooltip: 'Editar',
+                  tooltip: l10n.edit,
                 ),
                 IconButton(
                   onPressed: () => _showDeleteConfirmation(
@@ -196,10 +199,11 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                     product,
                     viewModel,
                     colors,
+                    l10n,
                   ),
                   icon: const Icon(Icons.delete_outline),
                   color: Colors.red[400],
-                  tooltip: 'Eliminar',
+                  tooltip: l10n.delete,
                 ),
               ],
             ),
@@ -214,6 +218,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
     Product product,
     ProductsViewModel viewModel,
     AppColors colors,
+    AppLocalizations l10n,
   ) {
     showDialog(
       context: context,
@@ -224,21 +229,21 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
             borderRadius: BorderRadius.circular(16),
           ),
           title: Text(
-            'Eliminar producte?',
+            l10n.deleteProductConfirmation,
             style: GoogleFonts.outfit(
               fontWeight: FontWeight.bold,
               color: colors.textPrimary,
             ),
           ),
           content: Text(
-            'Estàs segur que vols eliminar "${product.nom}"? Aquesta acció no es pot desfer.',
+            l10n.deleteProductText(product.nom),
             style: GoogleFonts.outfit(color: colors.textSecondary),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
               child: Text(
-                'Cancel·lar',
+                l10n.cancel,
                 style: GoogleFonts.outfit(color: colors.cancelButton),
               ),
             ),
@@ -250,7 +255,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Producte eliminat: ${product.nom}'),
+                        content: Text('${l10n.productDeleted}${product.nom}'),
                         backgroundColor: Colors.green,
                         behavior: SnackBarBehavior.floating,
                         shape: RoundedRectangleBorder(
@@ -263,7 +268,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Error en eliminar: $e'),
+                        content: Text('${l10n.errorDeleting}$e'),
                         backgroundColor: Colors.red,
                         behavior: SnackBarBehavior.floating,
                       ),
@@ -278,7 +283,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                 ),
               ),
               child: Text(
-                'Eliminar',
+                l10n.delete,
                 style: GoogleFonts.outfit(color: Colors.white),
               ),
             ),

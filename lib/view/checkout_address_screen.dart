@@ -4,6 +4,7 @@ import 'package:decathdam/viewmodels/cart_viewmodel.dart';
 import 'package:decathdam/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class CheckoutAddressScreen extends StatefulWidget {
   final CartViewModel cart;
@@ -71,8 +72,8 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
       if (context.mounted) {
         Navigator.pop(context); // Tancar la pantalla de checkout
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Pagament realitzat amb èxit! Gràcies per la teva compra.'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.paymentSuccess),
             backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
           ),
@@ -82,8 +83,8 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
       if (context.mounted) Navigator.pop(context); // Tancar dialog de càrrega
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error en el pagament o cancel·lat'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.paymentError),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
           ),
@@ -102,7 +103,7 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
 
     if (name.isEmpty || address.isEmpty || postalCode.isEmpty || city.isEmpty || country.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Si us plau, omple totes les dades necessàries.')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.fillAllFields)),
       );
       return;
     }
@@ -125,7 +126,7 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
         if (!success && mounted) {
            ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(authVM.errorMessage ?? 'Error al guardar l\'adreça'),
+              content: Text(authVM.errorMessage ?? AppLocalizations.of(context)!.errorSavingAddress),
               backgroundColor: Colors.red,
             ),
           );
@@ -168,12 +169,13 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colors.background,
       appBar: AppBar(
         title: Text(
-          'Dades d\'enviament',
+          l10n.shippingDataTitle,
           style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.bold),
         ),
         backgroundColor: colors.surface,
@@ -188,7 +190,7 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Informació de contacte',
+                  l10n.contactInfo,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -196,12 +198,12 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                _buildTextField(colors, 'Nom complet', _nameController),
-                _buildTextField(colors, 'Telèfon', _phoneController, type: TextInputType.phone),
+                _buildTextField(colors, l10n.fullName, _nameController),
+                _buildTextField(colors, l10n.phone, _phoneController, type: TextInputType.phone),
                 
                 const SizedBox(height: 24),
                 Text(
-                  'Adreça d\'enviament',
+                  l10n.shippingAddress,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -209,18 +211,18 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                _buildTextField(colors, 'País', _countryController),
-                _buildTextField(colors, 'Carrer, pis, porta', _addressController),
+                _buildTextField(colors, l10n.country, _countryController),
+                _buildTextField(colors, l10n.address, _addressController),
                 Row(
                   children: [
                     Expanded(
                       flex: 2,
-                      child: _buildTextField(colors, 'Codi Postal', _postalCodeController, type: TextInputType.number),
+                      child: _buildTextField(colors, l10n.postalCode, _postalCodeController, type: TextInputType.number),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       flex: 3,
-                      child: _buildTextField(colors, 'Ciutat', _cityController),
+                      child: _buildTextField(colors, l10n.city, _cityController),
                     ),
                   ],
                 ),
@@ -228,7 +230,7 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
                 const SizedBox(height: 8),
                 CheckboxListTile(
                   title: Text(
-                    'Guardar dades per a futures compres',
+                    l10n.saveDataForFuture,
                     style: TextStyle(color: colors.textPrimary, fontSize: 16),
                   ),
                   value: _saveAddress,
@@ -281,7 +283,7 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
                             child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                           )
                         : Text(
-                            'Pagar ${widget.cart.totalPrice.toStringAsFixed(2)} €',
+                            '${l10n.pay} ${widget.cart.totalPrice.toStringAsFixed(2)} €',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

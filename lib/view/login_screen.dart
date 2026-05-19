@@ -4,6 +4,7 @@ import 'package:decathdam/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -61,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen>
     if (!success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(authVM.errorMessage ?? 'Error desconegut'),
+          content: Text(authVM.errorMessage ?? AppLocalizations.of(context)!.unknownError),
           backgroundColor: Colors.redAccent,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -89,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen>
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
     final isDark = colors.isDark;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: Container(
@@ -121,23 +123,23 @@ class _LoginScreenState extends State<LoginScreen>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // ─── Logo / Brand ──────────────────────────────
-                      _buildLogo(colors, isDark),
+                      _buildLogo(colors, isDark, l10n),
                       const SizedBox(height: 40),
 
                       // ─── Form Card ─────────────────────────────────
-                      _buildFormCard(colors, isDark),
+                      _buildFormCard(colors, isDark, l10n),
                       const SizedBox(height: 24),
 
                       // ─── Divider ───────────────────────────────────
-                      _buildDivider(colors),
+                      _buildDivider(colors, l10n),
                       const SizedBox(height: 24),
 
                       // ─── Google Button ─────────────────────────────
-                      _buildGoogleButton(colors, isDark),
+                      _buildGoogleButton(colors, isDark, l10n),
                       const SizedBox(height: 32),
 
                       // ─── Registre link ─────────────────────────────
-                      _buildRegisterLink(colors),
+                      _buildRegisterLink(colors, l10n),
                       const SizedBox(height: 20),
                     ],
                   ),
@@ -150,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  Widget _buildLogo(AppColors colors, bool isDark) {
+  Widget _buildLogo(AppColors colors, bool isDark, AppLocalizations l10n) {
     return Column(
       children: [
         Container(
@@ -179,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen>
         ),
         const SizedBox(height: 16),
         Text(
-          'DecathDAM',
+          l10n.appTitle,
           style: GoogleFonts.outfit(
             fontSize: 32,
             fontWeight: FontWeight.w700,
@@ -189,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen>
         ),
         const SizedBox(height: 4),
         Text(
-          'Benvingut de nou!',
+          l10n.welcomeBack,
           style: GoogleFonts.outfit(
             fontSize: 16,
             fontWeight: FontWeight.w400,
@@ -200,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  Widget _buildFormCard(AppColors colors, bool isDark) {
+  Widget _buildFormCard(AppColors colors, bool isDark, AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -229,7 +231,7 @@ class _LoginScreenState extends State<LoginScreen>
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Iniciar sessió',
+              l10n.loginButton,
               style: GoogleFonts.outfit(
                 fontSize: 22,
                 fontWeight: FontWeight.w600,
@@ -240,14 +242,14 @@ class _LoginScreenState extends State<LoginScreen>
             // Email
             _buildTextField(
               controller: _emailController,
-              label: 'Email',
+              label: l10n.email,
               icon: Icons.email_outlined,
               keyboardType: TextInputType.emailAddress,
               colors: colors,
               isDark: isDark,
               validator: (v) {
-                if (v == null || v.isEmpty) return 'Introdueix el teu email';
-                if (!v.contains('@')) return 'Email no vàlid';
+                if (v == null || v.isEmpty) return l10n.enterEmail;
+                if (!v.contains('@')) return l10n.invalidEmail;
                 return null;
               },
             ),
@@ -255,7 +257,7 @@ class _LoginScreenState extends State<LoginScreen>
             // Password
             _buildTextField(
               controller: _passwordController,
-              label: 'Contrasenya',
+              label: l10n.password,
               icon: Icons.lock_outline,
               obscure: _obscurePassword,
               colors: colors,
@@ -272,7 +274,7 @@ class _LoginScreenState extends State<LoginScreen>
                     setState(() => _obscurePassword = !_obscurePassword),
               ),
               validator: (v) {
-                if (v == null || v.isEmpty) return 'Introdueix la contrasenya';
+                if (v == null || v.isEmpty) return l10n.enterPassword;
                 return null;
               },
             ),
@@ -283,7 +285,7 @@ class _LoginScreenState extends State<LoginScreen>
               child: GestureDetector(
                 onTap: () => _showForgotPasswordBottomSheet(context, colors, isDark),
                 child: Text(
-                  'Has oblidat la contrasenya?',
+                  l10n.forgotPassword,
                   style: GoogleFonts.outfit(
                     color: const Color(0xFF42A5F5),
                     fontSize: 14,
@@ -328,7 +330,7 @@ class _LoginScreenState extends State<LoginScreen>
                                 ),
                               )
                             : Text(
-                                'Iniciar sessió',
+                                l10n.loginButton,
                                 style: GoogleFonts.outfit(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -412,14 +414,14 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  Widget _buildDivider(AppColors colors) {
+  Widget _buildDivider(AppColors colors, AppLocalizations l10n) {
     return Row(
       children: [
         Expanded(child: Divider(color: colors.divider, thickness: 1)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
-            'o continua amb',
+            l10n.orContinueWith,
             style: GoogleFonts.outfit(
               color: colors.textMuted,
               fontSize: 13,
@@ -431,7 +433,7 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  Widget _buildGoogleButton(AppColors colors, bool isDark) {
+  Widget _buildGoogleButton(AppColors colors, bool isDark, AppLocalizations l10n) {
     return Consumer<AuthViewModel>(
       builder: (context, authVM, _) {
         return SizedBox(
@@ -484,7 +486,7 @@ class _LoginScreenState extends State<LoginScreen>
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  'Continuar amb Google',
+                  l10n.continueWithGoogle,
                   style: GoogleFonts.outfit(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
@@ -499,12 +501,12 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  Widget _buildRegisterLink(AppColors colors) {
+  Widget _buildRegisterLink(AppColors colors, AppLocalizations l10n) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'No tens compte? ',
+          l10n.noAccount,
           style: GoogleFonts.outfit(
             color: colors.textSecondary,
             fontSize: 14,
@@ -532,7 +534,7 @@ class _LoginScreenState extends State<LoginScreen>
             );
           },
           child: Text(
-            'Registra\'t',
+            l10n.register,
             style: GoogleFonts.outfit(
               color: const Color(0xFF42A5F5),
               fontSize: 14,
@@ -554,6 +556,7 @@ class _LoginScreenState extends State<LoginScreen>
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx)!;
         bool isSending = false;
         return Padding(
           padding: EdgeInsets.only(
@@ -589,7 +592,7 @@ class _LoginScreenState extends State<LoginScreen>
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Recuperar Contrasenya',
+                    l10n.recoverPassword,
                     style: GoogleFonts.outfit(
                       fontSize: 22,
                       fontWeight: FontWeight.w600,
@@ -598,7 +601,7 @@ class _LoginScreenState extends State<LoginScreen>
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Introdueix el teu correu electrònic i t\'enviarem un enllaç per restablir la teva contrasenya.',
+                    l10n.recoverPasswordInstruction,
                     style: GoogleFonts.outfit(
                       fontSize: 15,
                       color: colors.textSecondary,
@@ -607,14 +610,14 @@ class _LoginScreenState extends State<LoginScreen>
                   const SizedBox(height: 24),
                   _buildTextField(
                     controller: resetEmailController,
-                    label: 'Email',
+                    label: l10n.email,
                     icon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
                     colors: colors,
                     isDark: isDark,
                     validator: (v) {
-                      if (v == null || v.isEmpty) return 'Introdueix el teu email';
-                      if (!v.contains('@')) return 'Email no vàlid';
+                      if (v == null || v.isEmpty) return l10n.enterEmail;
+                      if (!v.contains('@')) return l10n.invalidEmail;
                       return null;
                     },
                   ),
@@ -643,8 +646,8 @@ class _LoginScreenState extends State<LoginScreen>
                                     SnackBar(
                                       content: Text(
                                         success 
-                                          ? 'Correu enviat! Revisa la teva bústia d\'entrada.' 
-                                          : (authVM.errorMessage ?? 'Error a l\'enviar el correu'),
+                                          ? l10n.emailSentSuccess 
+                                          : (authVM.errorMessage ?? l10n.emailSentError),
                                       ),
                                       backgroundColor: success ? Colors.green : Colors.redAccent,
                                       behavior: SnackBarBehavior.floating,
@@ -681,7 +684,7 @@ class _LoginScreenState extends State<LoginScreen>
                                       ),
                                     )
                                   : Text(
-                                      'Enviar enllaç',
+                                      l10n.sendLink,
                                       style: GoogleFonts.outfit(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,

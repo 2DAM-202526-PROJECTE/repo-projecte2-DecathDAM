@@ -12,6 +12,7 @@ import 'package:decathdam/viewmodels/users_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({super.key});
@@ -50,6 +51,7 @@ class _AdminScreenState extends State<AdminScreen>
     final productsViewModel = Provider.of<ProductsViewModel>(context);
     final usersViewModel = Provider.of<UsersViewModel>(context);
     final colors = AppColors.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -69,7 +71,7 @@ class _AdminScreenState extends State<AdminScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Panell d\'Administració',
+                          l10n.adminPanel,
                           style: GoogleFonts.outfit(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -78,7 +80,7 @@ class _AdminScreenState extends State<AdminScreen>
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          'Gestiona productes i usuaris',
+                          l10n.manageProductsUsers,
                           style: GoogleFonts.outfit(
                             fontSize: 14,
                             color: colors.textSecondary,
@@ -121,13 +123,13 @@ class _AdminScreenState extends State<AdminScreen>
               const SizedBox(height: 28),
 
               // Dashboard Grid
-              _buildDashboardGrid(productsViewModel, usersViewModel),
+              _buildDashboardGrid(productsViewModel, usersViewModel, l10n),
 
               const SizedBox(height: 32),
 
               // Section: Gestió ràpida
               Text(
-                'Gestió ràpida',
+                l10n.quickManagement,
                 style: GoogleFonts.outfit(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -138,8 +140,8 @@ class _AdminScreenState extends State<AdminScreen>
 
               AnimatedAdminOption(
                 icon: Icons.add_box_rounded,
-                title: 'Crear Productes',
-                subtitle: 'Afegeix nous productes al catàleg',
+                title: l10n.createProducts,
+                subtitle: l10n.addProductsCatalog,
                 gradientColors: const [Color(0xFF00C853), Color(0xFF00E676)],
                 delay: 0,
                 colors: colors,
@@ -154,8 +156,8 @@ class _AdminScreenState extends State<AdminScreen>
 
               AnimatedAdminOption(
                 icon: Icons.inventory_2_rounded,
-                title: 'Administrar Productes',
-                subtitle: 'Edita o elimina productes existents',
+                title: l10n.manageProducts,
+                subtitle: l10n.editDeleteProducts,
                 gradientColors: const [Color(0xFF2196F3), Color(0xFF42A5F5)],
                 delay: 100,
                 colors: colors,
@@ -170,8 +172,8 @@ class _AdminScreenState extends State<AdminScreen>
 
               AnimatedAdminOption(
                 icon: Icons.star_rounded,
-                title: 'Productes Destacats',
-                subtitle: 'Tria quins productes es veuen a l\'inici',
+                title: l10n.featuredProducts,
+                subtitle: l10n.chooseFeatured,
                 gradientColors: const [Color(0xFFFFB300), Color(0xFFFFCA28)],
                 delay: 125,
                 colors: colors,
@@ -186,8 +188,8 @@ class _AdminScreenState extends State<AdminScreen>
 
               AnimatedAdminOption(
                 icon: Icons.person_add_alt_1_rounded,
-                title: 'Crear Usuari',
-                subtitle: 'Afegeix un nou usuari amb dades completes',
+                title: l10n.createUser,
+                subtitle: l10n.addNewUserFull,
                 gradientColors: const [Color(0xFFFB8C00), Color(0xFFFFA726)],
                 delay: 150,
                 colors: colors,
@@ -202,8 +204,8 @@ class _AdminScreenState extends State<AdminScreen>
 
               AnimatedAdminOption(
                 icon: Icons.people_rounded,
-                title: 'Administrar Usuaris',
-                subtitle: 'Gestiona rols i permisos dels usuaris',
+                title: l10n.manageUsers,
+                subtitle: l10n.manageRolesPerms,
                 gradientColors: const [Color(0xFFFF6D00), Color(0xFFFF9100)],
                 delay: 200,
                 colors: colors,
@@ -219,8 +221,8 @@ class _AdminScreenState extends State<AdminScreen>
 
               AnimatedAdminOption(
                 icon: Icons.auto_awesome_rounded,
-                title: 'Generar Dades de Prova',
-                subtitle: 'Crea productes realistes automàticament',
+                title: l10n.generateTestData,
+                subtitle: l10n.createRealisticProducts,
                 gradientColors: const [Color(0xFF673AB7), Color(0xFF9575CD)],
                 delay: 250,
                 colors: colors,
@@ -233,8 +235,8 @@ class _AdminScreenState extends State<AdminScreen>
 
               AnimatedAdminOption(
                 icon: Icons.build_circle_rounded,
-                title: 'Reparar Imatges',
-                subtitle: 'Arregla les imatges que no es veuen',
+                title: l10n.fixImages,
+                subtitle: l10n.fixBrokenImages,
                 gradientColors: const [Color(0xFFE91E63), Color(0xFFF06292)],
                 delay: 300,
                 colors: colors,
@@ -254,6 +256,7 @@ class _AdminScreenState extends State<AdminScreen>
   Widget _buildDashboardGrid(
     ProductsViewModel productsVM,
     UsersViewModel usersVM,
+    AppLocalizations l10n,
   ) {
     return Row(
       children: [
@@ -264,7 +267,7 @@ class _AdminScreenState extends State<AdminScreen>
               final count = snapshot.data ?? 0;
               return DashboardCard(
                 icon: Icons.inventory_2_rounded,
-                label: 'Productes',
+                label: l10n.products,
                 value: '$count',
                 gradientColors: const [Color(0xFF1E88E5), Color(0xFF42A5F5)],
               );
@@ -279,7 +282,7 @@ class _AdminScreenState extends State<AdminScreen>
               final count = snapshot.data ?? 0;
               return DashboardCard(
                 icon: Icons.people_rounded,
-                label: 'Usuaris',
+                label: l10n.users,
                 value: '$count',
                 gradientColors: const [Color(0xFFE65100), Color(0xFFFF6D00)],
               );
@@ -294,32 +297,33 @@ class _AdminScreenState extends State<AdminScreen>
     BuildContext context,
     ProductsViewModel productsVM,
   ) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Generar Dades de Prova'),
-        content: const Text(
-          'Aquesta acció afegirà 10 productes realistes al catàleg. Vols continuar?',
+        title: Text(l10n.generateTestData),
+        content: Text(
+          l10n.seedConfirmationText,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel·lar'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () async {
               Navigator.pop(context);
               // Mostrar snackbar de càrrega
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Generant productes...')),
+                SnackBar(content: Text(l10n.generatingProducts)),
               );
 
               try {
                 await productsVM.seedSampleProducts();
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Productes generats correctament!'),
+                    SnackBar(
+                      content: Text(l10n.productsGenerated),
                       backgroundColor: Colors.green,
                     ),
                   );
@@ -329,14 +333,14 @@ class _AdminScreenState extends State<AdminScreen>
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Error al generar productes: $e'),
+                      content: Text('${l10n.errorGeneratingProducts}$e'),
                       backgroundColor: Colors.red,
                     ),
                   );
                 }
               }
             },
-            child: const Text('Generar'),
+            child: Text(l10n.generate),
           ),
         ],
       ),
@@ -347,31 +351,32 @@ class _AdminScreenState extends State<AdminScreen>
     BuildContext context,
     ProductsViewModel productsVM,
   ) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Reparar Imatges'),
-        content: const Text(
-          'Aquesta acció buscarà productes amb imatges trencades (de la càrrega anterior) i les intentarà arreglar. Vols continuar?',
+        title: Text(l10n.fixImages),
+        content: Text(
+          l10n.fixImagesConfirmation,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel·lar'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () async {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Reparant imatges...')),
+                SnackBar(content: Text(l10n.fixingImages)),
               );
 
               try {
                 await productsVM.fixProductImages();
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Imatges reparades correctament!'),
+                    SnackBar(
+                      content: Text(l10n.imagesFixed),
                       backgroundColor: Colors.green,
                     ),
                   );
@@ -381,14 +386,14 @@ class _AdminScreenState extends State<AdminScreen>
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Error al reparar imatges: $e'),
+                      content: Text('${l10n.errorFixingImages}$e'),
                       backgroundColor: Colors.red,
                     ),
                   );
                 }
               }
             },
-            child: const Text('Reparar'),
+            child: Text(l10n.fix),
           ),
         ],
       ),

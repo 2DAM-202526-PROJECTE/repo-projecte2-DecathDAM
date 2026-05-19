@@ -8,6 +8,7 @@ import 'package:decathdam/view/home_screen.dart';
 import 'package:decathdam/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class MainScreen extends StatefulWidget {
   final int initialIndex;
@@ -63,11 +64,12 @@ class _MainScreenState extends State<MainScreen> {
     final authViewModel = Provider.of<AuthViewModel>(context);
     final isAdmin = authViewModel.currentUserModel?.rol == 'admin';
     final widgetOptions = _buildWidgetOptions(isAdmin);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'DecathDAM',
+          l10n.appTitle,
           style: TextStyle(
             fontWeight: FontWeight.w600,
             color: colors.textPrimary,
@@ -81,24 +83,24 @@ class _MainScreenState extends State<MainScreen> {
         type: BottomNavigationBarType.fixed,
         backgroundColor: colors.surface,
         items: <BottomNavigationBarItem>[
-          const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inici'),
-          const BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Explora'),
+          BottomNavigationBarItem(icon: const Icon(Icons.home), label: l10n.home),
+          BottomNavigationBarItem(icon: const Icon(Icons.search), label: l10n.exploreTitle),
           isAdmin
-              ? const BottomNavigationBarItem(
-                  icon: Icon(Icons.admin_panel_settings),
-                  label: 'Admin',
+              ? BottomNavigationBarItem(
+                  icon: const Icon(Icons.admin_panel_settings),
+                  label: l10n.admin,
                 )
-              : const BottomNavigationBarItem(
-                  icon: Icon(Icons.person),
-                  label: 'Perfil',
+              : BottomNavigationBarItem(
+                  icon: const Icon(Icons.person),
+                  label: l10n.profileTitle,
                 ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorits',
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.favorite),
+            label: l10n.favorites,
           ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Cistella',
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.shopping_cart),
+            label: l10n.cart,
           ),
         ],
         currentIndex: _selectedIndex,

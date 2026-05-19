@@ -3,6 +3,7 @@ import 'package:decathdam/models/product_model.dart';
 import 'package:decathdam/viewmodels/cart_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
   final Product product;
@@ -12,6 +13,7 @@ class ProductDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -100,7 +102,7 @@ class ProductDetailsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Descripció',
+                    l10n.description,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -158,10 +160,10 @@ class ProductDetailsScreen extends StatelessWidget {
                     context.read<CartViewModel>().addToCart(product);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('${product.nom} afegit a la cistella'),
+                        content: Text('${product.nom} ${l10n.addedToCart}'),
                         duration: const Duration(seconds: 2),
                         action: SnackBarAction(
-                          label: 'DESFER',
+                          label: l10n.undo,
                           onPressed: () {
                             context.read<CartViewModel>().removeFromCart(
                               product.id,
@@ -180,8 +182,8 @@ class ProductDetailsScreen extends StatelessWidget {
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
-                    'Afegir a la cistella',
+                  child: Text(
+                    l10n.addToCartButton,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),

@@ -4,6 +4,8 @@ import 'package:decathdam/viewmodels/auth_viewmodel.dart';
 import 'package:decathdam/viewmodels/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
+import 'package:decathdam/viewmodels/locale_provider.dart';
 import 'dart:ui';
 
 class ClientProfileScreen extends StatefulWidget {
@@ -22,7 +24,9 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
   void initState() {
     super.initState();
     _controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 800));
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
     _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
     _controller.forward();
   }
@@ -37,8 +41,10 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final localeProvider = Provider.of<LocaleProvider>(context);
     final authViewModel = Provider.of<AuthViewModel>(context);
     final user = authViewModel.currentUserModel;
+    final l10n = AppLocalizations.of(context)!;
 
     final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
 
@@ -70,9 +76,7 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-              child: Container(
-                color: colors.background.withOpacity(0.3),
-              ),
+              child: Container(color: colors.background.withOpacity(0.3)),
             ),
           ),
           // Content Scroll
@@ -85,14 +89,28 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 24.0, vertical: 20),
+                        horizontal: 24.0,
+                        vertical: 20,
+                      ),
                       child: Column(
                         children: [
-                          _buildProfileCard(context, colors, user, authViewModel),
+                          _buildProfileCard(
+                            context,
+                            colors,
+                            user,
+                            authViewModel,
+                          ),
                           const SizedBox(height: 32),
-                          _buildSectionTitle('Ajustaments', colors),
+                          _buildSectionTitle(l10n.settings, colors),
                           const SizedBox(height: 16),
-                          _buildOptionsList(colors, themeProvider, isDarkMode, authViewModel, context),
+                          _buildOptionsList(
+                            colors,
+                            themeProvider,
+                            localeProvider,
+                            isDarkMode,
+                            authViewModel,
+                            context,
+                          ),
                           const SizedBox(height: 40),
                         ],
                       ),
@@ -107,8 +125,13 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
     );
   }
 
-  Widget _buildProfileCard(BuildContext context, AppColors colors, dynamic user,
-      AuthViewModel authVM) {
+  Widget _buildProfileCard(
+    BuildContext context,
+    AppColors colors,
+    dynamic user,
+    AuthViewModel authVM,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -160,7 +183,7 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
                 ),
                 // Info Username
                 Text(
-                  user?.nom ?? 'Usuari sense nom',
+                  user?.nom ?? l10n.userNoName,
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -180,14 +203,16 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
                 ),
                 const SizedBox(height: 16),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: colors.accentBlue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    'Rol: ${user?.rol.toUpperCase() ?? 'CLIENT'}',
+                    l10n.role + (user?.rol.toUpperCase() ?? 'CLIENT'),
                     style: TextStyle(
                       color: colors.accentBlue,
                       fontWeight: FontWeight.w600,
@@ -198,7 +223,7 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
                 if (authVM.isLoading) ...[
                   const SizedBox(height: 20),
                   const CircularProgressIndicator(),
-                ]
+                ],
               ],
             ),
           ),
@@ -222,8 +247,15 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
     );
   }
 
-  Widget _buildOptionsList(AppColors colors, ThemeProvider themeProvider,
-      bool isDarkMode, AuthViewModel authVM, BuildContext context) {
+  Widget _buildOptionsList(
+    AppColors colors,
+    ThemeProvider themeProvider,
+    LocaleProvider localeProvider,
+    bool isDarkMode,
+    AuthViewModel authVM,
+    BuildContext context,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         color: colors.surface,
@@ -234,7 +266,7 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
             color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 5),
-          )
+          ),
         ],
       ),
       child: Column(
@@ -242,7 +274,7 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
           _buildOptionTile(
             colors: colors,
             icon: Icons.person_outline,
-            title: 'La meva informació personal',
+            title: l10n.personalInfo,
             onTap: () {
               Navigator.push(
                 context,
@@ -254,17 +286,20 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
           _buildOptionTile(
             colors: colors,
             icon: Icons.brightness_6,
-            title: 'Tema',
+            title: l10n.theme,
             trailing: DropdownButton<ThemeMode>(
               value: themeProvider.themeMode,
               underline: const SizedBox(),
               icon: Icon(Icons.arrow_drop_down, color: colors.textSecondary),
               dropdownColor: colors.surface,
               style: TextStyle(color: colors.textPrimary, fontSize: 14),
-              items: const [
-                DropdownMenuItem(value: ThemeMode.system, child: Text('Sistema')),
-                DropdownMenuItem(value: ThemeMode.light, child: Text('Clar')),
-                DropdownMenuItem(value: ThemeMode.dark, child: Text('Fosc')),
+              items: [
+                DropdownMenuItem(
+                  value: ThemeMode.system,
+                  child: Text(l10n.systemTheme),
+                ),
+                DropdownMenuItem(value: ThemeMode.light, child: Text(l10n.lightTheme)),
+                DropdownMenuItem(value: ThemeMode.dark, child: Text(l10n.darkTheme)),
               ],
               onChanged: (ThemeMode? mode) {
                 if (mode != null) {
@@ -276,11 +311,34 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
           Divider(color: colors.divider, height: 1),
           _buildOptionTile(
             colors: colors,
+            icon: Icons.language,
+            title: l10n.language,
+            trailing: DropdownButton<String>(
+              value: localeProvider.locale.languageCode,
+              underline: const SizedBox(),
+              icon: Icon(Icons.arrow_drop_down, color: colors.textSecondary),
+              dropdownColor: colors.surface,
+              style: TextStyle(color: colors.textPrimary, fontSize: 14),
+              items: [
+                DropdownMenuItem(value: 'ca', child: Text(l10n.catalan)),
+                DropdownMenuItem(value: 'es', child: Text(l10n.spanish)),
+                DropdownMenuItem(value: 'en', child: Text(l10n.english)),
+              ],
+              onChanged: (String? newLang) {
+                if (newLang != null) {
+                  localeProvider.setLocale(Locale(newLang));
+                }
+              },
+            ),
+          ),
+          Divider(color: colors.divider, height: 1),
+          _buildOptionTile(
+            colors: colors,
             icon: Icons.notifications_active_outlined,
-            title: 'Notificacions',
+            title: l10n.notifications,
             onTap: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Notificacions pròximament')),
+                SnackBar(content: Text(l10n.notificationsComingSoon)),
               );
             },
           ),
@@ -288,10 +346,10 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
           _buildOptionTile(
             colors: colors,
             icon: Icons.security_outlined,
-            title: 'Privacitat i Seguretat',
+            title: l10n.privacyAndSecurity,
             onTap: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Privacitat pròximament')),
+                SnackBar(content: Text(l10n.privacyComingSoon)),
               );
             },
           ),
@@ -299,7 +357,7 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
           _buildOptionTile(
             colors: colors,
             icon: Icons.logout_rounded,
-            title: 'Tancar Sessió',
+            title: l10n.logout,
             titleColor: Colors.redAccent,
             iconColor: Colors.redAccent,
             onTap: () {
@@ -335,7 +393,11 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
                   color: (iconColor ?? colors.accentBlue).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, color: iconColor ?? colors.accentBlue, size: 22),
+                child: Icon(
+                  icon,
+                  color: iconColor ?? colors.accentBlue,
+                  size: 22,
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -351,8 +413,11 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
               if (trailing != null)
                 trailing
               else
-                Icon(Icons.arrow_forward_ios,
-                    size: 16, color: colors.textSecondary.withOpacity(0.5)),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: colors.textSecondary.withOpacity(0.5),
+                ),
             ],
           ),
         ),

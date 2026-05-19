@@ -3,20 +3,21 @@ import 'package:decathdam/models/product_model.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class ManageFeaturedScreen extends StatelessWidget {
   const ManageFeaturedScreen({super.key});
 
-  @override
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
     final productsViewModel = Provider.of<ProductsViewModel>(context, listen: false);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colors.background,
       appBar: AppBar(
         title: Text(
-          'Productes Destacats',
+          l10n.featuredProducts,
           style: TextStyle(
             color: colors.textPrimary,
             fontWeight: FontWeight.bold,
@@ -48,7 +49,7 @@ class ManageFeaturedScreen extends StatelessWidget {
           if (products.isEmpty) {
             return Center(
               child: Text(
-                'No hi ha productes',
+                l10n.noProducts,
                 style: TextStyle(color: colors.textSecondary),
               ),
             );
@@ -61,7 +62,7 @@ class ManageFeaturedScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  'Selecciona fins a 4 productes per mostrar a la pàgina principal. Actuauments seleccionats: $featuredCount/4',
+                  l10n.selectFeaturedProductsText(featuredCount),
                   style: TextStyle(
                     color: colors.textSecondary,
                     fontSize: 14,
@@ -112,9 +113,9 @@ class ManageFeaturedScreen extends StatelessWidget {
                           onChanged: (value) async {
                             if (value && featuredCount >= 4) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
+                                SnackBar(
                                   content: Text(
-                                    'Només pots tenir un màxim de 4 productes destacats.',
+                                    l10n.maxFeaturedProductsError,
                                   ),
                                 ),
                               );

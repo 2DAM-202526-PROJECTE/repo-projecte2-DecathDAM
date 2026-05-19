@@ -7,6 +7,7 @@ import 'package:decathdam/viewmodels/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -15,12 +16,13 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final colors = AppColors.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colors.background,
       appBar: AppBar(
         title: Text(
-          'Ajustes',
+          l10n.settings,
           style: GoogleFonts.outfit(
             fontWeight: FontWeight.w600,
             color: colors.textPrimary,
@@ -48,8 +50,8 @@ class SettingsScreen extends StatelessWidget {
             // Idioma
             AnimatedAdminOption(
               icon: Icons.language_rounded,
-              title: 'Idioma',
-              subtitle: 'Català',
+              title: l10n.language,
+              subtitle: l10n.catalan,
               gradientColors: const [Color(0xFF7C4DFF), Color(0xFFB388FF)],
               delay: 100,
               colors: colors,
@@ -57,7 +59,7 @@ class SettingsScreen extends StatelessWidget {
                 _showInfoSnackBar(
                   context,
                   colors,
-                  'Funció d\'idioma pròximament',
+                  l10n.languageComingSoon,
                 );
               },
             ),
@@ -67,13 +69,13 @@ class SettingsScreen extends StatelessWidget {
             // Notificacions
             AnimatedAdminOption(
               icon: Icons.notifications_rounded,
-              title: 'Notificacions',
-              subtitle: 'Gestiona les alertes de l\'app',
+              title: l10n.notifications,
+              subtitle: l10n.manageAlerts,
               gradientColors: const [Color(0xFF00BCD4), Color(0xFF4DD0E1)],
               delay: 200,
               colors: colors,
               onTap: () {
-                _showInfoSnackBar(context, colors, 'Notificacions pròximament');
+                _showInfoSnackBar(context, colors, l10n.notificationsComingSoon);
               },
             ),
 
@@ -110,6 +112,7 @@ class SettingsScreen extends StatelessWidget {
   }
 
   void _showLogoutDialog(BuildContext context, AppColors colors) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (dialogContext) {
@@ -134,7 +137,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Text(
-                'Tancar sessió',
+                l10n.logout,
                 style: GoogleFonts.outfit(
                   fontWeight: FontWeight.bold,
                   color: colors.textPrimary,
@@ -143,7 +146,7 @@ class SettingsScreen extends StatelessWidget {
             ],
           ),
           content: Text(
-            'Estàs segur que vols tancar la sessió? Hauràs d\'iniciar sessió de nou per accedir.',
+            l10n.logoutConfirmation,
             style: GoogleFonts.outfit(
               color: colors.textSecondary,
               fontSize: 14,
@@ -153,7 +156,7 @@ class SettingsScreen extends StatelessWidget {
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
               child: Text(
-                'Cancel·lar',
+                l10n.cancel,
                 style: GoogleFonts.outfit(color: colors.cancelButton),
               ),
             ),
@@ -177,7 +180,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
               child: Text(
-                'Tancar sessió',
+                l10n.logout,
                 style: GoogleFonts.outfit(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,

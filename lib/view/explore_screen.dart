@@ -5,6 +5,7 @@ import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:decathdam/view/product_details_screen.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -89,6 +90,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   Widget build(BuildContext context) {
     final favoritesViewModel = Provider.of<FavoritesViewModel>(context);
     final colors = AppColors.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.all(10.0),
@@ -148,7 +150,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         });
                       },
                       decoration: InputDecoration(
-                        hintText: 'Cerca productes...',
+                        hintText: l10n.searchProducts,
                         hintStyle: TextStyle(color: colors.textHint),
                         prefixIcon: Icon(Icons.search, color: colors.iconSecondary),
                         suffixIcon: _searchQuery.isNotEmpty
@@ -220,7 +222,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   if (allProducts.isEmpty) {
                     return Center(
                       child: Text(
-                        'No hi ha productes',
+                        l10n.noProductsAvailable,
                         style: TextStyle(color: colors.textSecondary),
                       ),
                     );
@@ -238,7 +240,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'No s\'han trobat resultats\nmodifica els filtres',
+                            l10n.noResultsModifyFilters,
                             style: TextStyle(color: colors.textSecondary),
                             textAlign: TextAlign.center,
                           ),
@@ -377,6 +379,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   void _showAdvancedFiltersModal(BuildContext context, List<String> allCategories) {
     final colors = AppColors.of(context);
+    final l10n = AppLocalizations.of(context)!;
     
     // Draft state per no alterar la pantalla abans de donar-li a APLICAR
     List<String> tempCategories = List.from(_selectedCategories);
@@ -421,7 +424,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Filtres Avançats',
+                          l10n.advancedFilters,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -437,7 +440,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 tempMaxPrice = _absoluteMaxPrice;
                              });
                           },
-                          child: const Text('Netejar Tot'),
+                          child: Text(l10n.clearAll),
                         ),
                       ],
                     ),
@@ -445,7 +448,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
                     // CATEGORIES
                     Text(
-                      'Categories',
+                      l10n.categories,
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textPrimary),
                     ),
                     const SizedBox(height: 12),
@@ -480,7 +483,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
                     // SORT BY
                     Text(
-                      'Ordenació',
+                      l10n.sorting,
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textPrimary),
                     ),
                     const SizedBox(height: 12),
@@ -488,7 +491,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       spacing: 10,
                       children: [
                         ChoiceChip(
-                          label: const Text('Per defecte'),
+                          label: Text(l10n.defaultSort),
                           labelStyle: TextStyle(color: tempSortBy == 'none' ? Colors.white : colors.textPrimary),
                           selected: tempSortBy == 'none',
                           selectedColor: colors.accentBlue,
@@ -501,7 +504,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           },
                         ),
                         ChoiceChip(
-                          label: const Text('Preu més baix'),
+                          label: Text(l10n.lowestPrice),
                           labelStyle: TextStyle(color: tempSortBy == 'price_asc' ? Colors.white : colors.textPrimary),
                           selected: tempSortBy == 'price_asc',
                           selectedColor: colors.accentBlue,
@@ -514,7 +517,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           },
                         ),
                         ChoiceChip(
-                          label: const Text('Preu més alt'),
+                          label: Text(l10n.highestPrice),
                           labelStyle: TextStyle(color: tempSortBy == 'price_desc' ? Colors.white : colors.textPrimary),
                           selected: tempSortBy == 'price_desc',
                           selectedColor: colors.accentBlue,
@@ -532,7 +535,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
                     // PRICE RANGE
                     Text(
-                      'Rang de Preu: ${tempMinPrice.toStringAsFixed(0)}€ - ${tempMaxPrice.toStringAsFixed(0)}€',
+                      '${l10n.priceRange}: ${tempMinPrice.toStringAsFixed(0)}€ - ${tempMaxPrice.toStringAsFixed(0)}€',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textPrimary),
                     ),
                     const SizedBox(height: 8),
@@ -577,7 +580,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
-                        child: const Text('Aplicar Filtres', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        child: Text(l10n.applyFilters, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       ),
                     ),
                     const SizedBox(height: 20),

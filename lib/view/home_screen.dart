@@ -5,6 +5,7 @@ import 'package:decathdam/models/imatges_model.dart';
 import 'package:decathdam/repositories/images_repository.dart';
 import 'package:decathdam/models/product_model.dart';
 import 'package:decathdam/repositories/product_repository.dart';
+import 'package:decathdam/l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -29,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return FutureBuilder<List<Imatges>>(
       future: _imagesFuture,
@@ -45,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return Center(
             child: Text(
-              'No images found.',
+              l10n.noImagesFound,
               style: TextStyle(color: colors.textPrimary),
             ),
           );
@@ -77,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'DecathDAM',
+                      l10n.appTitle,
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w900,
@@ -89,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
                       child: Text(
-                        'El nostre propòsit és que assoleixis els teus objectius',
+                        l10n.homeSubtitle,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 15,
@@ -111,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Productes destacats',
+                        l10n.featuredProducts,
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -148,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.all(16.0),
                       child: Center(
                         child: Text(
-                          'No hi ha productes disponibles.',
+                          l10n.noProductsAvailable,
                           style: TextStyle(color: colors.textSecondary),
                         ),
                       ),
@@ -165,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.all(16.0),
                       child: Center(
                         child: Text(
-                          'No hi ha imatges de productes.',
+                          l10n.noProductImages,
                           style: TextStyle(color: colors.textSecondary),
                         ),
                       ),
