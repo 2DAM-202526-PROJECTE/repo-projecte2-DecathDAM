@@ -11,11 +11,13 @@ class EmailService {
     required List<Map<String, dynamic>> items,
   }) async {
     final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
-    
+
     // Adaptar la llista de productes a l'estructura de bucle {{#orders}} de la teva plantilla d'EmailJS
     final List<Map<String, dynamic>> ordersList = items.map((item) {
       return {
-        'to_name': item['productName'] ?? '', // EmailJS utilitza 'to_name' per defecte en aquest camp a la plantilla
+        'to_name':
+            item['productName'] ??
+            '', // EmailJS utilitza 'to_name' per defecte en aquest camp a la plantilla
         'units': item['quantity'] ?? 1,
         'price': (item['price'] ?? 0.0).toStringAsFixed(2),
         'image': item['productImageUrl'] ?? '', // URL de la imatge del producte
@@ -37,11 +39,7 @@ class EmailService {
             'to_email': toEmail,
             'order_id': orderId,
             'total_amount': totalAmount.toStringAsFixed(2),
-            'tracking_url': 'https://2DAM-202526-PROJECTE.github.io/repo-projecte2-DecathDAM/tracking/?orderId=$orderId',
-            'cost': {
-              'shipping': '0.00',
-              'tax': '0.00',
-            },
+            'cost': {'shipping': '0.00', 'tax': '0.00'},
             'orders': ordersList,
           },
         }),
