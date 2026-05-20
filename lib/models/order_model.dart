@@ -7,6 +7,8 @@ class OrderModel {
   final double totalAmount;
   final DateTime date;
   final String status;
+  final Map<String, dynamic>? shippingAddress;
+  final Map<String, dynamic>? billingDetails;
 
   OrderModel({
     required this.id,
@@ -15,6 +17,8 @@ class OrderModel {
     required this.totalAmount,
     required this.date,
     required this.status,
+    this.shippingAddress,
+    this.billingDetails,
   });
 
   factory OrderModel.fromMap(String id, Map<String, dynamic> data) {
@@ -25,6 +29,8 @@ class OrderModel {
       totalAmount: (data['totalAmount'] ?? 0.0).toDouble(),
       date: (data['date'] as Timestamp?)?.toDate() ?? DateTime.now(),
       status: data['status'] ?? 'completed',
+      shippingAddress: data['shippingAddress'] != null ? Map<String, dynamic>.from(data['shippingAddress']) : null,
+      billingDetails: data['billingDetails'] != null ? Map<String, dynamic>.from(data['billingDetails']) : null,
     );
   }
 
@@ -35,6 +41,8 @@ class OrderModel {
       'totalAmount': totalAmount,
       'date': Timestamp.fromDate(date),
       'status': status,
+      'shippingAddress': shippingAddress,
+      'billingDetails': billingDetails,
     };
   }
 }

@@ -89,6 +89,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sendLink => 'Enviar enlace';
 
   @override
+  String get changePassword => 'Cambiar contraseña';
+
+  @override
+  String get googleAccountPasswordChange =>
+      'Esta cuenta se identifica con Google. Cambia la contraseña desde tu cuenta de Google.';
+
+  @override
   String get home => 'Inicio';
 
   @override
@@ -287,6 +294,37 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get city => 'Ciudad';
+
+  @override
+  String get billingDataTitle => 'Datos de facturación';
+
+  @override
+  String get billingSameAsShipping =>
+      'La dirección de facturación es la misma que la de envío';
+
+  @override
+  String get billingFullName => 'Nombre completo / Entidad de facturación';
+
+  @override
+  String get billingNif => 'NIF / CIF';
+
+  @override
+  String get billingCountry => 'País de facturación';
+
+  @override
+  String get billingAddress => 'Dirección de facturación';
+
+  @override
+  String get billingPostalCode => 'Código Postal de facturación';
+
+  @override
+  String get billingCity => 'Ciudad de facturación';
+
+  @override
+  String get viewOrderDetails => 'Ver datos de envío y facturación';
+
+  @override
+  String get hideOrderDetails => 'Ocultar datos del pedido';
 
   @override
   String get saveDataForFuture => 'Guardar datos para futuras compras';

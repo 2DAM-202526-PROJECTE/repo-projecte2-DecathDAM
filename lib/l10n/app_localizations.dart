@@ -256,6 +256,18 @@ abstract class AppLocalizations {
   /// **'Enviar enllaç'**
   String get sendLink;
 
+  /// No description provided for @changePassword.
+  ///
+  /// In ca, this message translates to:
+  /// **'Canviar contrasenya'**
+  String get changePassword;
+
+  /// No description provided for @googleAccountPasswordChange.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aquest compte s\'identifica amb Google. Canvia la contrasenya des del teu compte de Google.'**
+  String get googleAccountPasswordChange;
+
   /// No description provided for @home.
   ///
   /// In ca, this message translates to:
@@ -651,6 +663,66 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Ciutat'**
   String get city;
+
+  /// No description provided for @billingDataTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dades de facturació'**
+  String get billingDataTitle;
+
+  /// No description provided for @billingSameAsShipping.
+  ///
+  /// In ca, this message translates to:
+  /// **'L\'adreça de facturació és la mateixa que la d\'enviament'**
+  String get billingSameAsShipping;
+
+  /// No description provided for @billingFullName.
+  ///
+  /// In ca, this message translates to:
+  /// **'Nom complet / Entitat de facturació'**
+  String get billingFullName;
+
+  /// No description provided for @billingNif.
+  ///
+  /// In ca, this message translates to:
+  /// **'NIF / CIF'**
+  String get billingNif;
+
+  /// No description provided for @billingCountry.
+  ///
+  /// In ca, this message translates to:
+  /// **'País de facturació'**
+  String get billingCountry;
+
+  /// No description provided for @billingAddress.
+  ///
+  /// In ca, this message translates to:
+  /// **'Adreça de facturació'**
+  String get billingAddress;
+
+  /// No description provided for @billingPostalCode.
+  ///
+  /// In ca, this message translates to:
+  /// **'Codi Postal de facturació'**
+  String get billingPostalCode;
+
+  /// No description provided for @billingCity.
+  ///
+  /// In ca, this message translates to:
+  /// **'Ciutat de facturació'**
+  String get billingCity;
+
+  /// No description provided for @viewOrderDetails.
+  ///
+  /// In ca, this message translates to:
+  /// **'Veure dades d\'enviament i facturació'**
+  String get viewOrderDetails;
+
+  /// No description provided for @hideOrderDetails.
+  ///
+  /// In ca, this message translates to:
+  /// **'Amagar dades de l\'ordre'**
+  String get hideOrderDetails;
 
   /// No description provided for @saveDataForFuture.
   ///

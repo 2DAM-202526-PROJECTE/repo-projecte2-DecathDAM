@@ -9,6 +9,8 @@ class EmailService {
     required String orderId,
     required double totalAmount,
     required List<Map<String, dynamic>> items,
+    Map<String, dynamic>? shippingAddress,
+    Map<String, dynamic>? billingDetails,
   }) async {
     final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
 
@@ -23,6 +25,16 @@ class EmailService {
         'image': item['productImageUrl'] ?? '', // URL de la imatge del producte
       };
     }).toList();
+
+    // Construcció d'adreça formatejada
+    String formattedShipping = '';
+    if (shippingAddress != null) {
+      formattedShipping = '${shippingAddress['address'] ?? ''}, ${shippingAddress['postalCode'] ?? ''} ${shippingAddress['city'] ?? ''}, ${shippingAddress['country'] ?? ''}';
+    }
+    String formattedBilling = '';
+    if (billingDetails != null) {
+      formattedBilling = '${billingDetails['address'] ?? ''}, ${billingDetails['postalCode'] ?? ''} ${billingDetails['city'] ?? ''}, ${billingDetails['country'] ?? ''}';
+    }
 
     try {
       final response = await http.post(
@@ -41,6 +53,12 @@ class EmailService {
             'total_amount': totalAmount.toStringAsFixed(2),
             'cost': {'shipping': '0.00', 'tax': '0.00'},
             'orders': ordersList,
+            'shipping_name': shippingAddress?['name'] ?? '',
+            'shipping_phone': shippingAddress?['phone'] ?? '',
+            'shipping_address': formattedShipping,
+            'billing_name': billingDetails?['name'] ?? '',
+            'billing_nif': billingDetails?['nif'] ?? '',
+            'billing_address': formattedBilling,
           },
         }),
       );

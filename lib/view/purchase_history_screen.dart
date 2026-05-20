@@ -83,15 +83,42 @@ class PurchaseHistoryScreen extends StatelessWidget {
             itemCount: orders.length,
             itemBuilder: (context, index) {
               final order = orders[index];
-              return _buildOrderCard(context, order, colors, l10n);
+              return OrderCard(order: order, colors: colors, l10n: l10n);
             },
           );
         },
       ),
     );
   }
+}
 
-  Widget _buildOrderCard(BuildContext context, OrderModel order, AppColors colors, AppLocalizations l10n) {
+class OrderCard extends StatefulWidget {
+  final OrderModel order;
+  final AppColors colors;
+  final AppLocalizations l10n;
+
+  const OrderCard({
+    super.key,
+    required this.order,
+    required this.colors,
+    required this.l10n,
+  });
+
+  @override
+  State<OrderCard> createState() => _OrderCardState();
+}
+
+class _OrderCardState extends State<OrderCard> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final order = widget.order;
+    final colors = widget.colors;
+    final l10n = widget.l10n;
+
+    final hasAddressDetails = order.shippingAddress != null || order.billingDetails != null;
+
     return Card(
       color: colors.surface,
       margin: const EdgeInsets.only(bottom: 16),
@@ -124,7 +151,7 @@ class PurchaseHistoryScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Divider(color: colors.divider),
             const SizedBox(height: 8),
-            _buildTrackingStepper(order.status, colors),
+            _buildTrackingStepper(order.status),
             const SizedBox(height: 8),
             Divider(color: colors.divider),
             const SizedBox(height: 8),
@@ -204,13 +231,109 @@ class PurchaseHistoryScreen extends StatelessWidget {
                 ),
               ],
             ),
+            if (hasAddressDetails) ...[
+              const SizedBox(height: 8),
+              Divider(color: colors.divider),
+              InkWell(
+                onTap: () {
+                  setState(() {
+                    _expanded = !_expanded;
+                  });
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        _expanded ? l10n.hideOrderDetails : l10n.viewOrderDetails,
+                        style: TextStyle(
+                          color: colors.accentBlue,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Icon(
+                        _expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                        color: colors.accentBlue,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              AnimatedCrossFade(
+                duration: const Duration(milliseconds: 300),
+                firstChild: const SizedBox.shrink(),
+                secondChild: Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (order.shippingAddress != null) ...[
+                        Text(
+                          l10n.shippingAddress,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: colors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${order.shippingAddress!['name'] ?? ''}\n'
+                          '${l10n.phone}: ${order.shippingAddress!['phone'] ?? ''}\n'
+                          '${order.shippingAddress!['address'] ?? ''}, ${order.shippingAddress!['postalCode'] ?? ''} ${order.shippingAddress!['city'] ?? ''}, ${order.shippingAddress!['country'] ?? ''}',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: colors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                      if (order.billingDetails != null) ...[
+                        Text(
+                          l10n.billingDataTitle,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: colors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        if (order.billingDetails!['sameAsShipping'] == true)
+                          Text(
+                            l10n.billingSameAsShipping,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: colors.textSecondary,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          )
+                        else
+                          Text(
+                            '${order.billingDetails!['name'] ?? ''}\n'
+                            '${order.billingDetails!['nif'] != null && order.billingDetails!['nif'].toString().isNotEmpty ? "${l10n.billingNif}: ${order.billingDetails!['nif']}\n" : ""}'
+                            '${order.billingDetails!['address'] ?? ''}, ${order.billingDetails!['postalCode'] ?? ''} ${order.billingDetails!['city'] ?? ''}, ${order.billingDetails!['country'] ?? ''}',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: colors.textSecondary,
+                            ),
+                          ),
+                      ],
+                    ],
+                  ),
+                ),
+                crossFadeState: _expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+              ),
+            ],
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTrackingStepper(String status, AppColors colors) {
+  Widget _buildTrackingStepper(String status) {
     int currentStep = 0;
     switch (status.toLowerCase()) {
       case 'pending':
@@ -242,7 +365,7 @@ class PurchaseHistoryScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: colors.background.withOpacity(0.5),
+        color: widget.colors.background.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -254,7 +377,7 @@ class PurchaseHistoryScreen extends StatelessWidget {
               final step = steps[index];
               final isActive = index <= currentStep;
               final isLast = index == steps.length - 1;
-              final color = isActive ? colors.accentBlue : colors.textSecondary.withOpacity(0.3);
+              final color = isActive ? widget.colors.accentBlue : widget.colors.textSecondary.withValues(alpha: 0.3);
 
               return Expanded(
                 child: Row(
@@ -285,8 +408,8 @@ class PurchaseHistoryScreen extends StatelessWidget {
                         height: 3,
                         margin: const EdgeInsets.only(bottom: 12),
                         color: index < currentStep
-                            ? colors.accentBlue
-                            : colors.textSecondary.withOpacity(0.2),
+                            ? widget.colors.accentBlue
+                            : widget.colors.textSecondary.withValues(alpha: 0.2),
                       ),
                   ],
                 ),

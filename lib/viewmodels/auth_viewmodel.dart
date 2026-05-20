@@ -171,6 +171,13 @@ class AuthViewModel extends ChangeNotifier {
     required String genere,
     required String codiPostal,
     required String ciutat,
+    String? billingNom,
+    String? billingNif,
+    String? billingAdreca,
+    String? billingCodiPostal,
+    String? billingCiutat,
+    String? billingPais,
+    bool? billingSameAsShipping,
   }) async {
     if (currentUser == null || _currentUserModel == null) return false;
 
@@ -192,6 +199,13 @@ class AuthViewModel extends ChangeNotifier {
         genere: genere,
         codiPostal: codiPostal,
         ciutat: ciutat,
+        billingNom: billingNom,
+        billingNif: billingNif,
+        billingAdreca: billingAdreca,
+        billingCodiPostal: billingCodiPostal,
+        billingCiutat: billingCiutat,
+        billingPais: billingPais,
+        billingSameAsShipping: billingSameAsShipping,
       );
       await _userRepository.updateUser(updatedUser);
 

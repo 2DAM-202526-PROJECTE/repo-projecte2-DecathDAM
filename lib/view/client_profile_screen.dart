@@ -401,6 +401,55 @@ class _ClientProfileScreenState extends State<ClientProfileScreen>
           Divider(color: colors.divider, height: 1),
           _buildOptionTile(
             colors: colors,
+            icon: Icons.lock_outline_rounded,
+            title: l10n.changePassword,
+            onTap: () async {
+              final currentUser = authVM.currentUser;
+              if (currentUser != null) {
+                final isGoogleUser = currentUser.providerData
+                    .any((userInfo) => userInfo.providerId == 'google.com');
+
+                if (isGoogleUser) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(l10n.googleAccountPasswordChange),
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: colors.accentBlue,
+                    ),
+                  );
+                } else {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+
+                  final email = currentUser.email ?? '';
+                  final success = await authVM.resetPassword(email);
+
+                  if (context.mounted) {
+                    Navigator.pop(context); // Tancar dialeg de càrrega
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          success
+                              ? l10n.emailSentSuccess
+                              : (authVM.errorMessage ?? l10n.emailSentError),
+                        ),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: success ? Colors.green : Colors.red,
+                      ),
+                    );
+                  }
+                }
+              }
+            },
+          ),
+          Divider(color: colors.divider, height: 1),
+          _buildOptionTile(
+            colors: colors,
             icon: Icons.logout_rounded,
             title: l10n.logout,
             titleColor: Colors.redAccent,

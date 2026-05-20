@@ -88,6 +88,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendLink => 'Send link';
 
   @override
+  String get changePassword => 'Change password';
+
+  @override
+  String get googleAccountPasswordChange =>
+      'This account logs in with Google. Change your password from your Google Account.';
+
+  @override
   String get home => 'Home';
 
   @override
@@ -285,6 +292,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get city => 'City';
+
+  @override
+  String get billingDataTitle => 'Billing Details';
+
+  @override
+  String get billingSameAsShipping =>
+      'Billing address is the same as shipping address';
+
+  @override
+  String get billingFullName => 'Full Name / Billing Entity';
+
+  @override
+  String get billingNif => 'NIF / CIF';
+
+  @override
+  String get billingCountry => 'Billing Country';
+
+  @override
+  String get billingAddress => 'Billing Address';
+
+  @override
+  String get billingPostalCode => 'Billing Postal Code';
+
+  @override
+  String get billingCity => 'Billing City';
+
+  @override
+  String get viewOrderDetails => 'Show shipping and billing details';
+
+  @override
+  String get hideOrderDetails => 'Hide order details';
 
   @override
   String get saveDataForFuture => 'Save data for future purchases';

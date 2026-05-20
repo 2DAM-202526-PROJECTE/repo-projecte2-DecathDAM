@@ -25,6 +25,15 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
   final TextEditingController _postalCodeController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   
+  // Dades de facturació
+  final TextEditingController _billingNameController = TextEditingController();
+  final TextEditingController _billingNifController = TextEditingController();
+  final TextEditingController _billingCountryController = TextEditingController();
+  final TextEditingController _billingAddressController = TextEditingController();
+  final TextEditingController _billingPostalCodeController = TextEditingController();
+  final TextEditingController _billingCityController = TextEditingController();
+
+  bool _billingSameAsShipping = true;
   bool _saveAddress = false;
   bool _isLoading = false;
 
@@ -40,6 +49,16 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
       _postalCodeController.text = user.codiPostal;
       _cityController.text = user.ciutat;
       _countryController.text = 'Espanya'; // Per defecte
+
+      _billingSameAsShipping = user.billingSameAsShipping;
+      _billingNameController.text = user.billingNom.isNotEmpty ? user.billingNom : user.nom;
+      _billingNifController.text = user.billingNif.isNotEmpty ? user.billingNif : user.dni;
+      _billingAddressController.text = user.billingAdreca.isNotEmpty ? user.billingAdreca : user.adreca;
+      _billingPostalCodeController.text = user.billingCodiPostal.isNotEmpty ? user.billingCodiPostal : user.codiPostal;
+      _billingCityController.text = user.billingCiutat.isNotEmpty ? user.billingCiutat : user.ciutat;
+      _billingCountryController.text = user.billingPais.isNotEmpty ? user.billingPais : 'Espanya';
+    } else {
+      _billingCountryController.text = 'Espanya'; // Per defecte
     }
   }
 
@@ -51,10 +70,20 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
     _addressController.dispose();
     _postalCodeController.dispose();
     _cityController.dispose();
+    _billingNameController.dispose();
+    _billingNifController.dispose();
+    _billingCountryController.dispose();
+    _billingAddressController.dispose();
+    _billingPostalCodeController.dispose();
+    _billingCityController.dispose();
     super.dispose();
   }
 
-  Future<void> _processPayment(BuildContext context) async {
+  Future<void> _processPayment(
+    BuildContext context, {
+    required Map<String, dynamic> shippingAddress,
+    required Map<String, dynamic> billingDetails,
+  }) async {
     try {
       showDialog(
         context: context,
@@ -69,6 +98,7 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
 
       if (context.mounted) Navigator.pop(context); // Tancar dialog de càrrega
 
+      if (!context.mounted) return;
       // Desar l'historial de compres
       final authVM = Provider.of<AuthViewModel>(context, listen: false);
       final user = authVM.currentUserModel;
@@ -87,6 +117,8 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
           'totalAmount': widget.cart.totalPrice,
           'date': FieldValue.serverTimestamp(),
           'status': 'pending',
+          'shippingAddress': shippingAddress,
+          'billingDetails': billingDetails,
         });
 
         // Enviar el correu electrònic a través de EmailJS
@@ -96,8 +128,11 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
           orderId: docRef.id,
           totalAmount: widget.cart.totalPrice,
           items: orderItems,
+          shippingAddress: shippingAddress,
+          billingDetails: billingDetails,
         ).catchError((err) {
           print("Error enviant correu de confirmació: $err");
+          return false;
         });
       }
 
@@ -142,6 +177,41 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
       return;
     }
 
+    final bName = _billingSameAsShipping ? name : _billingNameController.text.trim();
+    final bNif = _billingSameAsShipping ? '' : _billingNifController.text.trim();
+    final bAddress = _billingSameAsShipping ? address : _billingAddressController.text.trim();
+    final bPostalCode = _billingSameAsShipping ? postalCode : _billingPostalCodeController.text.trim();
+    final bCity = _billingSameAsShipping ? city : _billingCityController.text.trim();
+    final bCountry = _billingSameAsShipping ? country : _billingCountryController.text.trim();
+
+    if (!_billingSameAsShipping) {
+      if (bName.isEmpty || bAddress.isEmpty || bPostalCode.isEmpty || bCity.isEmpty || bCountry.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.fillAllFields)),
+        );
+        return;
+      }
+    }
+
+    final shippingMap = {
+      'name': name,
+      'phone': phone,
+      'address': address,
+      'postalCode': postalCode,
+      'city': city,
+      'country': country,
+    };
+
+    final billingMap = {
+      'name': bName,
+      'nif': bNif,
+      'address': bAddress,
+      'postalCode': bPostalCode,
+      'city': bCity,
+      'country': bCountry,
+      'sameAsShipping': _billingSameAsShipping,
+    };
+
     if (_saveAddress) {
       setState(() { _isLoading = true; });
       final authVM = Provider.of<AuthViewModel>(context, listen: false);
@@ -156,6 +226,13 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
           genere: user.genere,
           codiPostal: postalCode,
           ciutat: city,
+          billingNom: bName,
+          billingNif: bNif,
+          billingAdreca: bAddress,
+          billingCodiPostal: bPostalCode,
+          billingCiutat: bCity,
+          billingPais: bCountry,
+          billingSameAsShipping: _billingSameAsShipping,
         );
         if (!success && mounted) {
            ScaffoldMessenger.of(context).showSnackBar(
@@ -170,7 +247,11 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
     }
 
     if (!mounted) return;
-    await _processPayment(context);
+    await _processPayment(
+      context,
+      shippingAddress: shippingMap,
+      billingDetails: billingMap,
+    );
   }
 
   Widget _buildTextField(AppColors colors, String label, TextEditingController controller, {TextInputType type = TextInputType.text}) {
@@ -261,7 +342,64 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
                   ],
                 ),
                 
-                const SizedBox(height: 8),
+                const Divider(height: 32),
+                
+                // Opció d'adreça de facturació igual a la d'enviament
+                CheckboxListTile(
+                  title: Text(
+                    l10n.billingSameAsShipping,
+                    style: TextStyle(color: colors.textPrimary, fontSize: 16),
+                  ),
+                  value: _billingSameAsShipping,
+                  onChanged: (val) {
+                    setState(() {
+                      _billingSameAsShipping = val ?? true;
+                    });
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,
+                  contentPadding: EdgeInsets.zero,
+                  activeColor: colors.accentBlue,
+                ),
+                
+                AnimatedCrossFade(
+                  duration: const Duration(milliseconds: 300),
+                  firstChild: const SizedBox.shrink(),
+                  secondChild: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.billingDataTitle,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: colors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildTextField(colors, l10n.billingFullName, _billingNameController),
+                      _buildTextField(colors, l10n.billingNif, _billingNifController),
+                      _buildTextField(colors, l10n.billingCountry, _billingCountryController),
+                      _buildTextField(colors, l10n.billingAddress, _billingAddressController),
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: _buildTextField(colors, l10n.billingPostalCode, _billingPostalCodeController, type: TextInputType.number),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            flex: 3,
+                            child: _buildTextField(colors, l10n.billingCity, _billingCityController),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  crossFadeState: _billingSameAsShipping ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                ),
+
+                const Divider(height: 32),
                 CheckboxListTile(
                   title: Text(
                     l10n.saveDataForFuture,

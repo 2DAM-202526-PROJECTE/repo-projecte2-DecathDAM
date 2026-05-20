@@ -14,6 +14,15 @@ class UserModel {
   final String idioma;
   final String subscripcio;
 
+  // Dades de facturació
+  final String billingNom;
+  final String billingNif;
+  final String billingAdreca;
+  final String billingCodiPostal;
+  final String billingCiutat;
+  final String billingPais;
+  final bool billingSameAsShipping;
+
   UserModel({
     required this.id,
     required this.nom,
@@ -29,6 +38,13 @@ class UserModel {
     this.ciutat = '',
     this.idioma = 'ca',
     this.subscripcio = 'Sense subscripció',
+    this.billingNom = '',
+    this.billingNif = '',
+    this.billingAdreca = '',
+    this.billingCodiPostal = '',
+    this.billingCiutat = '',
+    this.billingPais = '',
+    this.billingSameAsShipping = true,
   });
 
   factory UserModel.fromFirestore(String id, Map<String, dynamic> data) {
@@ -47,6 +63,13 @@ class UserModel {
       ciutat: data['ciutat'] ?? '',
       idioma: data['idioma'] ?? 'ca',
       subscripcio: data['subscripcio'] ?? 'Sense subscripció',
+      billingNom: data['billingNom'] ?? '',
+      billingNif: data['billingNif'] ?? '',
+      billingAdreca: data['billingAdreca'] ?? '',
+      billingCodiPostal: data['billingCodiPostal'] ?? '',
+      billingCiutat: data['billingCiutat'] ?? '',
+      billingPais: data['billingPais'] ?? '',
+      billingSameAsShipping: data['billingSameAsShipping'] ?? true,
     );
   }
 
@@ -65,6 +88,13 @@ class UserModel {
       'ciutat': ciutat,
       'idioma': idioma,
       'subscripcio': subscripcio,
+      'billingNom': billingNom,
+      'billingNif': billingNif,
+      'billingAdreca': billingAdreca,
+      'billingCodiPostal': billingCodiPostal,
+      'billingCiutat': billingCiutat,
+      'billingPais': billingPais,
+      'billingSameAsShipping': billingSameAsShipping,
     };
   }
 
@@ -82,6 +112,13 @@ class UserModel {
     String? ciutat,
     String? idioma,
     String? subscripcio,
+    String? billingNom,
+    String? billingNif,
+    String? billingAdreca,
+    String? billingCodiPostal,
+    String? billingCiutat,
+    String? billingPais,
+    bool? billingSameAsShipping,
   }) {
     return UserModel(
       id: id,
@@ -98,6 +135,13 @@ class UserModel {
       ciutat: ciutat ?? this.ciutat,
       idioma: idioma ?? this.idioma,
       subscripcio: subscripcio ?? this.subscripcio,
+      billingNom: billingNom ?? this.billingNom,
+      billingNif: billingNif ?? this.billingNif,
+      billingAdreca: billingAdreca ?? this.billingAdreca,
+      billingCodiPostal: billingCodiPostal ?? this.billingCodiPostal,
+      billingCiutat: billingCiutat ?? this.billingCiutat,
+      billingPais: billingPais ?? this.billingPais,
+      billingSameAsShipping: billingSameAsShipping ?? this.billingSameAsShipping,
     );
   }
 }
