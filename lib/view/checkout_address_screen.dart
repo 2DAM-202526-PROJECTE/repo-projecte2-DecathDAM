@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:decathdam/l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:decathdam/services/email_service.dart';
 
 class CheckoutAddressScreen extends StatefulWidget {
   final CartViewModel cart;
@@ -80,12 +81,23 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
           'productImageUrl': item.product.url,
         }).toList();
 
-        await FirebaseFirestore.instance.collection('orders').add({
+        final docRef = await FirebaseFirestore.instance.collection('orders').add({
           'userId': user.id,
           'items': orderItems,
           'totalAmount': widget.cart.totalPrice,
           'date': FieldValue.serverTimestamp(),
           'status': 'completed',
+        });
+
+        // Enviar el correu electrònic a través de EmailJS
+        EmailService.sendOrderConfirmation(
+          toEmail: user.email,
+          toName: user.nom,
+          orderId: docRef.id,
+          totalAmount: widget.cart.totalPrice,
+          items: orderItems,
+        ).catchError((err) {
+          print("Error enviant correu de confirmació: $err");
         });
       }
 

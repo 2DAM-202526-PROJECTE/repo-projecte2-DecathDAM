@@ -18,17 +18,37 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
     {
       'title': 'Pla Premium Anual',
       'price': 9999, // en cèntims
-      'priceLabel': '99.99€',
+      'priceLabel': '99.99€ / any',
+      'benefits': [
+        'Enviament i devolució exprés gratuïts',
+        'Devolucions il·limitades sense límit de temps',
+        'Servei de personal shopper exclusiu',
+        '15% de descompte en tot el catàleg',
+        'Regal d\'aniversari i esdeveniments VIP',
+      ],
     },
     {
       'title': 'Pla Bàsic Mensual',
       'price': 999,
-      'priceLabel': '9.99€',
+      'priceLabel': '9.99€ / mes',
+      'benefits': [
+        'Enviament gratuït en comandes superiors a 20€',
+        'Devolucions ampliades a 60 dies',
+        'Atenció al client prioritària',
+        'Accés a ofertes exclusives mensuals',
+      ],
     },
     {
       'title': 'DecathDAM Plus',
       'price': 1999,
-      'priceLabel': '19.99€',
+      'priceLabel': '19.99€ / mes',
+      'benefits': [
+        'Enviament gratuït en totes les comandes',
+        'Devolucions ampliades a 90 dies',
+        'Atenció al client VIP 24/7',
+        '10% de descompte addicional en totes les compres',
+        'Proves de productes noves en exclusiva',
+      ],
     },
   ];
 
@@ -203,6 +223,29 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 12),
+                      // Llista de beneficis
+                      ...List.generate((plan['benefits'] as List).length, (i) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(Icons.check_circle_outline, size: 20, color: colors.accentBlue),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  plan['benefits'][i],
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 14,
+                                    color: colors.textSecondary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
                       const SizedBox(height: 16),
                       SizedBox(
                         width: double.infinity,
