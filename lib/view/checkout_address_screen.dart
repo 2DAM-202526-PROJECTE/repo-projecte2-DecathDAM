@@ -86,7 +86,7 @@ class _CheckoutAddressScreenState extends State<CheckoutAddressScreen> {
           'items': orderItems,
           'totalAmount': widget.cart.totalPrice,
           'date': FieldValue.serverTimestamp(),
-          'status': 'completed',
+          'status': 'pending',
         });
 
         // Enviar el correu electrònic a través de EmailJS

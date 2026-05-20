@@ -124,6 +124,10 @@ class PurchaseHistoryScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Divider(color: colors.divider),
             const SizedBox(height: 8),
+            _buildTrackingStepper(order.status, colors),
+            const SizedBox(height: 8),
+            Divider(color: colors.divider),
+            const SizedBox(height: 8),
             ...order.items.map((item) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Row(
@@ -202,6 +206,94 @@ class PurchaseHistoryScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTrackingStepper(String status, AppColors colors) {
+    int currentStep = 0;
+    switch (status.toLowerCase()) {
+      case 'pending':
+      case 'processing':
+        currentStep = 0;
+        break;
+      case 'shipped':
+        currentStep = 1;
+        break;
+      case 'in_delivery':
+      case 'in_transit':
+        currentStep = 2;
+        break;
+      case 'delivered':
+      case 'completed':
+        currentStep = 3;
+        break;
+      default:
+        currentStep = 0;
+    }
+
+    final steps = [
+      {'label': 'Rebuda', 'icon': Icons.receipt_long_rounded},
+      {'label': 'Enviat', 'icon': Icons.local_shipping_rounded},
+      {'label': 'En repartiment', 'icon': Icons.delivery_dining_rounded},
+      {'label': 'Lliurat', 'icon': Icons.check_circle_rounded},
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: colors.background.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(steps.length, (index) {
+              final step = steps[index];
+              final isActive = index <= currentStep;
+              final isLast = index == steps.length - 1;
+              final color = isActive ? colors.accentBlue : colors.textSecondary.withOpacity(0.3);
+
+              return Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(step['icon'] as IconData, size: 20, color: color),
+                          const SizedBox(height: 4),
+                          Text(
+                            step['label'] as String,
+                            style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                              color: color,
+                            ),
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (!isLast)
+                      Container(
+                        width: 15,
+                        height: 3,
+                        margin: const EdgeInsets.only(bottom: 12),
+                        color: index < currentStep
+                            ? colors.accentBlue
+                            : colors.textSecondary.withOpacity(0.2),
+                      ),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ],
       ),
     );
   }

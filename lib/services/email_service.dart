@@ -37,6 +37,7 @@ class EmailService {
             'to_email': toEmail,
             'order_id': orderId,
             'total_amount': totalAmount.toStringAsFixed(2),
+            'tracking_url': 'https://2DAM-202526-PROJECTE.github.io/repo-projecte2-DecathDAM/tracking/?orderId=$orderId',
             'cost': {
               'shipping': '0.00',
               'tax': '0.00',
