@@ -646,4 +646,86 @@ class AppLocalizationsEn extends AppLocalizations {
   String orderNumber(Object id) {
     return 'Order #$id';
   }
+
+  @override
+  String get manageCategories => 'Manage Categories';
+
+  @override
+  String get manageCategoriesSubtitle => 'Create, edit and sort categories';
+
+  @override
+  String get newCategory => 'New Category';
+
+  @override
+  String get editCategory => 'Edit Category';
+
+  @override
+  String get categoryName => 'Category name';
+
+  @override
+  String get enterCategoryName => 'Enter a name for the category';
+
+  @override
+  String get noCategories => 'No categories';
+
+  @override
+  String get createFirstCategory =>
+      'Create the first category with the + button';
+
+  @override
+  String get categoryCreated => 'Category created successfully';
+
+  @override
+  String get categoryUpdated => 'Category updated successfully';
+
+  @override
+  String get categoryDeleted => 'Category deleted successfully';
+
+  @override
+  String get deleteCategoryConfirmation => 'Delete category?';
+
+  @override
+  String deleteCategoryText(String categoryName) {
+    return 'Are you sure you want to delete \"$categoryName\"? This action cannot be undone.';
+  }
+
+  @override
+  String categoryHasProducts(int count) {
+    return 'This category has $count associated product(s). They will be left without a category.';
+  }
+
+  @override
+  String get create => 'Create';
+
+  @override
+  String get noCategory => 'No category';
+
+  @override
+  String get migrateCategories => 'Migrate Categories';
+
+  @override
+  String get migrateCategoriesSubtitle =>
+      'Convert old categories to the new system';
+
+  @override
+  String get migrateCategoriesConfirmation => 'Migrate categories?';
+
+  @override
+  String migrateCategoriesText(int count) {
+    return 'This action will convert the old \'categoria\' field of each product to a reference in the categories collection. There are $count product(s) pending migration.';
+  }
+
+  @override
+  String get migratingCategories => 'Migrating categories...';
+
+  @override
+  String migrationSuccess(int updated, int created) {
+    return 'Migration completed: $updated product(s) updated, $created category(ies) created';
+  }
+
+  @override
+  String get migrationNotNeeded => 'No products pending migration!';
+
+  @override
+  String get migrate => 'Migrate';
 }

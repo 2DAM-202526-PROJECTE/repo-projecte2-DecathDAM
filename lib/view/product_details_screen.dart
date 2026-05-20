@@ -1,6 +1,7 @@
 import 'package:decathdam/config/app_theme.dart';
 import 'package:decathdam/models/product_model.dart';
 import 'package:decathdam/viewmodels/cart_viewmodel.dart';
+import 'package:decathdam/viewmodels/categories_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:decathdam/l10n/app_localizations.dart';
@@ -14,6 +15,7 @@ class ProductDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final categoriesVM = Provider.of<CategoriesViewModel>(context, listen: false);
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -93,7 +95,7 @@ class ProductDetailsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    product.categoria,
+                    categoriesVM.getCategoryName(product.categoriaId),
                     style: TextStyle(
                       fontSize: 16,
                       color: colors.textSecondary,

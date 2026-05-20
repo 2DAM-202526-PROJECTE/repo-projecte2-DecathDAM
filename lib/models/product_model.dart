@@ -3,7 +3,7 @@ class Product {
   final String nom;
   final String descripcio;
   final double preu;
-  final String categoria;
+  final String categoriaId;
   final String url;
   final bool destacat;
   final int descompte;
@@ -13,7 +13,7 @@ class Product {
     required this.nom,
     required this.descripcio,
     required this.preu,
-    required this.categoria,
+    required this.categoriaId,
     required this.url,
     this.destacat = false,
     this.descompte = 0,
@@ -25,11 +25,11 @@ class Product {
       nom: data['nom'] ?? '',
       descripcio: data['descripcio'] ?? '',
       preu: (data['preu'] ?? 0).toDouble(),
-      categoria: data['categoria'] ?? '',
+      // Suporta tant el camp nou 'categoriaId' com l'antic 'categoria'
+      categoriaId: data['categoriaId'] ?? data['categoria'] ?? '',
       url: data['url'] ?? '',
       destacat: data['destacat'] ?? false,
       descompte: data['descompte'] ?? 0,
     );
   }
 }
-

@@ -3,6 +3,7 @@ import 'package:decathdam/services/auth_service.dart';
 import 'package:decathdam/services/payment_service.dart';
 import 'package:decathdam/view/auth_wrapper.dart';
 import 'package:decathdam/viewmodels/cart_viewmodel.dart';
+import 'package:decathdam/viewmodels/categories_viewmodel.dart';
 import 'package:decathdam/viewmodels/favorites_viewmodel.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:decathdam/viewmodels/auth_viewmodel.dart';
@@ -50,6 +51,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => FavoritesViewModel()),
         ChangeNotifierProvider(create: (_) => CartViewModel()),
+        ChangeNotifierProvider(create: (_) => CategoriesViewModel()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
       ],
       child: const MyApp(),

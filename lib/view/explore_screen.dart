@@ -1,5 +1,7 @@
 import 'package:decathdam/config/app_theme.dart';
+import 'package:decathdam/models/category_model.dart';
 import 'package:decathdam/models/product_model.dart';
+import 'package:decathdam/viewmodels/categories_viewmodel.dart';
 import 'package:decathdam/viewmodels/favorites_viewmodel.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   final TextEditingController _searchController = TextEditingController();
   
   String _searchQuery = '';
-  List<String> _selectedCategories = [];
+  List<String> _selectedCategoryIds = [];
   double _minPriceSelected = 0.0;
   double _maxPriceSelected = 1000.0;
   double _absoluteMaxPrice = 1000.0;
@@ -34,7 +36,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     super.dispose();
   }
 
-  List<Product> _filterProducts(List<Product> products) {
+  List<Product> _filterProducts(List<Product> products, Map<String, String> categoryNames) {
     var filtered = products.where((product) {
       // 1. Text filter
       bool textMatch = true;
@@ -44,19 +46,20 @@ class _ExploreScreenState extends State<ExploreScreen> {
         final priceStr2 = product.preu.toStringAsFixed(2);
         final priceStr3 = priceStr1.replaceAll('.', ',');
         final priceStr4 = priceStr2.replaceAll('.', ',');
+        final catName = (categoryNames[product.categoriaId] ?? '').toLowerCase();
 
         textMatch = product.nom.toLowerCase().contains(query) ||
             product.descripcio.toLowerCase().contains(query) ||
-            product.categoria.toLowerCase().contains(query) ||
+            catName.contains(query) ||
             priceStr1.contains(query) ||
             priceStr2.contains(query) ||
             priceStr3.contains(query) ||
             priceStr4.contains(query);
       }
 
-      // 2. Category filter
-      bool categoryMatch = _selectedCategories.isEmpty || 
-          _selectedCategories.contains(product.categoria);
+      // 2. Category filter (by ID)
+      bool categoryMatch = _selectedCategoryIds.isEmpty || 
+          _selectedCategoryIds.contains(product.categoriaId);
 
       // 3. Price Filter
       bool priceMatch = product.preu >= _minPriceSelected && product.preu <= _maxPriceSelected;
@@ -89,6 +92,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   @override
   Widget build(BuildContext context) {
     final favoritesViewModel = Provider.of<FavoritesViewModel>(context);
+    final categoriesVM = Provider.of<CategoriesViewModel>(context);
     final colors = AppColors.of(context);
     final l10n = AppLocalizations.of(context)!;
 
@@ -127,14 +131,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
             });
           }
 
-          final List<String> categories = allProducts
-              .map((p) => p.categoria.trim())
-              .where((c) => c.isNotEmpty)
-              .toSet()
-              .toList();
-          categories.sort();
+          // Construïm un mapa de categoriaId -> nom des del ViewModel
+          return StreamBuilder<List<Category>>(
+            stream: categoriesVM.getCategoriesStream(),
+            builder: (context, catSnapshot) {
+              final categories = catSnapshot.data ?? [];
+              final Map<String, String> categoryNames = {
+                for (var c in categories) c.id: c.nom
+              };
 
-          final products = _filterProducts(allProducts);
+              final products = _filterProducts(allProducts, categoryNames);
 
           return Column(
             children: [
@@ -197,7 +203,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                             _showAdvancedFiltersModal(context, categories);
                           },
                         ),
-                        if (_selectedCategories.isNotEmpty || _sortBy != 'none' || _minPriceSelected > 0 || _maxPriceSelected < _absoluteMaxPrice)
+                        if (_selectedCategoryIds.isNotEmpty || _sortBy != 'none' || _minPriceSelected > 0 || _maxPriceSelected < _absoluteMaxPrice)
                            Positioned(
                              top: 10,
                              right: 12,
@@ -371,18 +377,20 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 }(),
               ),
             ],
-          );
-        },
+            );
+            },  // fi del builder del StreamBuilder<Category>
+          );  // fi del StreamBuilder<Category>
+        },  // fi del builder del StreamBuilder<Product>
       ),
     );
   }
 
-  void _showAdvancedFiltersModal(BuildContext context, List<String> allCategories) {
+  void _showAdvancedFiltersModal(BuildContext context, List<Category> allCategories) {
     final colors = AppColors.of(context);
     final l10n = AppLocalizations.of(context)!;
     
     // Draft state per no alterar la pantalla abans de donar-li a APLICAR
-    List<String> tempCategories = List.from(_selectedCategories);
+    List<String> tempCategoryIds = List.from(_selectedCategoryIds);
     String tempSortBy = _sortBy;
     double tempMinPrice = _minPriceSelected;
     double tempMaxPrice = _maxPriceSelected;
@@ -434,7 +442,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         TextButton(
                           onPressed: () {
                              setModalState(() {
-                                tempCategories.clear();
+                               tempCategoryIds.clear();
                                 tempSortBy = 'none';
                                 tempMinPrice = 0;
                                 tempMaxPrice = _absoluteMaxPrice;
@@ -456,9 +464,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       spacing: 8,
                       runSpacing: 4,
                       children: allCategories.map((cat) {
-                        final isSelected = tempCategories.contains(cat);
+                        final isSelected = tempCategoryIds.contains(cat.id);
                         return FilterChip(
-                          label: Text(cat),
+                          label: Text(cat.nom),
                           labelStyle: TextStyle(
                             color: isSelected ? Colors.white : colors.textPrimary,
                           ),
@@ -470,9 +478,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           onSelected: (bool selected) {
                             setModalState(() {
                               if (selected) {
-                                tempCategories.add(cat);
+                                tempCategoryIds.add(cat.id);
                               } else {
-                                tempCategories.remove(cat);
+                                tempCategoryIds.remove(cat.id);
                               }
                             });
                           },
@@ -565,7 +573,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         onPressed: () {
                           // Aplica l'estat draft a l'estat arrel i tanca la pantalla
                           setState(() {
-                            _selectedCategories = List.from(tempCategories);
+                            _selectedCategoryIds = List.from(tempCategoryIds);
                             _sortBy = tempSortBy;
                             _minPriceSelected = tempMinPrice;
                             _maxPriceSelected = tempMaxPrice;

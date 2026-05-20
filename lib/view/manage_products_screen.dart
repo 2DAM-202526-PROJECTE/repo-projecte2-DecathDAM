@@ -1,6 +1,7 @@
 import 'package:decathdam/config/app_theme.dart';
 import 'package:decathdam/models/product_model.dart';
 import 'package:decathdam/view/edit_product_screen.dart';
+import 'package:decathdam/viewmodels/categories_viewmodel.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,11 +25,14 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
       context,
       listen: false,
     ).getProductsStream();
+    // Carrega les categories per poder resoldre els noms
+    Provider.of<CategoriesViewModel>(context, listen: false).fetchCategories();
   }
 
   @override
   Widget build(BuildContext context) {
     final productsViewModel = Provider.of<ProductsViewModel>(context);
+    final categoriesVM = Provider.of<CategoriesViewModel>(context, listen: false);
     final colors = AppColors.of(context);
     final l10n = AppLocalizations.of(context)!;
 
@@ -97,6 +101,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                 context,
                 product,
                 productsViewModel,
+                categoriesVM,
                 colors,
                 l10n,
               );
@@ -111,6 +116,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
     BuildContext context,
     Product product,
     ProductsViewModel viewModel,
+    CategoriesViewModel categoriesVM,
     AppColors colors,
     AppLocalizations l10n,
   ) {
@@ -160,7 +166,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    product.categoria,
+                    categoriesVM.getCategoryName(product.categoriaId),
                     style: GoogleFonts.outfit(
                       color: colors.textSecondary,
                       fontSize: 13,

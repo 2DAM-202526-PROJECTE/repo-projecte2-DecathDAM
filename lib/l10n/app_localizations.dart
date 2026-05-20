@@ -1323,6 +1323,150 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Comanda #{id}'**
   String orderNumber(Object id);
+
+  /// No description provided for @manageCategories.
+  ///
+  /// In ca, this message translates to:
+  /// **'Gestionar Categories'**
+  String get manageCategories;
+
+  /// No description provided for @manageCategoriesSubtitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Crea, edita i ordena les categories'**
+  String get manageCategoriesSubtitle;
+
+  /// No description provided for @newCategory.
+  ///
+  /// In ca, this message translates to:
+  /// **'Nova Categoria'**
+  String get newCategory;
+
+  /// No description provided for @editCategory.
+  ///
+  /// In ca, this message translates to:
+  /// **'Editar Categoria'**
+  String get editCategory;
+
+  /// No description provided for @categoryName.
+  ///
+  /// In ca, this message translates to:
+  /// **'Nom de la categoria'**
+  String get categoryName;
+
+  /// No description provided for @enterCategoryName.
+  ///
+  /// In ca, this message translates to:
+  /// **'Introdueix un nom per a la categoria'**
+  String get enterCategoryName;
+
+  /// No description provided for @noCategories.
+  ///
+  /// In ca, this message translates to:
+  /// **'No hi ha categories'**
+  String get noCategories;
+
+  /// No description provided for @createFirstCategory.
+  ///
+  /// In ca, this message translates to:
+  /// **'Crea la primera categoria amb el botó +'**
+  String get createFirstCategory;
+
+  /// No description provided for @categoryCreated.
+  ///
+  /// In ca, this message translates to:
+  /// **'Categoria creada correctament'**
+  String get categoryCreated;
+
+  /// No description provided for @categoryUpdated.
+  ///
+  /// In ca, this message translates to:
+  /// **'Categoria actualitzada correctament'**
+  String get categoryUpdated;
+
+  /// No description provided for @categoryDeleted.
+  ///
+  /// In ca, this message translates to:
+  /// **'Categoria eliminada correctament'**
+  String get categoryDeleted;
+
+  /// No description provided for @deleteCategoryConfirmation.
+  ///
+  /// In ca, this message translates to:
+  /// **'Eliminar categoria?'**
+  String get deleteCategoryConfirmation;
+
+  /// No description provided for @deleteCategoryText.
+  ///
+  /// In ca, this message translates to:
+  /// **'Estàs segur que vols eliminar \"{categoryName}\"? Aquesta acció no es pot desfer.'**
+  String deleteCategoryText(String categoryName);
+
+  /// No description provided for @categoryHasProducts.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aquesta categoria té {count} producte(s) associat(s). Es quedaran sense categoria.'**
+  String categoryHasProducts(int count);
+
+  /// No description provided for @create.
+  ///
+  /// In ca, this message translates to:
+  /// **'Crear'**
+  String get create;
+
+  /// No description provided for @noCategory.
+  ///
+  /// In ca, this message translates to:
+  /// **'Sense categoria'**
+  String get noCategory;
+
+  /// No description provided for @migrateCategories.
+  ///
+  /// In ca, this message translates to:
+  /// **'Migrar Categories'**
+  String get migrateCategories;
+
+  /// No description provided for @migrateCategoriesSubtitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Converteix les categories antigues al nou sistema'**
+  String get migrateCategoriesSubtitle;
+
+  /// No description provided for @migrateCategoriesConfirmation.
+  ///
+  /// In ca, this message translates to:
+  /// **'Migrar categories?'**
+  String get migrateCategoriesConfirmation;
+
+  /// No description provided for @migrateCategoriesText.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aquesta acció convertirà el camp antic \'categoria\' de cada producte a una referència a la col·lecció de categories. Hi ha {count} producte(s) pendents de migrar.'**
+  String migrateCategoriesText(int count);
+
+  /// No description provided for @migratingCategories.
+  ///
+  /// In ca, this message translates to:
+  /// **'Migrant categories...'**
+  String get migratingCategories;
+
+  /// No description provided for @migrationSuccess.
+  ///
+  /// In ca, this message translates to:
+  /// **'Migració completada: {updated} producte(s) actualitzat(s), {created} categoria(es) creada(es)'**
+  String migrationSuccess(int updated, int created);
+
+  /// No description provided for @migrationNotNeeded.
+  ///
+  /// In ca, this message translates to:
+  /// **'No hi ha productes pendents de migrar!'**
+  String get migrationNotNeeded;
+
+  /// No description provided for @migrate.
+  ///
+  /// In ca, this message translates to:
+  /// **'Migrar'**
+  String get migrate;
 }
 
 class _AppLocalizationsDelegate

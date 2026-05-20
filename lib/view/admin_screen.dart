@@ -1,6 +1,8 @@
 import 'package:decathdam/config/app_theme.dart';
+import 'package:decathdam/services/category_migration_service.dart';
 import 'package:decathdam/view/creation_product_screen.dart';
 import 'package:decathdam/view/creation_user_screen.dart';
+import 'package:decathdam/view/manage_categories_screen.dart';
 import 'package:decathdam/view/manage_products_screen.dart';
 import 'package:decathdam/view/manage_users_screen.dart';
 import 'package:decathdam/view/manage_featured_screen.dart';
@@ -8,6 +10,7 @@ import 'package:decathdam/view/manage_offers_screen.dart';
 import 'package:decathdam/view/settings_screen.dart';
 import 'package:decathdam/view/widgets/animated_admin_option.dart';
 import 'package:decathdam/view/widgets/dashboard_card.dart';
+import 'package:decathdam/viewmodels/categories_viewmodel.dart';
 import 'package:decathdam/viewmodels/products_viewmodel.dart';
 import 'package:decathdam/viewmodels/users_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +54,7 @@ class _AdminScreenState extends State<AdminScreen>
   Widget build(BuildContext context) {
     final productsViewModel = Provider.of<ProductsViewModel>(context);
     final usersViewModel = Provider.of<UsersViewModel>(context);
+    final categoriesViewModel = Provider.of<CategoriesViewModel>(context);
     final colors = AppColors.of(context);
     final l10n = AppLocalizations.of(context)!;
 
@@ -124,7 +128,7 @@ class _AdminScreenState extends State<AdminScreen>
               const SizedBox(height: 28),
 
               // Dashboard Grid
-              _buildDashboardGrid(productsViewModel, usersViewModel, l10n),
+              _buildDashboardGrid(productsViewModel, usersViewModel, categoriesViewModel, l10n),
 
               const SizedBox(height: 32),
 
@@ -203,6 +207,21 @@ class _AdminScreenState extends State<AdminScreen>
               ),
               const SizedBox(height: 12),
 
+              AnimatedAdminOption(
+                icon: Icons.category_rounded,
+                title: l10n.manageCategories,
+                subtitle: l10n.manageCategoriesSubtitle,
+                gradientColors: const [Color(0xFF7B1FA2), Color(0xFFAB47BC)],
+                delay: 140,
+                colors: colors,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    _createRoute(const ManageCategoriesScreen()),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
 
               AnimatedAdminOption(
                 icon: Icons.person_add_alt_1_rounded,
@@ -263,6 +282,20 @@ class _AdminScreenState extends State<AdminScreen>
                 },
               ),
 
+              const SizedBox(height: 12),
+
+              AnimatedAdminOption(
+                icon: Icons.swap_horiz_rounded,
+                title: l10n.migrateCategories,
+                subtitle: l10n.migrateCategoriesSubtitle,
+                gradientColors: const [Color(0xFF00897B), Color(0xFF4DB6AC)],
+                delay: 350,
+                colors: colors,
+                onTap: () {
+                  _showMigrationDialog(context);
+                },
+              ),
+
               const SizedBox(height: 24),
             ],
           ),
@@ -274,6 +307,7 @@ class _AdminScreenState extends State<AdminScreen>
   Widget _buildDashboardGrid(
     ProductsViewModel productsVM,
     UsersViewModel usersVM,
+    CategoriesViewModel categoriesVM,
     AppLocalizations l10n,
   ) {
     return Row(
@@ -303,6 +337,21 @@ class _AdminScreenState extends State<AdminScreen>
                 label: l10n.users,
                 value: '$count',
                 gradientColors: const [Color(0xFFE65100), Color(0xFFFF6D00)],
+              );
+            },
+          ),
+        ),
+        const SizedBox(width: 14),
+        Expanded(
+          child: FutureBuilder<int>(
+            future: categoriesVM.getCategoriesCount(),
+            builder: (context, snapshot) {
+              final count = snapshot.data ?? 0;
+              return DashboardCard(
+                icon: Icons.category_rounded,
+                label: l10n.categories,
+                value: '$count',
+                gradientColors: const [Color(0xFF7B1FA2), Color(0xFFAB47BC)],
               );
             },
           ),
@@ -432,6 +481,97 @@ class _AdminScreenState extends State<AdminScreen>
         return SlideTransition(position: animation.drive(tween), child: child);
       },
       transitionDuration: const Duration(milliseconds: 400),
+    );
+  }
+
+  void _showMigrationDialog(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final migrationService = CategoryMigrationService();
+
+    // Comprova quants productes necessiten migrar-se
+    final pendingCount = await migrationService.countPendingMigrations();
+
+    if (!context.mounted) return;
+
+    if (pendingCount == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.migrationNotNeeded),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.migrateCategoriesConfirmation),
+        content: Text(l10n.migrateCategoriesText(pendingCount)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(dialogContext);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l10n.migratingCategories)),
+              );
+
+              try {
+                final result = await migrationService.migrateCategories();
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        result.isSuccess
+                            ? l10n.migrationSuccess(
+                                result.productsUpdated,
+                                result.categoriesCreated,
+                              )
+                            : 'Error: ${result.errors.join(", ")}',
+                      ),
+                      backgroundColor:
+                          result.isSuccess ? Colors.green : Colors.red,
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  );
+                  setState(() {}); // Refresc del dashboard
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Error: $e'),
+                      backgroundColor: Colors.red,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF00897B),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Text(
+              l10n.migrate,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

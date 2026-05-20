@@ -650,4 +650,85 @@ class AppLocalizationsCa extends AppLocalizations {
   String orderNumber(Object id) {
     return 'Comanda #$id';
   }
+
+  @override
+  String get manageCategories => 'Gestionar Categories';
+
+  @override
+  String get manageCategoriesSubtitle => 'Crea, edita i ordena les categories';
+
+  @override
+  String get newCategory => 'Nova Categoria';
+
+  @override
+  String get editCategory => 'Editar Categoria';
+
+  @override
+  String get categoryName => 'Nom de la categoria';
+
+  @override
+  String get enterCategoryName => 'Introdueix un nom per a la categoria';
+
+  @override
+  String get noCategories => 'No hi ha categories';
+
+  @override
+  String get createFirstCategory => 'Crea la primera categoria amb el botó +';
+
+  @override
+  String get categoryCreated => 'Categoria creada correctament';
+
+  @override
+  String get categoryUpdated => 'Categoria actualitzada correctament';
+
+  @override
+  String get categoryDeleted => 'Categoria eliminada correctament';
+
+  @override
+  String get deleteCategoryConfirmation => 'Eliminar categoria?';
+
+  @override
+  String deleteCategoryText(String categoryName) {
+    return 'Estàs segur que vols eliminar \"$categoryName\"? Aquesta acció no es pot desfer.';
+  }
+
+  @override
+  String categoryHasProducts(int count) {
+    return 'Aquesta categoria té $count producte(s) associat(s). Es quedaran sense categoria.';
+  }
+
+  @override
+  String get create => 'Crear';
+
+  @override
+  String get noCategory => 'Sense categoria';
+
+  @override
+  String get migrateCategories => 'Migrar Categories';
+
+  @override
+  String get migrateCategoriesSubtitle =>
+      'Converteix les categories antigues al nou sistema';
+
+  @override
+  String get migrateCategoriesConfirmation => 'Migrar categories?';
+
+  @override
+  String migrateCategoriesText(int count) {
+    return 'Aquesta acció convertirà el camp antic \'categoria\' de cada producte a una referència a la col·lecció de categories. Hi ha $count producte(s) pendents de migrar.';
+  }
+
+  @override
+  String get migratingCategories => 'Migrant categories...';
+
+  @override
+  String migrationSuccess(int updated, int created) {
+    return 'Migració completada: $updated producte(s) actualitzat(s), $created categoria(es) creada(es)';
+  }
+
+  @override
+  String get migrationNotNeeded => 'No hi ha productes pendents de migrar!';
+
+  @override
+  String get migrate => 'Migrar';
 }
